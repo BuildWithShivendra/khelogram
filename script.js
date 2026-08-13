@@ -450,34 +450,38 @@ function scrollToSection(sectionId) {
 
 function setupGetStartedButtons() {
 
-    const buttons =
-        document.querySelectorAll(
-            ".get-started, [data-get-started]"
-        );
+    // Find all buttons and links on the page
+    const elements = document.querySelectorAll("button, a");
 
-    buttons.forEach(function(button) {
+    elements.forEach(function(element) {
 
-        button.addEventListener(
-            "click",
-            function(event) {
+        const text = element.textContent.trim().toLowerCase();
+
+        // Detect any button/link that says "Get Started"
+        if (text.includes("get started")) {
+
+            element.addEventListener("click", function(event) {
 
                 event.preventDefault();
+
+                console.log("Get Started button clicked.");
 
                 const user = getUser();
 
                 if (user) {
-
                     showDashboard();
-
                 } else {
-
                     openRoleSelector();
                 }
-            }
-        );
-    });
-}
 
+            });
+
+        }
+
+    });
+
+    console.log("Get Started buttons connected.");
+}
 
 /* =========================================================
    14. LOGOUT BUTTONS
