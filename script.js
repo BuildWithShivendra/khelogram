@@ -154,19 +154,33 @@ function closeRoleSelector() {
 
     const roleModal = document.getElementById("roleModal");
 
-    if (roleModal) {
-        roleModal.style.display = "none";
+    if (!roleModal) {
+        return;
     }
 
+    roleModal.classList.add("hidden");
+
+    roleModal.style.display = "none";
+
     document.body.classList.remove("modal-open");
+
+    console.log("Role selector closed.");
 }
 
 
 function selectRole(role) {
 
-    selectedRole = role;
+    // Convert the role from HTML into our internal format
+    const roleKey = role
+        .toLowerCase()
+        .replace(/\s+/g, "-");
 
-    console.log("Selected role:", roleMap[role] || role);
+    selectedRole = roleKey;
+
+    console.log(
+        "Selected role:",
+        roleMap[roleKey] || role
+    );
 
     closeRoleSelector();
 
