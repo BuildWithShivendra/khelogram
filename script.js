@@ -1,330 +1,977 @@
+/* =========================================
+   KHELOGRAM STAGE 2
+   AUTH + ROLE DASHBOARDS
+========================================= */
 
-/* =========================================================
-   KHELOGRAM — STAGE 1
-   Interaction & UI Logic
-   ========================================================= */
+
+/* =========================================
+   GLOBAL STATE
+========================================= */
+
+let selectedRole = "athlete";
 
 
-/* ================= DOM ================= */
+const roleNames = {
+
+    athlete: "Athlete",
+
+    coach: "Coach",
+
+    panchayat: "Gram Panchayat",
+
+    organizer: "Organizer",
+
+    authority: "Authority"
+
+};
+
+
+const roleData = {
+
+    athlete: {
+
+        stats: [
+            ["🏟️", "NEARBY GROUNDS", "12", "+3 available"],
+            ["🏆", "TOURNAMENTS", "8", "Registration open"],
+            ["📈", "PERFORMANCE", "92%", "+8% this month"],
+            ["✦", "AI TALENT SCORE", "86", "Promising"]
+        ],
+
+        insightTitle:
+            "Performance Signal",
+
+        insightText:
+            "Your recent performance indicates strong potential for upcoming block-level competitions."
+
+    },
+
+
+    coach: {
+
+        stats: [
+            ["🏃", "ATHLETES", "48", "+6 this month"],
+            ["📅", "TRAINING SESSIONS", "24", "This month"],
+            ["🏆", "TOURNAMENTS", "7", "Upcoming"],
+            ["✦", "TALENT SIGNALS", "12", "AI detected"]
+        ],
+
+        insightTitle:
+            "Talent Insight",
+
+        insightText:
+            "12 athletes in your network show improving performance patterns and may benefit from advanced training."
+
+    },
+
+
+    panchayat: {
+
+        stats: [
+            ["🏟️", "SPORTS GROUNDS", "12", "8 active"],
+            ["🏃", "REGISTERED ATHLETES", "245", "+18 this month"],
+            ["🔧", "MAINTENANCE", "3", "Requests pending"],
+            ["📈", "UTILIZATION", "78%", "+12% this month"]
+        ],
+
+        insightTitle:
+            "Ground Utilization",
+
+        insightText:
+            "Three grounds have low utilization. Better visibility and scheduling could increase community usage."
+
+    },
+
+
+    organizer: {
+
+        stats: [
+            ["🏆", "ACTIVE EVENTS", "8", "Currently running"],
+            ["🏃", "PARTICIPANTS", "386", "+42 this month"],
+            ["📋", "REGISTRATIONS", "124", "Pending review"],
+            ["📈", "EVENT REACH", "72%", "+14%"]
+        ],
+
+        insightTitle:
+            "Tournament Insight",
+
+        insightText:
+            "Athlete registrations are increasing. Consider adding another qualifying event at block level."
+
+    },
+
+
+    authority: {
+
+        stats: [
+            ["🏟️", "GROUNDS MAPPED", "128", "+12 this month"],
+            ["🏃", "ATHLETES", "2,480", "+18.4%"],
+            ["🏆", "TOURNAMENTS", "36", "Across districts"],
+            ["✦", "TALENT SIGNALS", "74", "AI detected"]
+        ],
+
+        insightTitle:
+            "Regional Intelligence",
+
+        insightText:
+            "Participation is rising across mapped villages. Several emerging talent clusters require further attention."
+
+    }
+
+};
+
+
+/* =========================================
+   DOM ELEMENTS
+========================================= */
 
 const roleModal =
     document.getElementById("roleModal");
 
-const toast =
-    document.getElementById("toast");
+const authModal =
+    document.getElementById("authModal");
 
-const toastTitle =
-    document.getElementById("toastTitle");
+const landingPage =
+    document.getElementById("landingPage");
 
-const toastMessage =
-    document.getElementById("toastMessage");
+const dashboardPage =
+    document.getElementById("dashboardPage");
 
 
-/* ================= ROLE MODAL ================= */
+/* =========================================
+   ROLE SELECTOR
+========================================= */
 
-function openRoleModal() {
+function openRoleSelector() {
 
-    roleModal.classList.add("active");
+    roleModal.classList.remove("hidden");
 
     document.body.style.overflow = "hidden";
+
 }
 
 
-function closeRoleModal() {
+function closeRoleSelector() {
 
-    roleModal.classList.remove("active");
+    roleModal.classList.add("hidden");
 
     document.body.style.overflow = "";
+
 }
 
 
-function closeModalOutside(event) {
+function closeRoleModalOutside(event) {
 
     if (event.target === roleModal) {
-        closeRoleModal();
+
+        closeRoleSelector();
+
     }
+
 }
 
-
-/* ================= ROLE SELECTION ================= */
 
 function selectRole(role) {
 
-    closeRoleModal();
+    selectedRole = role;
 
-    showToast(
-        `${role} selected`,
-        "KheloGram is preparing your workspace..."
-    );
+    closeRoleSelector();
 
-    /*
-        Stage 1:
-        We only demonstrate the role-selection flow.
+    openAuthModal();
 
-        In Stage 2, this will route to the
-        actual role-based dashboard.
-    */
-
-    console.log(
-        `KheloGram role selected: ${role}`
-    );
 }
 
 
-/* ================= TOAST ================= */
+/* =========================================
+   AUTH MODAL
+========================================= */
 
-function showToast(title, message) {
+function openAuthModal() {
 
-    toastTitle.textContent = title;
+    authModal.classList.remove("hidden");
 
-    toastMessage.textContent = message;
+    document.body.style.overflow = "hidden";
 
-    toast.classList.add("show");
+    updateAuthRole();
 
-    setTimeout(() => {
+    showRegister();
 
-        toast.classList.remove("show");
-
-    }, 3500);
 }
 
 
-/* ================= MOBILE MENU ================= */
+function closeAuthModal() {
 
-function toggleMobileMenu() {
+    authModal.classList.add("hidden");
 
-    const nav =
-        document.querySelector(".nav-links");
+    document.body.style.overflow = "";
 
-    if (!nav) {
+    clearAuthMessage();
+
+}
+
+
+function updateAuthRole() {
+
+    const roleText =
+        document.getElementById("authRoleText");
+
+    roleText.textContent =
+        roleNames[selectedRole].toUpperCase();
+
+}
+
+
+/* =========================================
+   REGISTER / LOGIN TABS
+========================================= */
+
+function showRegister() {
+
+    document
+        .getElementById("registerForm")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("loginForm")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("registerTab")
+        .classList.add("active");
+
+    document
+        .getElementById("loginTab")
+        .classList.remove("active");
+
+
+    document.getElementById("authTitle").textContent =
+        "Create your account";
+
+    document.getElementById("authSubtitle").textContent =
+        `Join KheloGram as a ${roleNames[selectedRole]}.`;
+
+    clearAuthMessage();
+
+}
+
+
+function showLogin() {
+
+    document
+        .getElementById("registerForm")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginForm")
+        .classList.remove("hidden");
+
+
+    document
+        .getElementById("registerTab")
+        .classList.remove("active");
+
+    document
+        .getElementById("loginTab")
+        .classList.add("active");
+
+
+    document.getElementById("authTitle").textContent =
+        "Welcome back";
+
+    document.getElementById("authSubtitle").textContent =
+        `Login to your ${roleNames[selectedRole]} dashboard.`;
+
+    clearAuthMessage();
+
+}
+
+
+/* =========================================
+   REGISTER USER
+========================================= */
+
+function registerUser(event) {
+
+    event.preventDefault();
+
+
+    const name =
+        document
+            .getElementById("registerName")
+            .value
+            .trim();
+
+
+    const email =
+        document
+            .getElementById("registerEmail")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const password =
+        document
+            .getElementById("registerPassword")
+            .value;
+
+
+    if (!name || !email || !password) {
+
+        showAuthMessage(
+            "Please complete all fields."
+        );
+
         return;
+
     }
 
-    const isOpen =
-        nav.classList.contains("mobile-open");
 
-    if (isOpen) {
+    const users =
+        JSON.parse(
+            localStorage.getItem("khelogramUsers") || "[]"
+        );
 
-        nav.classList.remove("mobile-open");
 
-    } else {
+    const existingUser =
+        users.find(
+            user =>
+                user.email === email
+        );
 
-        nav.classList.add("mobile-open");
 
-        nav.style.display = "flex";
+    if (existingUser) {
 
-        nav.style.position = "absolute";
+        showAuthMessage(
+            "An account with this email already exists. Please login."
+        );
 
-        nav.style.top = "68px";
+        return;
 
-        nav.style.left = "0";
-
-        nav.style.right = "0";
-
-        nav.style.padding = "18px";
-
-        nav.style.flexDirection = "column";
-
-        nav.style.alignItems = "stretch";
-
-        nav.style.background = "white";
-
-        nav.style.borderBottom =
-            "1px solid #e5eaf1";
-
-        nav.style.boxShadow =
-            "0 15px 30px rgba(0,0,0,0.08)";
     }
+
+
+    const user = {
+
+        id: Date.now(),
+
+        name,
+
+        email,
+
+        password,
+
+        role: selectedRole,
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+
+    users.push(user);
+
+
+    localStorage.setItem(
+        "khelogramUsers",
+        JSON.stringify(users)
+    );
+
+
+    localStorage.setItem(
+        "khelogramCurrentUser",
+        JSON.stringify(user)
+    );
+
+
+    closeAuthModal();
+
+    openDashboard(user);
+
 }
 
 
-/* ================= SCROLL REVEAL ================= */
+/* =========================================
+   LOGIN USER
+========================================= */
 
-const revealElements =
-    document.querySelectorAll(
-        ".role-card, .module-card, .flow-item, .impact-box"
-    );
+function loginUser(event) {
 
-
-const observer =
-    new IntersectionObserver(
-        (entries) => {
-
-            entries.forEach((entry) => {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.classList.add(
-                        "revealed"
-                    );
-
-                    observer.unobserve(
-                        entry.target
-                    );
-                }
-
-            });
-
-        },
-        {
-            threshold: 0.12
-        }
-    );
+    event.preventDefault();
 
 
-revealElements.forEach((element) => {
-
-    element.style.opacity = "0";
-
-    element.style.transform =
-        "translateY(20px)";
-
-    element.style.transition =
-        "opacity 0.6s ease, transform 0.6s ease";
-
-    observer.observe(element);
-
-});
+    const email =
+        document
+            .getElementById("loginEmail")
+            .value
+            .trim()
+            .toLowerCase();
 
 
-/* ================= REVEAL CLASS ================= */
+    const password =
+        document
+            .getElementById("loginPassword")
+            .value;
 
-const revealStyle =
-    document.createElement("style");
 
-revealStyle.textContent = `
+    const users =
+        JSON.parse(
+            localStorage.getItem("khelogramUsers") || "[]"
+        );
 
-    .revealed {
-        opacity: 1 !important;
-        transform: translateY(0) !important;
-    }
 
-    @media (max-width: 760px) {
+    const user =
+        users.find(
+            item =>
+                item.email === email &&
+                item.password === password &&
+                item.role === selectedRole
+        );
 
-        .nav-links.mobile-open a,
-        .nav-links.mobile-open button {
-            display: block;
-        }
+
+    if (!user) {
+
+        showAuthMessage(
+            "Invalid email, password or selected role."
+        );
+
+        return;
 
     }
 
-`;
 
-document.head.appendChild(revealStyle);
-
-
-/* ================= NAVBAR SCROLL ================= */
-
-const navbar =
-    document.querySelector(".navbar");
-
-
-window.addEventListener(
-    "scroll",
-    () => {
-
-        if (window.scrollY > 20) {
-
-            navbar.style.boxShadow =
-                "0 8px 30px rgba(15,35,60,0.06)";
-
-        } else {
-
-            navbar.style.boxShadow = "none";
-
-        }
-
-    }
-);
-
-
-/* ================= SMOOTH NAVIGATION ================= */
-
-document.querySelectorAll(
-    'a[href^="#"]'
-).forEach((link) => {
-
-    link.addEventListener(
-        "click",
-        (event) => {
-
-            const targetId =
-                link.getAttribute("href");
-
-            if (
-                !targetId ||
-                targetId === "#"
-            ) {
-                return;
-            }
-
-            const target =
-                document.querySelector(
-                    targetId
-                );
-
-            if (!target) {
-                return;
-            }
-
-            event.preventDefault();
-
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-            const nav =
-                document.querySelector(
-                    ".nav-links"
-                );
-
-            if (
-                nav &&
-                nav.classList.contains(
-                    "mobile-open"
-                )
-            ) {
-
-                nav.classList.remove(
-                    "mobile-open"
-                );
-
-                nav.removeAttribute("style");
-
-            }
-
-        }
+    localStorage.setItem(
+        "khelogramCurrentUser",
+        JSON.stringify(user)
     );
 
-});
+
+    closeAuthModal();
+
+    openDashboard(user);
+
+}
 
 
-/* ================= KEYBOARD SUPPORT ================= */
+/* =========================================
+   AUTH MESSAGE
+========================================= */
+
+function showAuthMessage(message) {
+
+    document.getElementById(
+        "authMessage"
+    ).textContent = message;
+
+}
+
+
+function clearAuthMessage() {
+
+    const message =
+        document.getElementById("authMessage");
+
+    if (message) {
+
+        message.textContent = "";
+
+    }
+
+}
+
+
+/* =========================================
+   OPEN DASHBOARD
+========================================= */
+
+function openDashboard(user) {
+
+    landingPage.classList.add("hidden");
+
+    dashboardPage.classList.remove("hidden");
+
+
+    document.body.style.overflow = "";
+
+
+    populateDashboard(user);
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================
+   POPULATE DASHBOARD
+========================================= */
+
+function populateDashboard(user) {
+
+    const role =
+        roleNames[user.role];
+
+
+    document.getElementById(
+        "dashboardWelcome"
+    ).textContent =
+        `Welcome back, ${user.name.split(" ")[0]} 👋`;
+
+
+    document.getElementById(
+        "dashboardRole"
+    ).textContent =
+        `${role} dashboard — manage your KheloGram ecosystem.`;
+
+
+    document.getElementById(
+        "userNameDisplay"
+    ).textContent =
+        user.name;
+
+
+    document.getElementById(
+        "userRoleDisplay"
+    ).textContent =
+        role;
+
+
+    const initials =
+        getInitials(user.name);
+
+
+    document.getElementById(
+        "userAvatar"
+    ).textContent =
+        initials;
+
+
+    document.getElementById(
+        "profileAvatar"
+    ).textContent =
+        initials;
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        user.name;
+
+
+    document.getElementById(
+        "profileEmail"
+    ).textContent =
+        user.email;
+
+
+    document.getElementById(
+        "profileRole"
+    ).textContent =
+        role;
+
+
+    renderStats(user.role);
+
+    renderActivities(user.role);
+
+    renderInsight(user.role);
+
+    showDashboardSection(
+        "overview",
+        document.querySelector(
+            ".dashboard-nav-item"
+        )
+    );
+
+}
+
+
+/* =========================================
+   STATS
+========================================= */
+
+function renderStats(role) {
+
+    const stats =
+        roleData[role].stats;
+
+
+    const container =
+        document.getElementById(
+            "dashboardStats"
+        );
+
+
+    container.innerHTML = "";
+
+
+    stats.forEach(stat => {
+
+        const card =
+            document.createElement("div");
+
+
+        card.className =
+            "dashboard-stat";
+
+
+        card.innerHTML = `
+
+            <div class="dashboard-stat-icon">
+                ${stat[0]}
+            </div>
+
+            <small>
+                ${stat[1]}
+            </small>
+
+            <strong>
+                ${stat[2]}
+            </strong>
+
+            <em>
+                ${stat[3]}
+            </em>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================
+   ACTIVITIES
+========================================= */
+
+function renderActivities(role) {
+
+    const container =
+        document.getElementById(
+            "activityList"
+        );
+
+
+    const activities = {
+
+        athlete: [
+            ["🏆", "Tournament registration opened", "2 hours ago"],
+            ["📈", "Performance profile updated", "Yesterday"],
+            ["🏟️", "New ground mapped nearby", "2 days ago"]
+        ],
+
+        coach: [
+            ["🏃", "New athlete joined your network", "1 hour ago"],
+            ["📈", "Performance update received", "Yesterday"],
+            ["🏆", "Tournament opportunity available", "2 days ago"]
+        ],
+
+        panchayat: [
+            ["🏟️", "Ground utilization updated", "1 hour ago"],
+            ["🔧", "Maintenance request received", "Yesterday"],
+            ["🏆", "New tournament scheduled", "2 days ago"]
+        ],
+
+        organizer: [
+            ["🏆", "New tournament registration", "1 hour ago"],
+            ["🏃", "Participant list updated", "Yesterday"],
+            ["📊", "Event report generated", "2 days ago"]
+        ],
+
+        authority: [
+            ["✦", "New talent cluster detected", "1 hour ago"],
+            ["🏟️", "Ground mapping expanded", "Yesterday"],
+            ["📈", "Participation trend updated", "2 days ago"]
+        ]
+
+    };
+
+
+    container.innerHTML = "";
+
+
+    activities[role].forEach(item => {
+
+        const activity =
+            document.createElement("div");
+
+
+        activity.className =
+            "activity-item";
+
+
+        activity.innerHTML = `
+
+            <div class="activity-icon">
+                ${item[0]}
+            </div>
+
+            <div>
+                <strong>${item[1]}</strong>
+                <small>${item[2]}</small>
+            </div>
+
+        `;
+
+
+        container.appendChild(activity);
+
+    });
+
+}
+
+
+/* =========================================
+   AI INSIGHT
+========================================= */
+
+function renderInsight(role) {
+
+    const data =
+        roleData[role];
+
+
+    document.getElementById(
+        "insightTitle"
+    ).textContent =
+        data.insightTitle;
+
+
+    document.getElementById(
+        "insightText"
+    ).textContent =
+        data.insightText;
+
+}
+
+
+/* =========================================
+   DASHBOARD NAVIGATION
+========================================= */
+
+function showDashboardSection(
+    section,
+    clickedButton
+) {
+
+    const sections = {
+
+        overview:
+            "dashboardOverview",
+
+        profile:
+            "dashboardProfile",
+
+        grounds:
+            "dashboardGrounds",
+
+        events:
+            "dashboardEvents",
+
+        insights:
+            "dashboardInsights"
+
+    };
+
+
+    Object.values(sections).forEach(id => {
+
+        document
+            .getElementById(id)
+            .classList.add("hidden");
+
+    });
+
+
+    document
+        .getElementById(
+            sections[section]
+        )
+        .classList.remove("hidden");
+
+
+    document
+        .querySelectorAll(
+            ".dashboard-nav-item"
+        )
+        .forEach(button => {
+
+            button.classList.remove("active");
+
+        });
+
+
+    if (clickedButton) {
+
+        clickedButton.classList.add("active");
+
+    }
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "khelogramCurrentUser"
+    );
+
+
+    dashboardPage.classList.add("hidden");
+
+    landingPage.classList.remove("hidden");
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================
+   LANDING
+========================================= */
+
+function showLanding() {
+
+    dashboardPage.classList.add("hidden");
+
+    landingPage.classList.remove("hidden");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function scrollToSection(id) {
+
+    document
+        .getElementById(id)
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+/* =========================================
+   UTILITIES
+========================================= */
+
+function getInitials(name) {
+
+    const parts =
+        name
+            .trim()
+            .split(" ")
+            .filter(Boolean);
+
+
+    if (parts.length === 1) {
+
+        return parts[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        parts[0][0] +
+        parts[parts.length - 1][0]
+    ).toUpperCase();
+
+}
+
+
+/* =========================================
+   CHECK EXISTING SESSION
+========================================= */
+
+function checkExistingSession() {
+
+    const savedUser =
+        localStorage.getItem(
+            "khelogramCurrentUser"
+        );
+
+
+    if (!savedUser) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const user =
+            JSON.parse(savedUser);
+
+
+        if (user && user.role) {
+
+            openDashboard(user);
+
+        }
+
+    } catch (error) {
+
+        localStorage.removeItem(
+            "khelogramCurrentUser"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ESC KEY
+========================================= */
 
 document.addEventListener(
     "keydown",
-    (event) => {
+    function(event) {
 
-        if (event.key === "Escape") {
+        if (event.key !== "Escape") {
 
-            closeRoleModal();
+            return;
 
         }
+
+
+        closeRoleSelector();
+
+        closeAuthModal();
 
     }
 );
 
 
-/* ================= INITIALIZATION ================= */
+/* =========================================
+   INITIALIZE
+========================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    () => {
+    function() {
 
-        console.log(
-            "KheloGram Stage 1 initialized."
-        );
+        checkExistingSession();
 
     }
 );
