@@ -6,413 +6,719 @@
 
     <title>KheloGram | Rural Sports Intelligence</title>
 
-    <meta
-        name="description"
-        content="KheloGram - AI-powered rural sports intelligence platform connecting athletes, coaches, Panchayats and sports infrastructure."
-    >
-
     <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<!-- =========================
-     NAVIGATION
-========================= -->
+<!-- ================= HEADER ================= -->
 
-<header class="navbar">
+<header class="topbar">
 
-    <div class="brand" onclick="showLanding()">
+    <div class="brand">
+        <div class="logo">KG</div>
 
-        <div class="brand-icon">
-            KG
-        </div>
-
-        <div class="brand-text">
-            <strong>Khelo<span>Gram</span></strong>
+        <div>
+            <div class="brand-name">
+                Khelo<span>Gram</span>
+            </div>
             <small>RURAL SPORTS INTELLIGENCE</small>
         </div>
-
     </div>
 
-
-    <nav class="nav-links">
-
+    <nav>
         <a href="#platform">Platform</a>
         <a href="#ecosystem">Ecosystem</a>
         <a href="#impact">Impact</a>
-
-        <button
-            class="nav-button"
-            onclick="openRoleSelector()"
-        >
+        <button class="primary-btn" onclick="openRoleSelector()">
             Get Started
         </button>
-
     </nav>
 
 </header>
 
 
-<!-- =========================
-     LANDING PAGE
-========================= -->
+<!-- ================= LANDING PAGE ================= -->
 
 <main id="landingPage">
 
-    <section class="hero">
+<section class="hero" id="platform">
 
-        <div class="hero-content">
+    <div class="hero-content">
 
-            <div class="eyebrow">
-                <span class="status-dot"></span>
-                AI-POWERED GRASSROOTS SPORTS PLATFORM
-            </div>
-
-
-            <h1>
-                Turning Every
-                <span>Village</span>
-                Into a
-                <span>Sporting Ecosystem.</span>
-            </h1>
-
-
-            <p class="hero-description">
-
-                KheloGram connects rural athletes, coaches,
-                Panchayats and sports infrastructure through
-                one intelligent digital platform.
-
-            </p>
-
-
-            <div class="hero-actions">
-
-                <button
-                    class="primary-button"
-                    onclick="openRoleSelector()"
-                >
-                    Get Started
-                    <span>→</span>
-                </button>
-
-                <button
-                    class="secondary-button"
-                    onclick="scrollToSection('ecosystem')"
-                >
-                    Explore Platform
-                </button>
-
-            </div>
-
-
-            <div class="hero-trust">
-
-                <span>✓ Rural-first</span>
-                <span>✓ AI-powered</span>
-                <span>✓ Data-driven</span>
-
-            </div>
-
+        <div class="eyebrow">
+            <span></span>
+            AI-POWERED GRASSROOTS SPORTS PLATFORM
         </div>
 
+        <h1>
+            Turning Every
+            <strong>Village</strong>
+            Into a
+            <strong>Sporting Ecosystem.</strong>
+        </h1>
 
-        <!-- Dashboard preview -->
+        <p>
+            KheloGram connects rural athletes, coaches, Panchayats
+            and sports infrastructure through one intelligent digital platform.
+        </p>
 
-        <div class="hero-dashboard">
+        <div class="hero-actions">
+            <button class="primary-btn" onclick="openRoleSelector()">
+                Get Started →
+            </button>
 
-            <div class="dashboard-window">
+            <button class="secondary-btn" onclick="scrollToSection('ecosystem')">
+                Explore Platform
+            </button>
+        </div>
 
-                <div class="window-header">
+    </div>
 
-                    <div class="window-dots">
-                        <i></i>
-                        <i></i>
-                        <i></i>
+
+    <div class="hero-dashboard">
+
+        <div class="dashboard-window">
+
+            <div class="window-header">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+
+                <strong>KheloGram Intelligence</strong>
+
+                <span class="live">
+                    ● LIVE
+                </span>
+            </div>
+
+            <div class="dashboard-preview">
+
+                <small>RURAL SPORTS OVERVIEW</small>
+
+                <h2>Village Sports Network</h2>
+
+                <div class="preview-grid">
+
+                    <div>
+                        <span>🏟️</span>
+                        <small>SPORTS GROUNDS</small>
+                        <strong>Mapped</strong>
                     </div>
 
-                    <strong>KheloGram Intelligence</strong>
+                    <div>
+                        <span>🏃</span>
+                        <small>ATHLETES</small>
+                        <strong>Registered</strong>
+                    </div>
 
-                    <span class="live-status">
-                        ● LIVE
-                    </span>
+                    <div>
+                        <span>🏆</span>
+                        <small>TOURNAMENTS</small>
+                        <strong>Active</strong>
+                    </div>
+
+                    <div>
+                        <span>✦</span>
+                        <small>AI INSIGHTS</small>
+                        <strong>Talent Signals</strong>
+                    </div>
 
                 </div>
 
-
-                <div class="preview-content">
-
-                    <small>RURAL SPORTS OVERVIEW</small>
-
-                    <h2>Village Sports Network</h2>
-
-
-                    <div class="stats-grid">
-
-                        <div class="preview-card">
-                            <span>🏟️</span>
-                            <small>SPORTS GROUNDS</small>
-                            <strong>128</strong>
-                            <em>Mapped</em>
-                        </div>
-
-
-                        <div class="preview-card">
-                            <span>🏃</span>
-                            <small>ATHLETES</small>
-                            <strong>2,480</strong>
-                            <em>Registered</em>
-                        </div>
-
-
-                        <div class="preview-card">
-                            <span>🏆</span>
-                            <small>TOURNAMENTS</small>
-                            <strong>36</strong>
-                            <em>Active</em>
-                        </div>
-
-
-                        <div class="preview-card">
-                            <span>✦</span>
-                            <small>AI INSIGHTS</small>
-                            <strong>74</strong>
-                            <em>Talent Signals</em>
-                        </div>
-
+                <div class="preview-chart">
+                    <div class="chart-title">
+                        <strong>Participation Growth</strong>
+                        <span>Live Data</span>
                     </div>
 
-
-                    <div class="preview-bottom">
-
-                        <div class="growth-card">
-
-                            <div>
-                                <strong>Participation Growth</strong>
-                                <span>+28.4%</span>
-                            </div>
-
-                            <div class="fake-chart">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                            </div>
-
-                        </div>
-
-
-                        <div class="ai-card">
-
-                            <div class="ai-icon">✦</div>
-
-                            <small>AI TALENT INSIGHT</small>
-
-                            <strong>
-                                Promising Athlete Detected
-                            </strong>
-
-                            <div class="ai-athlete">
-                                <div class="avatar">RK</div>
-
-                                <div>
-                                    <b>Rural Athlete</b>
-                                    <small>Performance rising</small>
-                                </div>
-
-                                <strong>92%</strong>
-                            </div>
-
-                        </div>
-
-                    </div>
-
+                    <div class="chart-line"></div>
                 </div>
 
             </div>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
 
 
-    <!-- =========================
-         PLATFORM
-    ========================= -->
+<!-- ================= ECOSYSTEM ================= -->
 
-    <section
-        class="content-section"
-        id="platform"
-    >
+<section class="section" id="ecosystem">
 
-        <div class="section-heading">
+    <div class="section-heading">
+        <span>THE ECOSYSTEM</span>
+        <h2>One platform. Every sports stakeholder.</h2>
+        <p>
+            KheloGram creates a connected digital ecosystem for rural sports.
+        </p>
+    </div>
 
-            <span>THE PLATFORM</span>
 
-            <h2>
-                One digital layer for
-                rural sports.
-            </h2>
+    <div class="ecosystem-grid">
 
+        <div class="ecosystem-card">
+            <div class="card-icon">🏃</div>
+            <h3>Athletes</h3>
             <p>
-                KheloGram connects the people, places and
-                opportunities that form the grassroots
-                sports ecosystem.
+                Build a sports profile, discover coaches,
+                track progress and find opportunities.
+            </p>
+        </div>
+
+        <div class="ecosystem-card">
+            <div class="card-icon">🧑‍🏫</div>
+            <h3>Coaches</h3>
+            <p>
+                Discover athletes and build structured
+                training relationships.
+            </p>
+        </div>
+
+        <div class="ecosystem-card">
+            <div class="card-icon">🏛️</div>
+            <h3>Gram Panchayats</h3>
+            <p>
+                Manage sports infrastructure and improve
+                ground utilization.
+            </p>
+        </div>
+
+        <div class="ecosystem-card">
+            <div class="card-icon">🏆</div>
+            <h3>Organizers</h3>
+            <p>
+                Create tournaments and connect local
+                sporting communities.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= IMPACT ================= -->
+
+<section class="impact-section" id="impact">
+
+    <div>
+        <span>OUR MISSION</span>
+
+        <h2>
+            Make rural sporting
+            talent visible.
+        </h2>
+
+        <p>
+            KheloGram aims to create a digital pathway from
+            local participation to higher-level opportunities.
+        </p>
+    </div>
+
+    <div class="impact-path">
+
+        <div>Village</div>
+        <span>→</span>
+        <div>Block</div>
+        <span>→</span>
+        <div>District</div>
+        <span>→</span>
+        <div>State</div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- ================= DASHBOARD ================= -->
+
+<main id="dashboardPage" class="dashboard-page hidden">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="logo">KG</div>
+
+            <div>
+                <strong>Khelo<span>Gram</span></strong>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+
+            <button class="menu-item active"
+                    onclick="showDashboardSection('overview', this)">
+                ▦ <span>Overview</span>
+            </button>
+
+            <button class="menu-item"
+                    onclick="showDashboardSection('profile', this)">
+                ◉ <span>Profile</span>
+            </button>
+
+            <button class="menu-item"
+                    id="coachMenu"
+                    onclick="showDashboardSection('coaches', this)">
+                ◇ <span>Coaches</span>
+            </button>
+
+            <button class="menu-item"
+                    onclick="showDashboardSection('grounds', this)">
+                ⌂ <span>Grounds</span>
+            </button>
+
+            <button class="menu-item"
+                    onclick="showDashboardSection('tournaments', this)">
+                ♢ <span>Tournaments</span>
+            </button>
+
+            <button class="menu-item"
+                    onclick="showDashboardSection('insights', this)">
+                ✦ <span>Insights</span>
+            </button>
+
+        </div>
+
+        <button class="logout-btn" onclick="logout()">
+            ↪ Logout
+        </button>
+
+    </aside>
+
+
+    <section class="dashboard-content">
+
+        <div class="dashboard-top">
+
+            <div>
+                <small>KHELOGRAM DASHBOARD</small>
+
+                <h1>
+                    Welcome back,
+                    <span id="dashboardName">Athlete</span>
+                    👋
+                </h1>
+
+                <p id="dashboardSubtitle">
+                    Your KheloGram sports ecosystem.
+                </p>
+            </div>
+
+            <div class="user-chip">
+                <div id="userInitials">KG</div>
+
+                <div>
+                    <strong id="userDisplayName">User</strong>
+                    <small id="userRole">Athlete</small>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- OVERVIEW -->
+
+        <div id="section-overview" class="dashboard-section">
+
+            <div class="section-label">
+                KHELOGRAM AI
+            </div>
+
+            <h2>Sports Intelligence</h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span>✦</span>
+                    <small>PROFILE COMPLETION</small>
+                    <strong id="profileCompletion">0%</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>🏃</span>
+                    <small>PRIMARY SPORT</small>
+                    <strong id="primarySport">Not set</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>🧑‍🏫</span>
+                    <small>COACH CONNECTION</small>
+                    <strong id="coachStatus">Not connected</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>✦</span>
+                    <small>TALENT PROFILE</small>
+                    <strong id="talentStatus">Building</strong>
+                </div>
+
+            </div>
+
+
+            <div class="overview-grid">
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <small>SPORTS PASSPORT</small>
+                            <h3>Your athlete identity</h3>
+                        </div>
+
+                        <button class="text-btn"
+                                onclick="showDashboardSection('profile')">
+                            Open Profile →
+                        </button>
+                    </div>
+
+                    <div class="passport">
+
+                        <div class="passport-avatar" id="passportInitials">
+                            KG
+                        </div>
+
+                        <div>
+                            <h3 id="passportName">Complete your profile</h3>
+                            <p id="passportLocation">
+                                Add your village and district
+                            </p>
+                            <span class="badge" id="passportSport">
+                                Sport not selected
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel ai-panel">
+
+                    <div class="ai-icon">✦</div>
+
+                    <small>KHELOGRAM AI</small>
+
+                    <h3>Talent Profile</h3>
+
+                    <p id="aiSummary">
+                        Complete your sports profile to generate
+                        a personalized talent profile.
+                    </p>
+
+                    <button class="secondary-btn"
+                            onclick="showDashboardSection('insights')">
+                        View Insights
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <div id="section-profile" class="dashboard-section hidden">
+
+            <div class="section-label">SPORTS PASSPORT</div>
+
+            <h2>Athlete Profile</h2>
+
+            <p class="section-description">
+                Your KheloGram sports identity.
             </p>
 
+            <div class="profile-layout">
+
+                <div class="panel profile-card">
+
+                    <div class="profile-avatar" id="profileAvatar">
+                        KG
+                    </div>
+
+                    <h3 id="profileCardName">Your Name</h3>
+
+                    <p id="profileCardSport">
+                        Sport not selected
+                    </p>
+
+                    <span class="badge">KheloGram Athlete</span>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <small>PROFILE INFORMATION</small>
+                            <h3>Edit Sports Passport</h3>
+                        </div>
+                    </div>
+
+                    <form id="profileForm">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input
+                                    type="text"
+                                    id="profileName"
+                                    placeholder="Enter your name"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Age</label>
+                                <input
+                                    type="number"
+                                    id="profileAge"
+                                    placeholder="Age"
+                                    min="5"
+                                    max="100"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Village</label>
+                                <input
+                                    type="text"
+                                    id="profileVillage"
+                                    placeholder="Village"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>District</label>
+                                <input
+                                    type="text"
+                                    id="profileDistrict"
+                                    placeholder="District"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label>Primary Sport</label>
+
+                                <select id="profileSport">
+                                    <option value="">Select sport</option>
+                                    <option>Cricket</option>
+                                    <option>Football</option>
+                                    <option>Kabaddi</option>
+                                    <option>Athletics</option>
+                                    <option>Hockey</option>
+                                    <option>Volleyball</option>
+                                    <option>Wrestling</option>
+                                    <option>Badminton</option>
+                                    <option>Other</option>
+                                </select>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label>Skill Level</label>
+
+                                <select id="profileSkill">
+                                    <option value="">Select level</option>
+                                    <option>Beginner</option>
+                                    <option>Developing</option>
+                                    <option>Competitive</option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Achievements / Experience</label>
+
+                            <textarea
+                                id="profileAchievements"
+                                placeholder="Tell us about your sports achievements..."
+                            ></textarea>
+                        </div>
+
+                        <button class="primary-btn" type="submit">
+                            Save Sports Passport →
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
         </div>
 
 
-        <div class="feature-grid">
+        <!-- COACHES -->
 
-            <div class="feature-card">
-                <div class="feature-icon">🏃</div>
-                <h3>Digital Athlete Passport</h3>
+        <div id="section-coaches" class="dashboard-section hidden">
+
+            <div class="section-label">COACH NETWORK</div>
+
+            <h2>Find a Coach</h2>
+
+            <p class="section-description">
+                Discover coaching support based on your sport and location.
+            </p>
+
+            <div class="search-row">
+
+                <input
+                    id="coachSearch"
+                    type="text"
+                    placeholder="Search by sport or location..."
+                    oninput="filterCoaches()"
+                >
+
+                <select id="coachSportFilter"
+                        onchange="filterCoaches()">
+
+                    <option value="">All sports</option>
+                    <option>Cricket</option>
+                    <option>Football</option>
+                    <option>Kabaddi</option>
+                    <option>Athletics</option>
+                    <option>Hockey</option>
+                    <option>Volleyball</option>
+
+                </select>
+
+            </div>
+
+
+            <div id="coachGrid" class="coach-grid"></div>
+
+        </div>
+
+
+        <!-- GROUNDS -->
+
+        <div id="section-grounds" class="dashboard-section hidden">
+
+            <div class="section-label">SPORTS INFRASTRUCTURE</div>
+
+            <h2>Nearby Sports Grounds</h2>
+
+            <div class="empty-panel">
+
+                <div>🏟️</div>
+
+                <h3>Ground discovery is coming next</h3>
+
                 <p>
-                    Build athlete profiles, track performance,
-                    achievements and progress.
+                    Stage 4 will connect KheloGram with mapped
+                    rural sports grounds and facilities.
                 </p>
+
             </div>
 
+        </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">🏟️</div>
-                <h3>Smart Ground Mapping</h3>
+
+        <!-- TOURNAMENTS -->
+
+        <div id="section-tournaments" class="dashboard-section hidden">
+
+            <div class="section-label">OPPORTUNITIES</div>
+
+            <h2>Tournaments</h2>
+
+            <div class="empty-panel">
+
+                <div>🏆</div>
+
+                <h3>Tournament discovery is coming next</h3>
+
                 <p>
-                    Map sports grounds, facilities,
-                    equipment and availability.
+                    Stage 5 will introduce tournament discovery,
+                    registration and competition pathways.
                 </p>
-            </div>
 
-
-            <div class="feature-card">
-                <div class="feature-icon">🏛️</div>
-                <h3>Panchayat Dashboard</h3>
-                <p>
-                    Manage grounds, equipment,
-                    maintenance and sports activities.
-                </p>
-            </div>
-
-
-            <div class="feature-card">
-                <div class="feature-icon">✦</div>
-                <h3>AI Talent Insights</h3>
-                <p>
-                    Analyze participation and performance
-                    to identify promising athletes.
-                </p>
             </div>
 
         </div>
 
-    </section>
+
+        <!-- INSIGHTS -->
+
+        <div id="section-insights" class="dashboard-section hidden">
+
+            <div class="section-label">KHELOGRAM AI</div>
+
+            <h2>Your Talent Profile</h2>
+
+            <div class="insight-grid">
+
+                <div class="panel">
+
+                    <div class="ai-large-icon">✦</div>
+
+                    <small>TALENT PROFILE</small>
+
+                    <h3 id="insightTitle">
+                        Build your sports passport
+                    </h3>
+
+                    <p id="insightDescription">
+                        Add your sport, skill level and experience
+                        to create your initial talent profile.
+                    </p>
+
+                </div>
 
 
-    <!-- =========================
-         ECOSYSTEM
-    ========================= -->
+                <div class="panel">
 
-    <section
-        class="ecosystem-section"
-        id="ecosystem"
-    >
+                    <small>PROFILE SIGNALS</small>
 
-        <div class="section-heading">
+                    <h3>What KheloGram knows</h3>
 
-            <span>CONNECTED ECOSYSTEM</span>
+                    <ul class="signal-list">
 
-            <h2>
-                From participation
-                to opportunity.
-            </h2>
+                        <li>
+                            <span>Sport</span>
+                            <strong id="signalSport">Not provided</strong>
+                        </li>
 
-        </div>
+                        <li>
+                            <span>Skill level</span>
+                            <strong id="signalSkill">Not provided</strong>
+                        </li>
 
+                        <li>
+                            <span>Location</span>
+                            <strong id="signalLocation">Not provided</strong>
+                        </li>
 
-        <div class="ecosystem-flow">
+                        <li>
+                            <span>Experience</span>
+                            <strong id="signalExperience">Not provided</strong>
+                        </li>
 
-            <div class="ecosystem-node">
-                <span>🏃</span>
-                <strong>Athletes</strong>
+                    </ul>
+
+                </div>
+
             </div>
 
-            <div class="flow-arrow">→</div>
-
-            <div class="ecosystem-node">
-                <span>👨‍🏫</span>
-                <strong>Coaches</strong>
-            </div>
-
-            <div class="flow-arrow">→</div>
-
-            <div class="ecosystem-node">
-                <span>🏟️</span>
-                <strong>Grounds</strong>
-            </div>
-
-            <div class="flow-arrow">→</div>
-
-            <div class="ecosystem-node">
-                <span>🏆</span>
-                <strong>Tournaments</strong>
-            </div>
-
-            <div class="flow-arrow">→</div>
-
-            <div class="ecosystem-node">
-                <span>✦</span>
-                <strong>AI Insights</strong>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         IMPACT
-    ========================= -->
-
-    <section
-        class="impact-section"
-        id="impact"
-    >
-
-        <div class="section-heading">
-
-            <span>IMPACT</span>
-
-            <h2>
-                Better infrastructure.
-                Better opportunities.
-            </h2>
-
-        </div>
-
-
-        <div class="impact-grid">
-
-            <div>
-                <strong>↑</strong>
-                <span>Ground Utilization</span>
-            </div>
-
-            <div>
-                <strong>↑</strong>
-                <span>Participation</span>
-            </div>
-
-            <div>
-                <strong>↑</strong>
-                <span>Talent Discovery</span>
-            </div>
-
-            <div>
-                <strong>↑</strong>
-                <span>Management</span>
+            <div class="prototype-note">
+                <strong>Prototype AI:</strong>
+                This Stage 3 profile uses the information you provide.
+                A real AI talent-analysis service will be connected
+                after the backend/database stage.
             </div>
 
         </div>
@@ -422,86 +728,47 @@
 </main>
 
 
-<!-- =========================
-     ROLE SELECTOR MODAL
-========================= -->
+<!-- ================= ROLE MODAL ================= -->
 
-<div
-    class="modal-overlay"
-    id="roleModal"
-    onclick="closeRoleModalOutside(event)"
->
+<div id="roleModal" class="modal hidden">
 
-    <div class="modal">
+    <div class="modal-card">
 
-        <button
-            class="modal-close"
-            onclick="closeRoleSelector()"
-        >
-            ×
-        </button>
+        <button class="close-btn" onclick="closeRoleSelector()">×</button>
 
+        <div class="logo">KG</div>
 
-        <div class="modal-icon">
-            KG
-        </div>
+        <h2>Join KheloGram</h2>
 
-
-        <h2>
-            Join KheloGram
-        </h2>
-
-        <p>
-            Select your role to continue.
-        </p>
-
+        <p>Select your role to continue.</p>
 
         <div class="role-grid">
 
-            <button
-                class="role-card"
-                onclick="selectRole('athlete')"
-            >
+            <button onclick="selectRole('Athlete')">
                 <span>🏃</span>
                 <strong>Athlete</strong>
                 <small>Track your sports journey</small>
             </button>
 
-
-            <button
-                class="role-card"
-                onclick="selectRole('coach')"
-            >
-                <span>👨‍🏫</span>
+            <button onclick="selectRole('Coach')">
+                <span>🧑‍🏫</span>
                 <strong>Coach</strong>
                 <small>Develop sporting talent</small>
             </button>
 
-
-            <button
-                class="role-card"
-                onclick="selectRole('panchayat')"
-            >
+            <button onclick="selectRole('Gram Panchayat')">
                 <span>🏛️</span>
                 <strong>Gram Panchayat</strong>
                 <small>Manage sports infrastructure</small>
             </button>
 
-
-            <button
-                class="role-card"
-                onclick="selectRole('organizer')"
-            >
+            <button onclick="selectRole('Organizer')">
                 <span>🏆</span>
                 <strong>Organizer</strong>
                 <small>Manage tournaments</small>
             </button>
 
-
-            <button
-                class="role-card"
-                onclick="selectRole('authority')"
-            >
+            <button onclick="selectRole('Authority')">
                 <span>📊</span>
                 <strong>Authority</strong>
                 <small>Monitor sports ecosystem</small>
@@ -514,595 +781,87 @@
 </div>
 
 
-<!-- =========================
-     AUTH MODAL
-========================= -->
+<!-- ================= AUTH MODAL ================= -->
 
-<div
-    class="modal-overlay"
-    id="authModal"
->
+<div id="authModal" class="modal hidden">
 
-    <div class="auth-modal">
+    <div class="auth-card">
 
-        <button
-            class="modal-close"
-            onclick="closeAuthModal()"
-        >
-            ×
-        </button>
+        <button class="close-btn" onclick="closeAuthModal()">×</button>
 
+        <div class="logo">KG</div>
 
-        <div class="auth-brand">
-            <div class="brand-icon small">KG</div>
-
-            <div>
-                <strong>Khelo<span>Gram</span></strong>
-                <small id="authRoleText">
-                    ATHLETE
-                </small>
-            </div>
-        </div>
-
-
-        <h2 id="authTitle">
-            Create your account
-        </h2>
+        <h2 id="authTitle">Create your account</h2>
 
         <p id="authSubtitle">
             Join the KheloGram ecosystem.
         </p>
 
-
         <div class="auth-tabs">
 
-            <button
-                id="registerTab"
-                class="active"
-                onclick="showRegister()"
-            >
+            <button id="registerTab"
+                    class="active"
+                    onclick="switchAuth('register')">
                 Register
             </button>
 
-            <button
-                id="loginTab"
-                onclick="showLogin()"
-            >
+            <button id="loginTab"
+                    onclick="switchAuth('login')">
                 Login
             </button>
 
         </div>
 
 
-        <!-- REGISTER -->
+        <form id="authForm">
 
-        <form
-            id="registerForm"
-            onsubmit="registerUser(event)"
-        >
-
-            <label>
-                Full Name
+            <div id="nameField" class="form-group">
+                <label>Full Name</label>
                 <input
+                    id="authName"
                     type="text"
-                    id="registerName"
                     placeholder="Enter your name"
-                    required
                 >
-            </label>
+            </div>
 
+            <div class="form-group">
 
-            <label>
-                Email
+                <label>Email</label>
+
                 <input
+                    id="authEmail"
                     type="email"
-                    id="registerEmail"
                     placeholder="you@example.com"
                     required
                 >
-            </label>
 
+            </div>
 
-            <label>
-                Password
+            <div class="form-group">
+
+                <label>Password</label>
+
                 <input
+                    id="authPassword"
                     type="password"
-                    id="registerPassword"
                     placeholder="Create a password"
-                    minlength="4"
                     required
                 >
-            </label>
 
+            </div>
 
-            <button
-                type="submit"
-                class="auth-button"
-            >
-                Create Account →
+            <button class="primary-btn full-btn" type="submit">
+                <span id="authButtonText">Create Account</span> →
             </button>
 
         </form>
-
-
-        <!-- LOGIN -->
-
-        <form
-            id="loginForm"
-            class="hidden"
-            onsubmit="loginUser(event)"
-        >
-
-            <label>
-                Email
-                <input
-                    type="email"
-                    id="loginEmail"
-                    placeholder="you@example.com"
-                    required
-                >
-            </label>
-
-
-            <label>
-                Password
-                <input
-                    type="password"
-                    id="loginPassword"
-                    placeholder="Enter your password"
-                    required
-                >
-            </label>
-
-
-            <button
-                type="submit"
-                class="auth-button"
-            >
-                Login →
-            </button>
-
-        </form>
-
-
-        <p
-            class="auth-message"
-            id="authMessage"
-        ></p>
 
     </div>
 
 </div>
 
 
-<!-- =========================
-     DASHBOARD
-========================= -->
-
-<main
-    id="dashboardPage"
-    class="dashboard-page hidden"
->
-
-    <aside class="sidebar">
-
-        <div class="sidebar-brand">
-
-            <div class="brand-icon small">
-                KG
-            </div>
-
-            <strong>
-                Khelo<span>Gram</span>
-            </strong>
-
-        </div>
-
-
-        <nav class="dashboard-nav">
-
-            <button
-                class="dashboard-nav-item active"
-                onclick="showDashboardSection('overview', this)"
-            >
-                <span>▦</span>
-                Overview
-            </button>
-
-
-            <button
-                class="dashboard-nav-item"
-                onclick="showDashboardSection('profile', this)"
-            >
-                <span>◉</span>
-                Profile
-            </button>
-
-
-            <button
-                class="dashboard-nav-item"
-                onclick="showDashboardSection('grounds', this)"
-            >
-                <span>⌂</span>
-                Grounds
-            </button>
-
-
-            <button
-                class="dashboard-nav-item"
-                onclick="showDashboardSection('events', this)"
-            >
-                <span>◇</span>
-                Tournaments
-            </button>
-
-
-            <button
-                class="dashboard-nav-item"
-                onclick="showDashboardSection('insights', this)"
-            >
-                <span>✦</span>
-                Insights
-            </button>
-
-        </nav>
-
-
-        <button
-            class="logout-button"
-            onclick="logoutUser()"
-        >
-            ↪ Logout
-        </button>
-
-    </aside>
-
-
-    <section class="dashboard-main">
-
-        <header class="dashboard-header">
-
-            <div>
-
-                <span class="dashboard-label">
-                    KHELOGRAM DASHBOARD
-                </span>
-
-                <h1 id="dashboardWelcome">
-                    Welcome back 👋
-                </h1>
-
-                <p id="dashboardRole">
-                    Your sports ecosystem at a glance.
-                </p>
-
-            </div>
-
-
-            <div class="user-chip">
-
-                <div
-                    class="user-avatar"
-                    id="userAvatar"
-                >
-                    KG
-                </div>
-
-                <div>
-                    <strong id="userNameDisplay">
-                        User
-                    </strong>
-
-                    <small id="userRoleDisplay">
-                        Athlete
-                    </small>
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <!-- OVERVIEW -->
-
-        <section
-            id="dashboardOverview"
-            class="dashboard-section"
-        >
-
-            <div
-                class="dashboard-stat-grid"
-                id="dashboardStats"
-            >
-            </div>
-
-
-            <div class="dashboard-panels">
-
-                <div class="dashboard-panel">
-
-                    <div class="panel-heading">
-                        <div>
-                            <span>ACTIVITY</span>
-                            <h3>Recent Activity</h3>
-                        </div>
-
-                        <span class="panel-icon">↗</span>
-                    </div>
-
-
-                    <div
-                        id="activityList"
-                        class="activity-list"
-                    >
-                    </div>
-
-                </div>
-
-
-                <div class="dashboard-panel ai-panel">
-
-                    <div class="panel-heading">
-
-                        <div>
-                            <span>AI INTELLIGENCE</span>
-                            <h3>Smart Insights</h3>
-                        </div>
-
-                        <span class="ai-badge">AI</span>
-
-                    </div>
-
-
-                    <div class="insight-box">
-
-                        <div class="insight-icon">
-                            ✦
-                        </div>
-
-                        <div>
-
-                            <strong id="insightTitle">
-                                KheloGram Insight
-                            </strong>
-
-                            <p id="insightText">
-                                Personalized intelligence
-                                will appear here.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- PROFILE -->
-
-        <section
-            id="dashboardProfile"
-            class="dashboard-section hidden"
-        >
-
-            <div class="section-card">
-
-                <span class="dashboard-label">
-                    PROFILE
-                </span>
-
-                <h2>Your KheloGram Profile</h2>
-
-                <div class="profile-large">
-
-                    <div
-                        class="profile-avatar"
-                        id="profileAvatar"
-                    >
-                        KG
-                    </div>
-
-                    <div>
-
-                        <h3 id="profileName">
-                            User
-                        </h3>
-
-                        <p id="profileEmail">
-                            user@example.com
-                        </p>
-
-                        <span
-                            class="role-badge"
-                            id="profileRole"
-                        >
-                            Athlete
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- GROUNDS -->
-
-        <section
-            id="dashboardGrounds"
-            class="dashboard-section hidden"
-        >
-
-            <div class="section-card">
-
-                <span class="dashboard-label">
-                    SPORTS INFRASTRUCTURE
-                </span>
-
-                <h2>Sports Grounds</h2>
-
-                <div class="ground-list">
-
-                    <div class="ground-item">
-                        <span>🏟️</span>
-                        <div>
-                            <strong>Village Sports Ground</strong>
-                            <small>Available • 1.2 km</small>
-                        </div>
-                        <b>Active</b>
-                    </div>
-
-
-                    <div class="ground-item">
-                        <span>🏟️</span>
-                        <div>
-                            <strong>Community Playground</strong>
-                            <small>Available • 2.8 km</small>
-                        </div>
-                        <b>Active</b>
-                    </div>
-
-
-                    <div class="ground-item">
-                        <span>🏟️</span>
-                        <div>
-                            <strong>Block Sports Complex</strong>
-                            <small>Under maintenance</small>
-                        </div>
-                        <b class="warning">Maintenance</b>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- EVENTS -->
-
-        <section
-            id="dashboardEvents"
-            class="dashboard-section hidden"
-        >
-
-            <div class="section-card">
-
-                <span class="dashboard-label">
-                    SPORTS OPPORTUNITIES
-                </span>
-
-                <h2>Upcoming Tournaments</h2>
-
-                <div class="event-list">
-
-                    <div class="event-item">
-
-                        <div class="event-date">
-                            <strong>18</strong>
-                            <small>AUG</small>
-                        </div>
-
-                        <div>
-                            <strong>Block Athletics Meet</strong>
-                            <small>Block Level • Registration Open</small>
-                        </div>
-
-                        <button>View</button>
-
-                    </div>
-
-
-                    <div class="event-item">
-
-                        <div class="event-date">
-                            <strong>24</strong>
-                            <small>AUG</small>
-                        </div>
-
-                        <div>
-                            <strong>Rural Football Championship</strong>
-                            <small>District Level • Registration Open</small>
-                        </div>
-
-                        <button>View</button>
-
-                    </div>
-
-
-                    <div class="event-item">
-
-                        <div class="event-date">
-                            <strong>02</strong>
-                            <small>SEP</small>
-                        </div>
-
-                        <div>
-                            <strong>Inter-Block Sports Meet</strong>
-                            <small>District Level • Upcoming</small>
-                        </div>
-
-                        <button>View</button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- INSIGHTS -->
-
-        <section
-            id="dashboardInsights"
-            class="dashboard-section hidden"
-        >
-
-            <div class="section-card">
-
-                <span class="dashboard-label">
-                    KHELOGRAM AI
-                </span>
-
-                <h2>Sports Intelligence</h2>
-
-                <div class="insight-grid">
-
-                    <div class="insight-stat">
-                        <span>✦</span>
-                        <strong>74</strong>
-                        <small>Talent Signals</small>
-                    </div>
-
-                    <div class="insight-stat">
-                        <span>↗</span>
-                        <strong>28.4%</strong>
-                        <small>Participation Growth</small>
-                    </div>
-
-                    <div class="insight-stat">
-                        <span>🏟️</span>
-                        <strong>82%</strong>
-                        <small>Ground Utilization</small>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </section>
-
-</main>
+<div id="toast" class="toast"></div>
 
 
 <script src="script.js"></script>
