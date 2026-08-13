@@ -1,172 +1,106 @@
-/* =========================================
-   KHELOGRAM STAGE 2
-   AUTH + ROLE DASHBOARDS
-========================================= */
+/* =====================================================
+   KHELOGRAM STAGE 3
+   Athlete Profile + Coach Discovery
+===================================================== */
 
 
-/* =========================================
-   GLOBAL STATE
-========================================= */
+/* ================= STATE ================= */
 
-let selectedRole = "athlete";
+let selectedRole = "Athlete";
+let authMode = "register";
 
+let currentUser = JSON.parse(
+    localStorage.getItem("khelogramUser") || "null"
+);
 
-const roleNames = {
-
-    athlete: "Athlete",
-
-    coach: "Coach",
-
-    panchayat: "Gram Panchayat",
-
-    organizer: "Organizer",
-
-    authority: "Authority"
-
-};
+let connectedCoach = localStorage.getItem(
+    "khelogramConnectedCoach"
+);
 
 
-const roleData = {
+/* ================= SAMPLE COACH DIRECTORY ================= */
+/*
+   These are prototype directory entries, not real statistics.
+   Real coaches will come from the database in a later stage.
+*/
 
-    athlete: {
-
-        stats: [
-            ["🏟️", "NEARBY GROUNDS", "12", "+3 available"],
-            ["🏆", "TOURNAMENTS", "8", "Registration open"],
-            ["📈", "PERFORMANCE", "92%", "+8% this month"],
-            ["✦", "AI TALENT SCORE", "86", "Promising"]
-        ],
-
-        insightTitle:
-            "Performance Signal",
-
-        insightText:
-            "Your recent performance indicates strong potential for upcoming block-level competitions."
-
+const coaches = [
+    {
+        id: 1,
+        name: "Coach Network",
+        sport: "Cricket",
+        location: "Your district",
+        initials: "CN"
     },
-
-
-    coach: {
-
-        stats: [
-            ["🏃", "ATHLETES", "48", "+6 this month"],
-            ["📅", "TRAINING SESSIONS", "24", "This month"],
-            ["🏆", "TOURNAMENTS", "7", "Upcoming"],
-            ["✦", "TALENT SIGNALS", "12", "AI detected"]
-        ],
-
-        insightTitle:
-            "Talent Insight",
-
-        insightText:
-            "12 athletes in your network show improving performance patterns and may benefit from advanced training."
-
+    {
+        id: 2,
+        name: "Sports Coach",
+        sport: "Football",
+        location: "Your district",
+        initials: "SC"
     },
-
-
-    panchayat: {
-
-        stats: [
-            ["🏟️", "SPORTS GROUNDS", "12", "8 active"],
-            ["🏃", "REGISTERED ATHLETES", "245", "+18 this month"],
-            ["🔧", "MAINTENANCE", "3", "Requests pending"],
-            ["📈", "UTILIZATION", "78%", "+12% this month"]
-        ],
-
-        insightTitle:
-            "Ground Utilization",
-
-        insightText:
-            "Three grounds have low utilization. Better visibility and scheduling could increase community usage."
-
+    {
+        id: 3,
+        name: "Athletics Coach",
+        sport: "Athletics",
+        location: "Your district",
+        initials: "AC"
     },
-
-
-    organizer: {
-
-        stats: [
-            ["🏆", "ACTIVE EVENTS", "8", "Currently running"],
-            ["🏃", "PARTICIPANTS", "386", "+42 this month"],
-            ["📋", "REGISTRATIONS", "124", "Pending review"],
-            ["📈", "EVENT REACH", "72%", "+14%"]
-        ],
-
-        insightTitle:
-            "Tournament Insight",
-
-        insightText:
-            "Athlete registrations are increasing. Consider adding another qualifying event at block level."
-
+    {
+        id: 4,
+        name: "Kabaddi Coach",
+        sport: "Kabaddi",
+        location: "Your district",
+        initials: "KC"
     },
-
-
-    authority: {
-
-        stats: [
-            ["🏟️", "GROUNDS MAPPED", "128", "+12 this month"],
-            ["🏃", "ATHLETES", "2,480", "+18.4%"],
-            ["🏆", "TOURNAMENTS", "36", "Across districts"],
-            ["✦", "TALENT SIGNALS", "74", "AI detected"]
-        ],
-
-        insightTitle:
-            "Regional Intelligence",
-
-        insightText:
-            "Participation is rising across mapped villages. Several emerging talent clusters require further attention."
-
+    {
+        id: 5,
+        name: "Volleyball Coach",
+        sport: "Volleyball",
+        location: "Your district",
+        initials: "VC"
+    },
+    {
+        id: 6,
+        name: "Hockey Coach",
+        sport: "Hockey",
+        location: "Your district",
+        initials: "HC"
     }
-
-};
-
-
-/* =========================================
-   DOM ELEMENTS
-========================================= */
-
-const roleModal =
-    document.getElementById("roleModal");
-
-const authModal =
-    document.getElementById("authModal");
-
-const landingPage =
-    document.getElementById("landingPage");
-
-const dashboardPage =
-    document.getElementById("dashboardPage");
+];
 
 
-/* =========================================
-   ROLE SELECTOR
-========================================= */
+/* ================= LANDING ================= */
+
+function scrollToSection(id) {
+
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+}
+
+
+/* ================= ROLE SELECTOR ================= */
 
 function openRoleSelector() {
 
-    roleModal.classList.remove("hidden");
+    document.getElementById("roleModal")
+        .classList.remove("hidden");
 
     document.body.style.overflow = "hidden";
-
 }
 
 
 function closeRoleSelector() {
 
-    roleModal.classList.add("hidden");
+    document.getElementById("roleModal")
+        .classList.add("hidden");
 
     document.body.style.overflow = "";
-
-}
-
-
-function closeRoleModalOutside(event) {
-
-    if (event.target === roleModal) {
-
-        closeRoleSelector();
-
-    }
-
 }
 
 
@@ -177,801 +111,773 @@ function selectRole(role) {
     closeRoleSelector();
 
     openAuthModal();
-
 }
 
 
-/* =========================================
-   AUTH MODAL
-========================================= */
+/* ================= AUTH ================= */
 
 function openAuthModal() {
 
-    authModal.classList.remove("hidden");
+    document.getElementById("authModal")
+        .classList.remove("hidden");
 
     document.body.style.overflow = "hidden";
 
-    updateAuthRole();
-
-    showRegister();
-
+    switchAuth("register");
 }
 
 
 function closeAuthModal() {
 
-    authModal.classList.add("hidden");
+    document.getElementById("authModal")
+        .classList.add("hidden");
 
     document.body.style.overflow = "";
-
-    clearAuthMessage();
-
 }
 
 
-function updateAuthRole() {
+function switchAuth(mode) {
 
-    const roleText =
-        document.getElementById("authRoleText");
+    authMode = mode;
 
-    roleText.textContent =
-        roleNames[selectedRole].toUpperCase();
+    const registerTab =
+        document.getElementById("registerTab");
 
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const nameField =
+        document.getElementById("nameField");
+
+    const title =
+        document.getElementById("authTitle");
+
+    const subtitle =
+        document.getElementById("authSubtitle");
+
+    const button =
+        document.getElementById("authButtonText");
+
+
+    if (mode === "register") {
+
+        registerTab.classList.add("active");
+        loginTab.classList.remove("active");
+
+        nameField.classList.remove("hidden");
+
+        title.textContent = "Create your account";
+
+        subtitle.textContent =
+            `Join KheloGram as a ${selectedRole}.`;
+
+        button.textContent = "Create Account";
+
+    } else {
+
+        registerTab.classList.remove("active");
+        loginTab.classList.add("active");
+
+        nameField.classList.add("hidden");
+
+        title.textContent = "Welcome back";
+
+        subtitle.textContent =
+            `Login to your ${selectedRole} account.`;
+
+        button.textContent = "Login";
+    }
 }
 
 
-/* =========================================
-   REGISTER / LOGIN TABS
-========================================= */
+/* ================= AUTH SUBMIT ================= */
 
-function showRegister() {
+document.getElementById("authForm")
+    .addEventListener("submit", function(event) {
 
-    document
-        .getElementById("registerForm")
-        .classList.remove("hidden");
+        event.preventDefault();
 
-    document
-        .getElementById("loginForm")
+        const email =
+            document.getElementById("authEmail")
+                .value.trim();
+
+        const password =
+            document.getElementById("authPassword")
+                .value.trim();
+
+        const name =
+            document.getElementById("authName")
+                .value.trim();
+
+
+        if (!email || !password) {
+
+            showToast("Please complete the required fields.");
+
+            return;
+        }
+
+
+        if (authMode === "register" && !name) {
+
+            showToast("Please enter your name.");
+
+            return;
+        }
+
+
+        if (authMode === "register") {
+
+            currentUser = {
+                name: name,
+                email: email,
+                role: selectedRole,
+                profile: {}
+            };
+
+            localStorage.setItem(
+                "khelogramUser",
+                JSON.stringify(currentUser)
+            );
+
+        } else {
+
+            if (!currentUser) {
+
+                currentUser = {
+                    name: email.split("@")[0],
+                    email: email,
+                    role: selectedRole,
+                    profile: {}
+                };
+
+                localStorage.setItem(
+                    "khelogramUser",
+                    JSON.stringify(currentUser)
+                );
+            }
+
+            currentUser.role = selectedRole;
+
+            localStorage.setItem(
+                "khelogramUser",
+                JSON.stringify(currentUser)
+            );
+        }
+
+
+        closeAuthModal();
+
+        showDashboard();
+
+        showToast(
+            authMode === "register"
+                ? "Welcome to KheloGram!"
+                : "Login successful!"
+        );
+
+    });
+
+
+/* ================= DASHBOARD ================= */
+
+function showDashboard() {
+
+    document.getElementById("landingPage")
         .classList.add("hidden");
 
-
-    document
-        .getElementById("registerTab")
-        .classList.add("active");
-
-    document
-        .getElementById("loginTab")
-        .classList.remove("active");
-
-
-    document.getElementById("authTitle").textContent =
-        "Create your account";
-
-    document.getElementById("authSubtitle").textContent =
-        `Join KheloGram as a ${roleNames[selectedRole]}.`;
-
-    clearAuthMessage();
-
-}
-
-
-function showLogin() {
-
-    document
-        .getElementById("registerForm")
+    document.querySelector(".topbar")
         .classList.add("hidden");
 
-    document
-        .getElementById("loginForm")
+    document.getElementById("dashboardPage")
         .classList.remove("hidden");
 
+    updateDashboard();
 
-    document
-        .getElementById("registerTab")
-        .classList.remove("active");
-
-    document
-        .getElementById("loginTab")
-        .classList.add("active");
-
-
-    document.getElementById("authTitle").textContent =
-        "Welcome back";
-
-    document.getElementById("authSubtitle").textContent =
-        `Login to your ${roleNames[selectedRole]} dashboard.`;
-
-    clearAuthMessage();
-
+    renderCoaches();
 }
 
 
-/* =========================================
-   REGISTER USER
-========================================= */
+function updateDashboard() {
 
-function registerUser(event) {
-
-    event.preventDefault();
+    if (!currentUser) return;
 
 
     const name =
-        document
-            .getElementById("registerName")
-            .value
-            .trim();
-
-
-    const email =
-        document
-            .getElementById("registerEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const password =
-        document
-            .getElementById("registerPassword")
-            .value;
-
-
-    if (!name || !email || !password) {
-
-        showAuthMessage(
-            "Please complete all fields."
-        );
-
-        return;
-
-    }
-
-
-    const users =
-        JSON.parse(
-            localStorage.getItem("khelogramUsers") || "[]"
-        );
-
-
-    const existingUser =
-        users.find(
-            user =>
-                user.email === email
-        );
-
-
-    if (existingUser) {
-
-        showAuthMessage(
-            "An account with this email already exists. Please login."
-        );
-
-        return;
-
-    }
-
-
-    const user = {
-
-        id: Date.now(),
-
-        name,
-
-        email,
-
-        password,
-
-        role: selectedRole,
-
-        createdAt:
-            new Date().toISOString()
-
-    };
-
-
-    users.push(user);
-
-
-    localStorage.setItem(
-        "khelogramUsers",
-        JSON.stringify(users)
-    );
-
-
-    localStorage.setItem(
-        "khelogramCurrentUser",
-        JSON.stringify(user)
-    );
-
-
-    closeAuthModal();
-
-    openDashboard(user);
-
-}
-
-
-/* =========================================
-   LOGIN USER
-========================================= */
-
-function loginUser(event) {
-
-    event.preventDefault();
-
-
-    const email =
-        document
-            .getElementById("loginEmail")
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const password =
-        document
-            .getElementById("loginPassword")
-            .value;
-
-
-    const users =
-        JSON.parse(
-            localStorage.getItem("khelogramUsers") || "[]"
-        );
-
-
-    const user =
-        users.find(
-            item =>
-                item.email === email &&
-                item.password === password &&
-                item.role === selectedRole
-        );
-
-
-    if (!user) {
-
-        showAuthMessage(
-            "Invalid email, password or selected role."
-        );
-
-        return;
-
-    }
-
-
-    localStorage.setItem(
-        "khelogramCurrentUser",
-        JSON.stringify(user)
-    );
-
-
-    closeAuthModal();
-
-    openDashboard(user);
-
-}
-
-
-/* =========================================
-   AUTH MESSAGE
-========================================= */
-
-function showAuthMessage(message) {
-
-    document.getElementById(
-        "authMessage"
-    ).textContent = message;
-
-}
-
-
-function clearAuthMessage() {
-
-    const message =
-        document.getElementById("authMessage");
-
-    if (message) {
-
-        message.textContent = "";
-
-    }
-
-}
-
-
-/* =========================================
-   OPEN DASHBOARD
-========================================= */
-
-function openDashboard(user) {
-
-    landingPage.classList.add("hidden");
-
-    dashboardPage.classList.remove("hidden");
-
-
-    document.body.style.overflow = "";
-
-
-    populateDashboard(user);
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-/* =========================================
-   POPULATE DASHBOARD
-========================================= */
-
-function populateDashboard(user) {
+        currentUser.name || "Athlete";
 
     const role =
-        roleNames[user.role];
+        currentUser.role || "Athlete";
+
+    const profile =
+        currentUser.profile || {};
 
 
-    document.getElementById(
-        "dashboardWelcome"
-    ).textContent =
-        `Welcome back, ${user.name.split(" ")[0]} 👋`;
+    document.getElementById("dashboardName")
+        .textContent = name;
 
+    document.getElementById("userDisplayName")
+        .textContent = name;
 
-    document.getElementById(
-        "dashboardRole"
-    ).textContent =
+    document.getElementById("userRole")
+        .textContent = role;
+
+    document.getElementById("userInitials")
+        .textContent = getInitials(name);
+
+    document.getElementById("dashboardSubtitle")
+        .textContent =
         `${role} dashboard — manage your KheloGram ecosystem.`;
 
 
-    document.getElementById(
-        "userNameDisplay"
-    ).textContent =
-        user.name;
+    /* Profile */
+
+    document.getElementById("profileName")
+        .value = profile.name || name;
+
+    document.getElementById("profileAge")
+        .value = profile.age || "";
+
+    document.getElementById("profileVillage")
+        .value = profile.village || "";
+
+    document.getElementById("profileDistrict")
+        .value = profile.district || "";
+
+    document.getElementById("profileSport")
+        .value = profile.sport || "";
+
+    document.getElementById("profileSkill")
+        .value = profile.skill || "";
+
+    document.getElementById("profileAchievements")
+        .value = profile.achievements || "";
 
 
-    document.getElementById(
-        "userRoleDisplay"
-    ).textContent =
-        role;
+    updateProfileUI();
 
-
-    const initials =
-        getInitials(user.name);
-
-
-    document.getElementById(
-        "userAvatar"
-    ).textContent =
-        initials;
-
-
-    document.getElementById(
-        "profileAvatar"
-    ).textContent =
-        initials;
-
-
-    document.getElementById(
-        "profileName"
-    ).textContent =
-        user.name;
-
-
-    document.getElementById(
-        "profileEmail"
-    ).textContent =
-        user.email;
-
-
-    document.getElementById(
-        "profileRole"
-    ).textContent =
-        role;
-
-
-    renderStats(user.role);
-
-    renderActivities(user.role);
-
-    renderInsight(user.role);
-
-    showDashboardSection(
-        "overview",
-        document.querySelector(
-            ".dashboard-nav-item"
-        )
-    );
-
+    updateInsights();
 }
 
 
-/* =========================================
-   STATS
-========================================= */
+/* ================= DASHBOARD SECTIONS ================= */
 
-function renderStats(role) {
+function showDashboardSection(section, clickedButton) {
 
-    const stats =
-        roleData[role].stats;
+    document.querySelectorAll(".dashboard-section")
+        .forEach(element => {
+            element.classList.add("hidden");
+        });
 
 
-    const container =
+    const target =
         document.getElementById(
-            "dashboardStats"
+            `section-${section}`
         );
 
+    if (target) {
+        target.classList.remove("hidden");
+    }
 
-    container.innerHTML = "";
 
-
-    stats.forEach(stat => {
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "dashboard-stat";
-
-
-        card.innerHTML = `
-
-            <div class="dashboard-stat-icon">
-                ${stat[0]}
-            </div>
-
-            <small>
-                ${stat[1]}
-            </small>
-
-            <strong>
-                ${stat[2]}
-            </strong>
-
-            <em>
-                ${stat[3]}
-            </em>
-
-        `;
-
-
-        container.appendChild(card);
-
-    });
-
-}
-
-
-/* =========================================
-   ACTIVITIES
-========================================= */
-
-function renderActivities(role) {
-
-    const container =
-        document.getElementById(
-            "activityList"
-        );
-
-
-    const activities = {
-
-        athlete: [
-            ["🏆", "Tournament registration opened", "2 hours ago"],
-            ["📈", "Performance profile updated", "Yesterday"],
-            ["🏟️", "New ground mapped nearby", "2 days ago"]
-        ],
-
-        coach: [
-            ["🏃", "New athlete joined your network", "1 hour ago"],
-            ["📈", "Performance update received", "Yesterday"],
-            ["🏆", "Tournament opportunity available", "2 days ago"]
-        ],
-
-        panchayat: [
-            ["🏟️", "Ground utilization updated", "1 hour ago"],
-            ["🔧", "Maintenance request received", "Yesterday"],
-            ["🏆", "New tournament scheduled", "2 days ago"]
-        ],
-
-        organizer: [
-            ["🏆", "New tournament registration", "1 hour ago"],
-            ["🏃", "Participant list updated", "Yesterday"],
-            ["📊", "Event report generated", "2 days ago"]
-        ],
-
-        authority: [
-            ["✦", "New talent cluster detected", "1 hour ago"],
-            ["🏟️", "Ground mapping expanded", "Yesterday"],
-            ["📈", "Participation trend updated", "2 days ago"]
-        ]
-
-    };
-
-
-    container.innerHTML = "";
-
-
-    activities[role].forEach(item => {
-
-        const activity =
-            document.createElement("div");
-
-
-        activity.className =
-            "activity-item";
-
-
-        activity.innerHTML = `
-
-            <div class="activity-icon">
-                ${item[0]}
-            </div>
-
-            <div>
-                <strong>${item[1]}</strong>
-                <small>${item[2]}</small>
-            </div>
-
-        `;
-
-
-        container.appendChild(activity);
-
-    });
-
-}
-
-
-/* =========================================
-   AI INSIGHT
-========================================= */
-
-function renderInsight(role) {
-
-    const data =
-        roleData[role];
-
-
-    document.getElementById(
-        "insightTitle"
-    ).textContent =
-        data.insightTitle;
-
-
-    document.getElementById(
-        "insightText"
-    ).textContent =
-        data.insightText;
-
-}
-
-
-/* =========================================
-   DASHBOARD NAVIGATION
-========================================= */
-
-function showDashboardSection(
-    section,
-    clickedButton
-) {
-
-    const sections = {
-
-        overview:
-            "dashboardOverview",
-
-        profile:
-            "dashboardProfile",
-
-        grounds:
-            "dashboardGrounds",
-
-        events:
-            "dashboardEvents",
-
-        insights:
-            "dashboardInsights"
-
-    };
-
-
-    Object.values(sections).forEach(id => {
-
-        document
-            .getElementById(id)
-            .classList.add("hidden");
-
-    });
-
-
-    document
-        .getElementById(
-            sections[section]
-        )
-        .classList.remove("hidden");
-
-
-    document
-        .querySelectorAll(
-            ".dashboard-nav-item"
-        )
+    document.querySelectorAll(".menu-item")
         .forEach(button => {
-
             button.classList.remove("active");
-
         });
 
 
     if (clickedButton) {
-
         clickedButton.classList.add("active");
-
     }
 
+
+    if (section === "coaches") {
+        renderCoaches();
+    }
 }
 
 
-/* =========================================
-   LOGOUT
-========================================= */
+/* ================= PROFILE ================= */
 
-function logoutUser() {
+document.getElementById("profileForm")
+    .addEventListener("submit", function(event) {
 
-    localStorage.removeItem(
-        "khelogramCurrentUser"
+        event.preventDefault();
+
+
+        if (!currentUser) return;
+
+
+        currentUser.profile = {
+
+            name:
+                document.getElementById("profileName")
+                    .value.trim(),
+
+            age:
+                document.getElementById("profileAge")
+                    .value.trim(),
+
+            village:
+                document.getElementById("profileVillage")
+                    .value.trim(),
+
+            district:
+                document.getElementById("profileDistrict")
+                    .value.trim(),
+
+            sport:
+                document.getElementById("profileSport")
+                    .value,
+
+            skill:
+                document.getElementById("profileSkill")
+                    .value,
+
+            achievements:
+                document.getElementById("profileAchievements")
+                    .value.trim()
+        };
+
+
+        currentUser.name =
+            currentUser.profile.name ||
+            currentUser.name;
+
+
+        localStorage.setItem(
+            "khelogramUser",
+            JSON.stringify(currentUser)
+        );
+
+
+        updateDashboard();
+
+        showToast(
+            "Sports Passport saved successfully."
+        );
+    });
+
+
+function calculateProfileCompletion() {
+
+    if (!currentUser) return 0;
+
+
+    const profile =
+        currentUser.profile || {};
+
+
+    const fields = [
+        profile.name,
+        profile.age,
+        profile.village,
+        profile.district,
+        profile.sport,
+        profile.skill,
+        profile.achievements
+    ];
+
+
+    const completed =
+        fields.filter(Boolean).length;
+
+
+    return Math.round(
+        (completed / fields.length) * 100
+    );
+}
+
+
+function updateProfileUI() {
+
+    const profile =
+        currentUser.profile || {};
+
+
+    const name =
+        profile.name ||
+        currentUser.name ||
+        "Your Name";
+
+
+    const initials =
+        getInitials(name);
+
+
+    document.getElementById("profileAvatar")
+        .textContent = initials;
+
+    document.getElementById("profileCardName")
+        .textContent = name;
+
+    document.getElementById("profileCardSport")
+        .textContent =
+        profile.sport || "Sport not selected";
+
+
+    document.getElementById("passportInitials")
+        .textContent = initials;
+
+    document.getElementById("passportName")
+        .textContent =
+        profile.name ||
+        "Complete your profile";
+
+
+    const location =
+        [profile.village, profile.district]
+            .filter(Boolean)
+            .join(", ");
+
+
+    document.getElementById("passportLocation")
+        .textContent =
+        location ||
+        "Add your village and district";
+
+
+    document.getElementById("passportSport")
+        .textContent =
+        profile.sport ||
+        "Sport not selected";
+
+
+    const completion =
+        calculateProfileCompletion();
+
+
+    document.getElementById("profileCompletion")
+        .textContent =
+        `${completion}%`;
+
+
+    document.getElementById("primarySport")
+        .textContent =
+        profile.sport || "Not set";
+
+
+    document.getElementById("coachStatus")
+        .textContent =
+        connectedCoach
+            ? "Connected"
+            : "Not connected";
+
+
+    document.getElementById("talentStatus")
+        .textContent =
+        completion >= 70
+            ? "Ready"
+            : "Building";
+}
+
+
+/* ================= COACH DIRECTORY ================= */
+
+function renderCoaches(list = coaches) {
+
+    const grid =
+        document.getElementById("coachGrid");
+
+
+    if (!grid) return;
+
+
+    if (list.length === 0) {
+
+        grid.innerHTML = `
+            <div class="empty-panel">
+                <div>🔎</div>
+                <h3>No matching coaches</h3>
+                <p>
+                    Try another sport or search term.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    grid.innerHTML =
+        list.map(coach => {
+
+            const connected =
+                String(connectedCoach) ===
+                String(coach.id);
+
+
+            return `
+
+                <div class="coach-card">
+
+                    <div class="coach-avatar">
+                        ${coach.initials}
+                    </div>
+
+                    <h3>${coach.name}</h3>
+
+                    <div class="coach-sport">
+                        ${coach.sport}
+                    </div>
+
+                    <div class="coach-location">
+                        📍 ${coach.location}
+                    </div>
+
+                    ${
+                        connected
+
+                        ? `
+                            <div class="connection-status">
+                                ✓ Connected
+                            </div>
+                          `
+
+                        : `
+                            <button
+                                class="primary-btn"
+                                onclick="connectCoach(${coach.id})">
+                                Connect with Coach
+                            </button>
+                          `
+                    }
+
+                </div>
+
+            `;
+
+        }).join("");
+}
+
+
+function filterCoaches() {
+
+    const search =
+        document.getElementById("coachSearch")
+            .value
+            .toLowerCase()
+            .trim();
+
+
+    const sport =
+        document.getElementById("coachSportFilter")
+            .value;
+
+
+    const filtered =
+        coaches.filter(coach => {
+
+            const matchesSearch =
+                !search ||
+                coach.name.toLowerCase()
+                    .includes(search) ||
+                coach.sport.toLowerCase()
+                    .includes(search) ||
+                coach.location.toLowerCase()
+                    .includes(search);
+
+
+            const matchesSport =
+                !sport ||
+                coach.sport === sport;
+
+
+            return matchesSearch && matchesSport;
+        });
+
+
+    renderCoaches(filtered);
+}
+
+
+function connectCoach(id) {
+
+    connectedCoach = String(id);
+
+
+    localStorage.setItem(
+        "khelogramConnectedCoach",
+        connectedCoach
     );
 
 
-    dashboardPage.classList.add("hidden");
+    updateProfileUI();
 
-    landingPage.classList.remove("hidden");
+    renderCoaches();
 
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
+    showToast(
+        "Coach connection request sent."
+    );
 }
 
 
-/* =========================================
-   LANDING
-========================================= */
+/* ================= AI INSIGHTS ================= */
 
-function showLanding() {
+function updateInsights() {
 
-    dashboardPage.classList.add("hidden");
+    if (!currentUser) return;
 
-    landingPage.classList.remove("hidden");
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    const profile =
+        currentUser.profile || {};
 
+
+    const sport =
+        profile.sport;
+
+
+    const skill =
+        profile.skill;
+
+
+    const location =
+        [profile.village, profile.district]
+            .filter(Boolean)
+            .join(", ");
+
+
+    document.getElementById("signalSport")
+        .textContent =
+        sport || "Not provided";
+
+
+    document.getElementById("signalSkill")
+        .textContent =
+        skill || "Not provided";
+
+
+    document.getElementById("signalLocation")
+        .textContent =
+        location || "Not provided";
+
+
+    document.getElementById("signalExperience")
+        .textContent =
+        profile.achievements
+            ? "Provided"
+            : "Not provided";
+
+
+    const completion =
+        calculateProfileCompletion();
+
+
+    const title =
+        document.getElementById("insightTitle");
+
+    const description =
+        document.getElementById(
+            "insightDescription"
+        );
+
+    const summary =
+        document.getElementById(
+            "aiSummary"
+        );
+
+
+    if (!sport) {
+
+        title.textContent =
+            "Build your sports passport";
+
+        description.textContent =
+            "Add your primary sport and skill level to begin your KheloGram talent profile.";
+
+        summary.textContent =
+            "Complete your sports profile to generate a personalized talent profile.";
+
+        return;
+    }
+
+
+    if (completion < 70) {
+
+        title.textContent =
+            `${sport} profile in progress`;
+
+        description.textContent =
+            `Your ${sport} profile is ${completion}% complete. Add more information to improve your sports identity.`;
+
+        summary.textContent =
+            `Your ${sport} sports passport is being built.`;
+
+        return;
+    }
+
+
+    title.textContent =
+        `${sport} talent profile ready`;
+
+    description.textContent =
+        `Your profile contains enough information for the next stage of KheloGram's athlete intelligence system.`;
+
+    summary.textContent =
+        `Your ${sport} profile is ready for deeper performance and opportunity analysis.`;
 }
 
 
-function scrollToSection(id) {
-
-    document
-        .getElementById(id)
-        .scrollIntoView({
-            behavior: "smooth"
-        });
-
-}
-
-
-/* =========================================
-   UTILITIES
-========================================= */
+/* ================= UTILITIES ================= */
 
 function getInitials(name) {
 
-    const parts =
-        name
-            .trim()
-            .split(" ")
-            .filter(Boolean);
+    if (!name) return "KG";
 
 
-    if (parts.length === 1) {
-
-        return parts[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-
-    return (
-        parts[0][0] +
-        parts[parts.length - 1][0]
-    ).toUpperCase();
-
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(word => word[0].toUpperCase())
+        .join("");
 }
 
 
-/* =========================================
-   CHECK EXISTING SESSION
-========================================= */
+function showToast(message) {
 
-function checkExistingSession() {
-
-    const savedUser =
-        localStorage.getItem(
-            "khelogramCurrentUser"
-        );
+    const toast =
+        document.getElementById("toast");
 
 
-    if (!savedUser) {
+    toast.textContent = message;
 
-        return;
-
-    }
+    toast.classList.add("show");
 
 
-    try {
+    setTimeout(() => {
 
-        const user =
-            JSON.parse(savedUser);
+        toast.classList.remove("show");
 
-
-        if (user && user.role) {
-
-            openDashboard(user);
-
-        }
-
-    } catch (error) {
-
-        localStorage.removeItem(
-            "khelogramCurrentUser"
-        );
-
-    }
-
+    }, 2800);
 }
 
 
-/* =========================================
-   ESC KEY
-========================================= */
+/* ================= LOGOUT ================= */
 
-document.addEventListener(
-    "keydown",
-    function(event) {
+function logout() {
 
-        if (event.key !== "Escape") {
+    document.getElementById("dashboardPage")
+        .classList.add("hidden");
 
-            return;
+    document.getElementById("landingPage")
+        .classList.remove("hidden");
 
-        }
+    document.querySelector(".topbar")
+        .classList.remove("hidden");
 
-
-        closeRoleSelector();
-
-        closeAuthModal();
-
-    }
-);
+    showToast("Logged out of KheloGram.");
+}
 
 
-/* =========================================
-   INITIALIZE
-========================================= */
+/* ================= EXISTING USER ================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+if (currentUser) {
 
-        checkExistingSession();
+    /*
+       We intentionally don't automatically open the dashboard.
+       The landing page remains the public entry point.
+    */
 
-    }
-);
+    updateDashboard();
+}
