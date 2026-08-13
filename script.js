@@ -1,306 +1,117 @@
 /* =========================================================
-   KHELOGRAM - COMPLETE JAVASCRIPT
-   Stage 1 + Stage 2 + Stage 3 + Stage 3.2
+   KHELOGRAM - MAIN JAVASCRIPT
+   Stage 3.2 - Clean Version
+   ========================================================= */
 
-   IMPORTANT:
-   This file is designed to be the ONLY JavaScript file
-   used by the current KheloGram website.
-========================================================= */
-
-(function () {
-    "use strict";
+document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
-       1. KHELOGRAM DATA
-    ===================================================== */
-
-    var KHELOGRAM_DATA = {
-
-        athletes: [
-            {
-                name: "Rahul Kumar",
-                sport: "Football",
-                village: "Lucknow",
-                status: "Active"
-            },
-            {
-                name: "Aman Singh",
-                sport: "Cricket",
-                village: "Barabanki",
-                status: "Active"
-            },
-            {
-                name: "Priya Verma",
-                sport: "Athletics",
-                village: "Unnao",
-                status: "Training"
-            },
-            {
-                name: "Arjun Yadav",
-                sport: "Kabaddi",
-                village: "Sitapur",
-                status: "Active"
-            }
-        ],
-
-        coaches: [
-            {
-                name: "Rahul Coach",
-                sport: "Football",
-                athletes: 48,
-                sessions: 24
-            },
-            {
-                name: "Amit Sharma",
-                sport: "Cricket",
-                athletes: 36,
-                sessions: 18
-            }
-        ],
-
-        grounds: [
-            {
-                name: "Gram Sports Ground",
-                location: "Lucknow",
-                status: "Active",
-                utilization: "82%"
-            },
-            {
-                name: "Village Stadium",
-                location: "Barabanki",
-                status: "Active",
-                utilization: "74%"
-            },
-            {
-                name: "Community Playground",
-                location: "Unnao",
-                status: "Maintenance",
-                utilization: "41%"
-            }
-        ],
-
-        tournaments: [
-            {
-                name: "KheloGram Football Cup",
-                sport: "Football",
-                date: "25 August 2026",
-                participants: 120
-            },
-            {
-                name: "Rural Cricket Championship",
-                sport: "Cricket",
-                date: "2 September 2026",
-                participants: 180
-            },
-            {
-                name: "Village Athletics Meet",
-                sport: "Athletics",
-                date: "10 September 2026",
-                participants: 95
-            }
-        ],
-
-        insights: [
-            {
-                title: "Promising Athlete Detected",
-                description: "AI identified a rising rural sports talent.",
-                score: "92%"
-            },
-            {
-                title: "Ground Utilization",
-                description: "Sports ground usage is increasing.",
-                score: "82%"
-            },
-            {
-                title: "Participation Growth",
-                description: "Village sports participation is growing.",
-                score: "+28.4%"
-            }
-        ]
-    };
-
-
-    /* =====================================================
-       2. CURRENT USER
-    ===================================================== */
-
-    var currentUser = {
-        name: "",
-        email: "",
-        role: "",
-        loggedIn: false
-    };
-
-
-    /* =====================================================
-       3. ROLE INFORMATION
-    ===================================================== */
-
-    var ROLE_INFO = {
-
-        athlete: {
-            title: "Athlete",
-            description: "Track your sports journey",
-            icon: "🏃",
-            dashboardTitle: "Athlete dashboard"
-        },
-
-        coach: {
-            title: "Coach",
-            description: "Develop sporting talent",
-            icon: "🧑‍🏫",
-            dashboardTitle: "Coach dashboard"
-        },
-
-        panchayat: {
-            title: "Gram Panchayat",
-            description: "Manage sports infrastructure",
-            icon: "🏛️",
-            dashboardTitle: "Gram Panchayat dashboard"
-        },
-
-        organizer: {
-            title: "Organizer",
-            description: "Manage tournaments",
-            icon: "🏆",
-            dashboardTitle: "Organizer dashboard"
-        },
-
-        authority: {
-            title: "Authority",
-            description: "Monitor sports ecosystem",
-            icon: "📊",
-            dashboardTitle: "Authority dashboard"
-        }
-    };
-
-
-    /* =====================================================
-       4. HELPER FUNCTIONS
-    ===================================================== */
+       BASIC HELPERS
+       ===================================================== */
 
     function getElement(id) {
         return document.getElementById(id);
     }
 
-
-    function firstExistingElement(ids) {
-
-        for (var i = 0; i < ids.length; i++) {
-
-            var element = getElement(ids[i]);
-
-            if (element) {
-                return element;
-            }
-        }
-
-        return null;
-    }
-
-
     function showElement(element) {
-
-        if (!element) {
-            return;
+        if (element) {
+            element.classList.add("active");
         }
-
-        element.style.display = "";
-        element.classList.add("active");
-        element.classList.remove("hidden");
     }
-
 
     function hideElement(element) {
-
-        if (!element) {
-            return;
+        if (element) {
+            element.classList.remove("active");
         }
-
-        element.classList.remove("active");
-        element.classList.add("hidden");
-        element.style.display = "none";
     }
-
 
     function lockBody() {
         document.body.style.overflow = "hidden";
     }
-
 
     function unlockBody() {
         document.body.style.overflow = "";
     }
 
 
-    function capitalizeFirstLetter(text) {
-
-        if (!text) {
-            return "";
-        }
-
-        return text.charAt(0).toUpperCase() + text.slice(1);
-    }
-
-
     /* =====================================================
-       5. ROLE SELECTOR
-    ===================================================== */
+       ROLE SELECTION
+       ===================================================== */
 
+    let selectedRole = null;
+
+    const roleModal =
+        getElement("roleModal") ||
+        getElement("roleSelector") ||
+        getElement("role-modal");
+
+    const authModal =
+        getElement("authModal") ||
+        getElement("auth-modal");
+
+    /*
+       Opens the role selection popup.
+       This function is also available globally because
+       some buttons in index.html may use onclick.
+    */
     window.openRoleSelector = function () {
 
-        var modal = firstExistingElement([
-            "roleModal",
-            "roleSelectorModal",
-            "roleSelector"
-        ]);
+        const modal =
+            getElement("roleModal") ||
+            getElement("roleSelector") ||
+            getElement("role-modal");
 
         if (!modal) {
-            console.warn("Role selector modal not found.");
+            console.warn("Role selection modal was not found.");
             return;
         }
 
-        showElement(modal);
-        lockBody();
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
     };
 
 
+    /*
+       Older HTML may call openRoleModal().
+       Keep it working.
+    */
     window.openRoleModal = function () {
-
         window.openRoleSelector();
     };
 
 
+    /*
+       Close role selection.
+    */
     window.closeRoleSelector = function () {
 
-        var modal = firstExistingElement([
-            "roleModal",
-            "roleSelectorModal",
-            "roleSelector"
-        ]);
+        const modal =
+            getElement("roleModal") ||
+            getElement("roleSelector") ||
+            getElement("role-modal");
 
-        if (!modal) {
-            return;
+        if (modal) {
+            modal.classList.remove("active");
         }
 
-        hideElement(modal);
         unlockBody();
     };
 
 
     window.closeRoleModal = function () {
-
         window.closeRoleSelector();
     };
 
 
-    window.closeRoleModalOutside = function (event) {
+    /*
+       Close modal when clicking outside it.
+    */
+    window.closeModalOutside = function (event) {
 
-        var modal = firstExistingElement([
-            "roleModal",
-            "roleSelectorModal",
-            "roleSelector"
-        ]);
+        const modal =
+            getElement("roleModal") ||
+            getElement("roleSelector") ||
+            getElement("role-modal");
 
         if (modal && event.target === modal) {
             window.closeRoleSelector();
@@ -309,84 +120,111 @@
 
 
     /* =====================================================
-       6. SELECT ROLE
-    ===================================================== */
+       ROLE SELECTION
+       ===================================================== */
 
     window.selectRole = function (role) {
 
-        if (!role) {
-            return;
-        }
+        selectedRole = role;
 
-        role = role.toLowerCase();
-
-        if (!ROLE_INFO[role]) {
-            console.warn("Unknown role:", role);
-            return;
-        }
-
-        currentUser.role = role;
-
-        try {
-            localStorage.setItem("khelogram_role", role);
-        } catch (error) {
-            console.warn("Local storage unavailable.");
-        }
+        console.log("Selected role:", role);
 
         window.closeRoleSelector();
 
-        window.openAuthModal();
+        /*
+           Open authentication screen after selecting role.
+        */
+        if (typeof window.openAuthModal === "function") {
+            window.openAuthModal(role);
+        } else if (authModal) {
+            authModal.classList.add("active");
+            document.body.style.overflow = "hidden";
+        }
+
+        /*
+           Update role text if the HTML contains it.
+        */
+        const roleTextElements =
+            document.querySelectorAll("[data-selected-role]");
+
+        roleTextElements.forEach(function (element) {
+            element.textContent = formatRoleName(role);
+        });
     };
 
 
+    function formatRoleName(role) {
+
+        if (!role) {
+            return "";
+        }
+
+        const roleMap = {
+            athlete: "Athlete",
+            coach: "Coach",
+            panchayat: "Gram Panchayat",
+            "gram-panchayat": "Gram Panchayat",
+            organizer: "Organizer",
+            authority: "Authority"
+        };
+
+        return roleMap[role] || role;
+    }
+
+
     /* =====================================================
-       7. AUTHENTICATION MODAL
-    ===================================================== */
+       AUTHENTICATION MODAL
+       ===================================================== */
 
-    window.openAuthModal = function () {
+    window.openAuthModal = function (role) {
 
-        var modal = firstExistingElement([
-            "authModal",
-            "authenticationModal",
-            "auth-modal"
-        ]);
+        const modal =
+            getElement("authModal") ||
+            getElement("auth-modal");
 
         if (!modal) {
-            console.warn("Authentication modal not found.");
+            console.warn("Authentication modal was not found.");
             return;
         }
 
-        showElement(modal);
-        lockBody();
+        if (role) {
+            selectedRole = role;
+        }
 
-        window.showRegister();
+        /*
+           Put selected role into any matching elements.
+        */
+        const roleLabels =
+            modal.querySelectorAll("[data-auth-role]");
+
+        roleLabels.forEach(function (element) {
+            element.textContent = formatRoleName(selectedRole);
+        });
+
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
     };
 
 
     window.closeAuthModal = function () {
 
-        var modal = firstExistingElement([
-            "authModal",
-            "authenticationModal",
-            "auth-modal"
-        ]);
+        const modal =
+            getElement("authModal") ||
+            getElement("auth-modal");
 
-        if (!modal) {
-            return;
+        if (modal) {
+            modal.classList.remove("active");
         }
 
-        hideElement(modal);
         unlockBody();
     };
 
 
-    window.closeAuthModalOutside = function (event) {
+    window.closeAuthOutside = function (event) {
 
-        var modal = firstExistingElement([
-            "authModal",
-            "authenticationModal",
-            "auth-modal"
-        ]);
+        const modal =
+            getElement("authModal") ||
+            getElement("auth-modal");
 
         if (modal && event.target === modal) {
             window.closeAuthModal();
@@ -395,39 +233,31 @@
 
 
     /* =====================================================
-       8. REGISTER / LOGIN TABS
-    ===================================================== */
+       REGISTER / LOGIN TABS
+       ===================================================== */
 
     window.showRegister = function () {
 
-        var registerForm = firstExistingElement([
-            "registerForm",
-            "registrationForm"
-        ]);
+        const registerForm =
+            getElement("registerForm") ||
+            document.querySelector(".register-form");
 
-        var loginForm = firstExistingElement([
-            "loginForm",
-            "authenticationForm"
-        ]);
+        const loginForm =
+            getElement("loginForm") ||
+            document.querySelector(".login-form");
 
-        var registerTab = firstExistingElement([
-            "registerTab",
-            "registerButton"
-        ]);
+        const registerTab =
+            getElement("registerTab");
 
-        var loginTab = firstExistingElement([
-            "loginTab",
-            "loginButton"
-        ]);
+        const loginTab =
+            getElement("loginTab");
 
         if (registerForm) {
-            registerForm.style.display = "";
-            registerForm.classList.add("active");
+            registerForm.style.display = "block";
         }
 
         if (loginForm) {
             loginForm.style.display = "none";
-            loginForm.classList.remove("active");
         }
 
         if (registerTab) {
@@ -442,34 +272,26 @@
 
     window.showLogin = function () {
 
-        var registerForm = firstExistingElement([
-            "registerForm",
-            "registrationForm"
-        ]);
+        const registerForm =
+            getElement("registerForm") ||
+            document.querySelector(".register-form");
 
-        var loginForm = firstExistingElement([
-            "loginForm",
-            "authenticationForm"
-        ]);
+        const loginForm =
+            getElement("loginForm") ||
+            document.querySelector(".login-form");
 
-        var registerTab = firstExistingElement([
-            "registerTab",
-            "registerButton"
-        ]);
+        const registerTab =
+            getElement("registerTab");
 
-        var loginTab = firstExistingElement([
-            "loginTab",
-            "loginButton"
-        ]);
+        const loginTab =
+            getElement("loginTab");
 
         if (registerForm) {
             registerForm.style.display = "none";
-            registerForm.classList.remove("active");
         }
 
         if (loginForm) {
-            loginForm.style.display = "";
-            loginForm.classList.add("active");
+            loginForm.style.display = "block";
         }
 
         if (registerTab) {
@@ -482,21 +304,9 @@
     };
 
 
-    window.switchAuthTab = function (tab) {
-
-        if (tab === "register") {
-            window.showRegister();
-        }
-
-        if (tab === "login") {
-            window.showLogin();
-        }
-    };
-
-
     /* =====================================================
-       9. FORM SUBMISSION
-    ===================================================== */
+       REGISTRATION
+       ===================================================== */
 
     window.handleRegister = function (event) {
 
@@ -504,59 +314,72 @@
             event.preventDefault();
         }
 
-        var nameInput = firstExistingElement([
-            "registerName",
-            "fullName",
-            "name"
-        ]);
+        const nameInput =
+            getElement("registerName") ||
+            document.querySelector(
+                'input[name="name"]'
+            );
 
-        var emailInput = firstExistingElement([
-            "registerEmail",
-            "email"
-        ]);
+        const emailInput =
+            getElement("registerEmail") ||
+            document.querySelector(
+                'input[name="email"]'
+            );
 
-        var passwordInput = firstExistingElement([
-            "registerPassword",
-            "password"
-        ]);
+        const passwordInput =
+            getElement("registerPassword") ||
+            document.querySelector(
+                'input[name="password"]'
+            );
 
-        var name = nameInput ? nameInput.value.trim() : "";
-        var email = emailInput ? emailInput.value.trim() : "";
-        var password = passwordInput ? passwordInput.value.trim() : "";
+        const name =
+            nameInput ? nameInput.value.trim() : "";
 
-        if (!name) {
-            alert("Please enter your full name.");
+        const email =
+            emailInput ? emailInput.value.trim() : "";
+
+        const password =
+            passwordInput ? passwordInput.value : "";
+
+        if (!name || !email || !password) {
+            alert("Please fill all the required fields.");
             return false;
         }
 
-        if (!email) {
-            alert("Please enter your email.");
+        if (password.length < 6) {
+            alert("Password should contain at least 6 characters.");
             return false;
         }
 
-        if (!password) {
-            alert("Please create a password.");
-            return false;
-        }
+        /*
+           Store demo user locally.
+           This is frontend-only for now.
+        */
+        const userData = {
+            name: name,
+            email: email,
+            role: selectedRole || "athlete"
+        };
 
-        if (password.length < 4) {
-            alert("Password should contain at least 4 characters.");
-            return false;
-        }
+        localStorage.setItem(
+            "khelogramUser",
+            JSON.stringify(userData)
+        );
 
-        currentUser.name = name;
-        currentUser.email = email;
-        currentUser.loggedIn = true;
-
-        saveUser();
+        alert(
+            "Account created successfully!\n\n" +
+            "Welcome to KheloGram, " + name + "!"
+        );
 
         window.closeAuthModal();
-
-        showDashboard();
 
         return false;
     };
 
+
+    /* =====================================================
+       LOGIN
+       ===================================================== */
 
     window.handleLogin = function (event) {
 
@@ -564,1111 +387,542 @@
             event.preventDefault();
         }
 
-        var emailInput = firstExistingElement([
-            "loginEmail",
-            "email"
-        ]);
+        const emailInput =
+            getElement("loginEmail") ||
+            document.querySelector(
+                '.login-form input[type="email"]'
+            );
 
-        var passwordInput = firstExistingElement([
-            "loginPassword",
-            "password"
-        ]);
+        const passwordInput =
+            getElement("loginPassword") ||
+            document.querySelector(
+                '.login-form input[type="password"]'
+            );
 
-        var email = emailInput ? emailInput.value.trim() : "";
-        var password = passwordInput ? passwordInput.value.trim() : "";
+        const email =
+            emailInput ? emailInput.value.trim() : "";
 
-        if (!email) {
-            alert("Please enter your email.");
+        const password =
+            passwordInput ? passwordInput.value : "";
+
+        if (!email || !password) {
+            alert("Please enter your email and password.");
             return false;
         }
 
-        if (!password) {
-            alert("Please enter your password.");
-            return false;
+        const savedUser =
+            localStorage.getItem("khelogramUser");
+
+        if (savedUser) {
+
+            const user = JSON.parse(savedUser);
+
+            if (user.email === email) {
+
+                alert(
+                    "Login successful!\n\n" +
+                    "Welcome back, " + user.name + "!"
+                );
+
+                window.closeAuthModal();
+
+                return false;
+            }
         }
 
-        currentUser.email = email;
-        currentUser.name = email.split("@")[0];
-        currentUser.loggedIn = true;
-
-        saveUser();
+        /*
+           Demo login if no registered account exists.
+        */
+        alert("Login successful!");
 
         window.closeAuthModal();
-
-        showDashboard();
 
         return false;
     };
 
 
-    window.handleAuthSubmit = function (event) {
+    /* =====================================================
+       GET STARTED BUTTONS
+       ===================================================== */
 
-        var registerForm = firstExistingElement([
-            "registerForm",
-            "registrationForm"
-        ]);
+    const getStartedButtons =
+        document.querySelectorAll(
+            '[data-action="get-started"], .get-started-btn'
+        );
 
-        if (
-            registerForm &&
-            registerForm.style.display !== "none"
-        ) {
-            return window.handleRegister(event);
+    getStartedButtons.forEach(function (button) {
+
+        button.addEventListener("click", function (event) {
+
+            event.preventDefault();
+
+            window.openRoleSelector();
+
+        });
+
+    });
+
+
+    /* =====================================================
+       EXPLORE PLATFORM
+       ===================================================== */
+
+    const exploreButtons =
+        document.querySelectorAll(
+            '[data-action="explore"], .explore-platform'
+        );
+
+    exploreButtons.forEach(function (button) {
+
+        button.addEventListener("click", function (event) {
+
+            event.preventDefault();
+
+            const platformSection =
+                getElement("platform");
+
+            if (platformSection) {
+
+                platformSection.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       NAVIGATION
+       ===================================================== */
+
+    const navigationLinks =
+        document.querySelectorAll(
+            'a[href^="#"]'
+        );
+
+    navigationLinks.forEach(function (link) {
+
+        link.addEventListener("click", function (event) {
+
+            const targetId =
+                link.getAttribute("href");
+
+            if (!targetId || targetId === "#") {
+                return;
+            }
+
+            const target =
+                document.querySelector(targetId);
+
+            if (target) {
+
+                event.preventDefault();
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       ESC KEY - CLOSE MODALS
+       ===================================================== */
+
+    document.addEventListener("keydown", function (event) {
+
+        if (event.key === "Escape") {
+
+            window.closeRoleSelector();
+            window.closeAuthModal();
+
         }
 
-        return window.handleLogin(event);
+    });
+
+
+    /* =====================================================
+       CLOSE BUTTONS
+       ===================================================== */
+
+    const closeButtons =
+        document.querySelectorAll(
+            '[data-close-modal], .modal-close, .close-modal'
+        );
+
+    closeButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            window.closeRoleSelector();
+            window.closeAuthModal();
+
+        });
+
+    });
+
+
+    /* =====================================================
+       ROLE CARDS
+       ===================================================== */
+
+    const roleCards =
+        document.querySelectorAll(
+            "[data-role], .role-card"
+        );
+
+    roleCards.forEach(function (card) {
+
+        card.addEventListener("click", function () {
+
+            let role =
+                card.getAttribute("data-role");
+
+            if (!role) {
+
+                const title =
+                    card.querySelector("h3, h4, strong");
+
+                if (title) {
+                    role =
+                        title.textContent
+                            .toLowerCase()
+                            .replace(/\s+/g, "-");
+                }
+
+            }
+
+            if (role) {
+                window.selectRole(role);
+            }
+
+        });
+
+    });
+
+
+    /* =====================================================
+       MODAL BACKGROUND CLICK
+       ===================================================== */
+
+    document.addEventListener("click", function (event) {
+
+        const roleModalElement =
+            getElement("roleModal") ||
+            getElement("roleSelector") ||
+            getElement("role-modal");
+
+        const authModalElement =
+            getElement("authModal") ||
+            getElement("auth-modal");
+
+        if (
+            roleModalElement &&
+            event.target === roleModalElement
+        ) {
+            window.closeRoleSelector();
+        }
+
+        if (
+            authModalElement &&
+            event.target === authModalElement
+        ) {
+            window.closeAuthModal();
+        }
+
+    });
+
+
+    /* =====================================================
+       DASHBOARD DEMO DATA
+       ===================================================== */
+
+    const dashboardData = {
+
+        athlete: {
+            title: "Athlete dashboard",
+            stats: [
+                {
+                    label: "Training Sessions",
+                    value: "24"
+                },
+                {
+                    label: "Tournaments",
+                    value: "7"
+                },
+                {
+                    label: "Talent Signals",
+                    value: "12"
+                }
+            ]
+        },
+
+        coach: {
+            title: "Coach dashboard",
+            stats: [
+                {
+                    label: "Athletes",
+                    value: "48"
+                },
+                {
+                    label: "Training Sessions",
+                    value: "24"
+                },
+                {
+                    label: "Tournaments",
+                    value: "7"
+                },
+                {
+                    label: "Talent Signals",
+                    value: "12"
+                }
+            ]
+        },
+
+        "gram-panchayat": {
+            title: "Gram Panchayat dashboard",
+            stats: [
+                {
+                    label: "Sports Grounds",
+                    value: "12"
+                },
+                {
+                    label: "Registered Athletes",
+                    value: "245"
+                },
+                {
+                    label: "Maintenance",
+                    value: "3"
+                },
+                {
+                    label: "Utilization",
+                    value: "78%"
+                }
+            ]
+        },
+
+        organizer: {
+            title: "Organizer dashboard",
+            stats: [
+                {
+                    label: "Tournaments",
+                    value: "18"
+                },
+                {
+                    label: "Athletes",
+                    value: "320"
+                },
+                {
+                    label: "Upcoming Events",
+                    value: "6"
+                }
+            ]
+        },
+
+        authority: {
+            title: "Authority dashboard",
+            stats: [
+                {
+                    label: "Villages",
+                    value: "128"
+                },
+                {
+                    label: "Grounds",
+                    value: "245"
+                },
+                {
+                    label: "Talent Signals",
+                    value: "74"
+                },
+                {
+                    label: "Participation Growth",
+                    value: "28.4%"
+                }
+            ]
+        }
+
     };
 
 
     /* =====================================================
-       10. LOCAL STORAGE
-    ===================================================== */
+       LOCAL STORAGE - USER
+       ===================================================== */
 
-    function saveUser() {
+    function loadSavedUser() {
+
+        const savedUser =
+            localStorage.getItem("khelogramUser");
+
+        if (!savedUser) {
+            return null;
+        }
 
         try {
+            return JSON.parse(savedUser);
+        } catch (error) {
 
-            localStorage.setItem(
-                "khelogram_user",
-                JSON.stringify(currentUser)
+            console.warn(
+                "Could not read saved user data."
             );
 
-        } catch (error) {
-
-            console.warn("Could not save user.");
+            return null;
         }
-    }
 
-
-    function loadUser() {
-
-        try {
-
-            var savedUser =
-                localStorage.getItem("khelogram_user");
-
-            if (savedUser) {
-
-                var parsedUser = JSON.parse(savedUser);
-
-                if (parsedUser) {
-
-                    currentUser.name =
-                        parsedUser.name || "";
-
-                    currentUser.email =
-                        parsedUser.email || "";
-
-                    currentUser.role =
-                        parsedUser.role || "";
-
-                    currentUser.loggedIn =
-                        parsedUser.loggedIn || false;
-                }
-            }
-
-        } catch (error) {
-
-            console.warn("Could not load saved user.");
-        }
     }
 
 
     /* =====================================================
-       11. DASHBOARD
-    ===================================================== */
+       UPDATE USER DISPLAY
+       ===================================================== */
 
-    function showDashboard() {
+    function updateUserDisplay() {
 
-        var landing = firstExistingElement([
-            "landingPage",
-            "homePage",
-            "mainLanding"
-        ]);
+        const user =
+            loadSavedUser();
 
-        var dashboard = firstExistingElement([
-            "dashboard",
-            "dashboardPage",
-            "appDashboard"
-        ]);
-
-        if (landing) {
-            hideElement(landing);
+        if (!user) {
+            return;
         }
 
-        if (dashboard) {
-            showElement(dashboard);
-        }
+        const nameElements =
+            document.querySelectorAll(
+                "[data-user-name]"
+            );
 
-        renderDashboard();
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
+        nameElements.forEach(function (element) {
+            element.textContent = user.name;
         });
-    }
 
-
-    function showLandingPage() {
-
-        var landing = firstExistingElement([
-            "landingPage",
-            "homePage",
-            "mainLanding"
-        ]);
-
-        var dashboard = firstExistingElement([
-            "dashboard",
-            "dashboardPage",
-            "appDashboard"
-        ]);
-
-        if (dashboard) {
-            hideElement(dashboard);
-        }
-
-        if (landing) {
-            showElement(landing);
-        }
-    }
-
-
-    /* =====================================================
-       12. DASHBOARD CONTENT
-    ===================================================== */
-
-    function renderDashboard() {
-
-        var dashboard = firstExistingElement([
-            "dashboard",
-            "dashboardPage",
-            "appDashboard"
-        ]);
-
-        if (!dashboard) {
-            createDashboard();
-            return;
-        }
-
-        updateDashboardText(dashboard);
-    }
-
-
-    function updateDashboardText(dashboard) {
-
-        var roleInfo =
-            ROLE_INFO[currentUser.role] ||
-            ROLE_INFO.athlete;
-
-        var name =
-            currentUser.name ||
-            "User";
-
-        var welcomeElements =
-            dashboard.querySelectorAll(
-                "[data-user-name], .user-name, .welcome-name"
+        const roleElements =
+            document.querySelectorAll(
+                "[data-user-role]"
             );
 
-        for (var i = 0; i < welcomeElements.length; i++) {
-            welcomeElements[i].textContent = name;
-        }
+        roleElements.forEach(function (element) {
+            element.textContent =
+                formatRoleName(user.role);
+        });
 
-        var roleElements =
-            dashboard.querySelectorAll(
-                "[data-user-role], .user-role"
-            );
-
-        for (var j = 0; j < roleElements.length; j++) {
-            roleElements[j].textContent =
-                roleInfo.title;
-        }
     }
+
+
+    updateUserDisplay();
 
 
     /* =====================================================
-       13. CREATE DASHBOARD IF HTML DOES NOT HAVE ONE
-    ===================================================== */
-
-    function createDashboard() {
-
-        var existing =
-            document.getElementById("khelogramGeneratedDashboard");
-
-        if (existing) {
-
-            existing.style.display = "";
-
-            updateGeneratedDashboard();
-
-            return;
-        }
-
-        var dashboard =
-            document.createElement("section");
-
-        dashboard.id =
-            "khelogramGeneratedDashboard";
-
-        dashboard.className =
-            "khelogram-generated-dashboard";
-
-        dashboard.innerHTML = buildDashboardHTML();
-
-        document.body.appendChild(dashboard);
-
-        updateGeneratedDashboard();
-
-        setTimeout(function () {
-
-            dashboard.scrollIntoView({
-                behavior: "smooth"
-            });
-
-        }, 100);
-    }
-
-
-    function buildDashboardHTML() {
-
-        var role =
-            ROLE_INFO[currentUser.role] ||
-            ROLE_INFO.athlete;
-
-        var dashboardHTML = "";
-
-        dashboardHTML +=
-            '<div style="' +
-            'min-height:100vh;' +
-            'background:#f5f8fa;' +
-            'padding:40px 5%;' +
-            'font-family:Arial,sans-serif;' +
-            '">';
-
-        dashboardHTML +=
-            '<div style="' +
-            'max-width:1200px;' +
-            'margin:auto;' +
-            '">';
-
-        dashboardHTML +=
-            '<div style="' +
-            'display:flex;' +
-            'justify-content:space-between;' +
-            'align-items:center;' +
-            'margin-bottom:40px;' +
-            '">';
-
-        dashboardHTML +=
-            '<div>';
-
-        dashboardHTML +=
-            '<div style="' +
-            'color:#078b4f;' +
-            'font-weight:700;' +
-            'letter-spacing:2px;' +
-            'font-size:13px;' +
-            'margin-bottom:10px;' +
-            '">KHELOGRAM DASHBOARD</div>';
-
-        dashboardHTML +=
-            '<h1 style="' +
-            'font-size:42px;' +
-            'margin:0;' +
-            'color:#0b1628;' +
-            '">Welcome back, <span id="generatedUserName"></span> 👋</h1>';
-
-        dashboardHTML +=
-            '<p style="' +
-            'font-size:18px;' +
-            'color:#64748b;' +
-            'margin-top:12px;' +
-            '">';
-
-        dashboardHTML +=
-            role.title +
-            ' dashboard — manage your KheloGram ecosystem.';
-
-        dashboardHTML +=
-            '</p>';
-
-        dashboardHTML +=
-            '</div>';
-
-        dashboardHTML +=
-            '<button onclick="logoutKheloGram()" ' +
-            'style="' +
-            'padding:14px 22px;' +
-            'border:1px solid #d9e1e7;' +
-            'background:white;' +
-            'border-radius:12px;' +
-            'font-weight:700;' +
-            'cursor:pointer;' +
-            '">Logout</button>';
-
-        dashboardHTML +=
-            '</div>';
-
-        dashboardHTML +=
-            '<div id="generatedDashboardContent"></div>';
-
-        dashboardHTML +=
-            '</div>';
-
-        dashboardHTML +=
-            '</div>';
-
-        return dashboardHTML;
-    }
-
-
-    function updateGeneratedDashboard() {
-
-        var nameElement =
-            document.getElementById(
-                "generatedUserName"
-            );
-
-        if (nameElement) {
-
-            nameElement.textContent =
-                currentUser.name || "User";
-        }
-
-        var content =
-            document.getElementById(
-                "generatedDashboardContent"
-            );
-
-        if (!content) {
-            return;
-        }
-
-        content.innerHTML =
-            buildRoleDashboard(currentUser.role);
-    }
-
-
-    function buildRoleDashboard(role) {
-
-        if (role === "coach") {
-            return buildCoachDashboard();
-        }
-
-        if (role === "panchayat") {
-            return buildPanchayatDashboard();
-        }
-
-        if (role === "organizer") {
-            return buildOrganizerDashboard();
-        }
-
-        if (role === "authority") {
-            return buildAuthorityDashboard();
-        }
-
-        return buildAthleteDashboard();
-    }
-
-
-    /* =====================================================
-       14. ATHLETE DASHBOARD
-    ===================================================== */
-
-    function buildAthleteDashboard() {
-
-        return dashboardCards([
-            {
-                icon: "🏃",
-                number: "1",
-                label: "Sports Profile",
-                note: "Active"
-            },
-            {
-                icon: "🏆",
-                number: "6",
-                label: "Tournaments",
-                note: "Available"
-            },
-            {
-                icon: "📈",
-                number: "92%",
-                label: "AI Talent Score",
-                note: "Promising"
-            },
-            {
-                icon: "⚽",
-                number: "12",
-                label: "Matches",
-                note: "This season"
-            }
-        ]) +
-
-        informationPanel(
-            "AI Sports Intelligence",
-            "KheloGram AI has identified strong athletic potential. Keep participating in village-level tournaments and training sessions."
-        );
-    }
-
-
-    /* =====================================================
-       15. COACH DASHBOARD
-    ===================================================== */
-
-    function buildCoachDashboard() {
-
-        return dashboardCards([
-            {
-                icon: "🏃",
-                number: "48",
-                label: "Athletes",
-                note: "+6 this month"
-            },
-            {
-                icon: "📅",
-                number: "24",
-                label: "Training Sessions",
-                note: "This month"
-            },
-            {
-                icon: "🏆",
-                number: "7",
-                label: "Tournaments",
-                note: "Upcoming"
-            },
-            {
-                icon: "✦",
-                number: "12",
-                label: "Talent Signals",
-                note: "AI detected"
-            }
-        ]) +
-
-        informationPanel(
-            "Smart Insights",
-            "AI has identified 12 athletes showing promising performance trends. Consider giving them additional training opportunities."
-        );
-    }
-
-
-    /* =====================================================
-       16. PANCHAYAT DASHBOARD
-    ===================================================== */
-
-    function buildPanchayatDashboard() {
-
-        return dashboardCards([
-            {
-                icon: "🏟️",
-                number: "12",
-                label: "Sports Grounds",
-                note: "8 active"
-            },
-            {
-                icon: "🏃",
-                number: "245",
-                label: "Registered Athletes",
-                note: "+18 this month"
-            },
-            {
-                icon: "🔧",
-                number: "3",
-                label: "Maintenance",
-                note: "Requests pending"
-            },
-            {
-                icon: "📈",
-                number: "78%",
-                label: "Utilization",
-                note: "+12% this month"
-            }
-        ]) +
-
-        informationPanel(
-            "Ground Intelligence",
-            "KheloGram AI shows that sports-ground utilization is improving. Maintenance requests should be reviewed for inactive grounds."
-        );
-    }
-
-
-    /* =====================================================
-       17. ORGANIZER DASHBOARD
-    ===================================================== */
-
-    function buildOrganizerDashboard() {
-
-        return dashboardCards([
-            {
-                icon: "🏆",
-                number: "36",
-                label: "Tournaments",
-                note: "Active"
-            },
-            {
-                icon: "🏃",
-                number: "1,240",
-                label: "Participants",
-                note: "Registered"
-            },
-            {
-                icon: "📅",
-                number: "8",
-                label: "Upcoming",
-                note: "This month"
-            },
-            {
-                icon: "📊",
-                number: "94%",
-                label: "Completion",
-                note: "Successful"
-            }
-        ]) +
-
-        informationPanel(
-            "Tournament Intelligence",
-            "AI recommends focusing upcoming tournaments on football, cricket and athletics based on rural participation trends."
-        );
-    }
-
-
-    /* =====================================================
-       18. AUTHORITY DASHBOARD
-    ===================================================== */
-
-    function buildAuthorityDashboard() {
-
-        return dashboardCards([
-            {
-                icon: "🏟️",
-                number: "128",
-                label: "Sports Grounds",
-                note: "Mapped"
-            },
-            {
-                icon: "🏃",
-                number: "2,480",
-                label: "Athletes",
-                note: "Registered"
-            },
-            {
-                icon: "🏆",
-                number: "36",
-                label: "Tournaments",
-                note: "Active"
-            },
-            {
-                icon: "✦",
-                number: "74",
-                label: "AI Insights",
-                note: "Talent signals"
-            }
-        ]) +
-
-        informationPanel(
-            "Government Sports Intelligence",
-            "KheloGram provides a consolidated view of rural sports participation, infrastructure utilization and emerging talent."
-        );
-    }
-
-
-    /* =====================================================
-       19. DASHBOARD CARD GENERATOR
-    ===================================================== */
-
-    function dashboardCards(cards) {
-
-        var html =
-            '<div style="' +
-            'display:grid;' +
-            'grid-template-columns:repeat(auto-fit,minmax(220px,1fr));' +
-            'gap:20px;' +
-            'margin-bottom:30px;' +
-            '">';
-
-        for (var i = 0; i < cards.length; i++) {
-
-            html +=
-                '<div style="' +
-                'background:white;' +
-                'border:1px solid #e2e8f0;' +
-                'border-radius:18px;' +
-                'padding:28px;' +
-                '">';
-
-            html +=
-                '<div style="' +
-                'font-size:28px;' +
-                'margin-bottom:20px;' +
-                '">' +
-                cards[i].icon +
-                '</div>';
-
-            html +=
-                '<div style="' +
-                'font-size:40px;' +
-                'font-weight:800;' +
-                'color:#0b1628;' +
-                '">' +
-                cards[i].number +
-                '</div>';
-
-            html +=
-                '<div style="' +
-                'font-size:14px;' +
-                'font-weight:700;' +
-                'color:#64748b;' +
-                'margin-top:8px;' +
-                '">' +
-                cards[i].label +
-                '</div>';
-
-            html +=
-                '<div style="' +
-                'color:#078b4f;' +
-                'font-size:13px;' +
-                'font-weight:700;' +
-                'margin-top:12px;' +
-                '">' +
-                cards[i].note +
-                '</div>';
-
-            html +=
-                '</div>';
-        }
-
-        html +=
-            '</div>';
-
-        return html;
-    }
-
-
-    /* =====================================================
-       20. INFORMATION PANEL
-    ===================================================== */
-
-    function informationPanel(title, text) {
-
-        var html = "";
-
-        html +=
-            '<div style="' +
-            'background:white;' +
-            'border:1px solid #e2e8f0;' +
-            'border-radius:20px;' +
-            'padding:30px;' +
-            '">';
-
-        html +=
-            '<div style="' +
-            'color:#078b4f;' +
-            'font-size:13px;' +
-            'font-weight:700;' +
-            'letter-spacing:1.5px;' +
-            'margin-bottom:10px;' +
-            '">KHELOGRAM AI</div>';
-
-        html +=
-            '<h2 style="' +
-            'margin:0 0 12px;' +
-            'color:#0b1628;' +
-            '">' +
-            title +
-            '</h2>';
-
-        html +=
-            '<p style="' +
-            'color:#64748b;' +
-            'font-size:16px;' +
-            'line-height:1.7;' +
-            'margin:0;' +
-            '">' +
-            text +
-            '</p>';
-
-        html +=
-            '</div>';
-
-        return html;
-    }
-
-
-    /* =====================================================
-       21. LOGOUT
-    ===================================================== */
+       LOGOUT
+       ===================================================== */
 
     window.logoutKheloGram = function () {
 
-        currentUser = {
-            name: "",
-            email: "",
-            role: "",
-            loggedIn: false
-        };
+        localStorage.removeItem(
+            "khelogramUser"
+        );
 
-        try {
+        alert("You have been logged out.");
 
-            localStorage.removeItem(
-                "khelogram_user"
-            );
+        window.location.reload();
+    };
 
-            localStorage.removeItem(
-                "khelogram_role"
-            );
 
-        } catch (error) {
+    const logoutButtons =
+        document.querySelectorAll(
+            '[data-action="logout"], .logout-btn'
+        );
 
-            console.warn("Could not clear local storage.");
-        }
+    logoutButtons.forEach(function (button) {
 
-        var generatedDashboard =
-            document.getElementById(
-                "khelogramGeneratedDashboard"
-            );
+        button.addEventListener("click", function (event) {
 
-        if (generatedDashboard) {
+            event.preventDefault();
 
-            generatedDashboard.remove();
-        }
+            window.logoutKheloGram();
 
-        showLandingPage();
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
         });
-    };
+
+    });
 
 
     /* =====================================================
-       22. NAVIGATION
-    ===================================================== */
-
-    function setupNavigation() {
-
-        var links =
-            document.querySelectorAll(
-                'a[href^="#"]'
-            );
-
-        for (var i = 0; i < links.length; i++) {
-
-            links[i].addEventListener(
-                "click",
-                function (event) {
-
-                    var href =
-                        this.getAttribute("href");
-
-                    if (
-                        !href ||
-                        href === "#" ||
-                        href.length < 2
-                    ) {
-                        return;
-                    }
-
-                    var target =
-                        document.querySelector(href);
-
-                    if (target) {
-
-                        event.preventDefault();
-
-                        target.scrollIntoView({
-                            behavior: "smooth"
-                        });
-                    }
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       23. GET STARTED BUTTONS
-    ===================================================== */
-
-    function setupGetStartedButtons() {
-
-        var buttons =
-            document.querySelectorAll(
-                ".get-started, .getStarted, [data-get-started]"
-            );
-
-        for (var i = 0; i < buttons.length; i++) {
-
-            buttons[i].addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    window.openRoleSelector();
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       24. MODAL CLOSE BUTTONS
-    ===================================================== */
-
-    function setupModalButtons() {
-
-        var closeButtons =
-            document.querySelectorAll(
-                "[data-close-modal]"
-            );
-
-        for (var i = 0; i < closeButtons.length; i++) {
-
-            closeButtons[i].addEventListener(
-                "click",
-                function () {
-
-                    window.closeRoleSelector();
-                    window.closeAuthModal();
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       25. ESCAPE KEY
-    ===================================================== */
-
-    function setupEscapeKey() {
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (event.key === "Escape") {
-
-                    window.closeRoleSelector();
-                    window.closeAuthModal();
-                }
-            }
-        );
-    }
-
-
-    /* =====================================================
-       26. ROLE CARDS
-    ===================================================== */
-
-    function setupRoleCards() {
-
-        var roleCards =
-            document.querySelectorAll(
-                "[data-role]"
-            );
-
-        for (var i = 0; i < roleCards.length; i++) {
-
-            roleCards[i].addEventListener(
-                "click",
-                function () {
-
-                    var role =
-                        this.getAttribute("data-role");
-
-                    if (role) {
-                        window.selectRole(role);
-                    }
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       27. AUTH FORMS
-    ===================================================== */
-
-    function setupForms() {
-
-        var registerForm =
-            firstExistingElement([
-                "registerForm",
-                "registrationForm"
-            ]);
-
-        var loginForm =
-            firstExistingElement([
-                "loginForm",
-                "authenticationForm"
-            ]);
-
-        if (registerForm) {
-
-            registerForm.addEventListener(
-                "submit",
-                window.handleRegister
-            );
-        }
-
-        if (
-            loginForm &&
-            loginForm !== registerForm
-        ) {
-
-            loginForm.addEventListener(
-                "submit",
-                window.handleLogin
-            );
-        }
-    }
-
-
-    /* =====================================================
-       28. MODAL CLICK HANDLERS
-    ===================================================== */
-
-    function setupModalClickHandlers() {
-
-        var roleModal =
-            firstExistingElement([
-                "roleModal",
-                "roleSelectorModal",
-                "roleSelector"
-            ]);
-
-        if (roleModal) {
-
-            roleModal.addEventListener(
-                "click",
-                function (event) {
-
-                    if (event.target === roleModal) {
-                        window.closeRoleSelector();
-                    }
-                }
-            );
-        }
-
-        var authModal =
-            firstExistingElement([
-                "authModal",
-                "authenticationModal",
-                "auth-modal"
-            ]);
-
-        if (authModal) {
-
-            authModal.addEventListener(
-                "click",
-                function (event) {
-
-                    if (event.target === authModal) {
-                        window.closeAuthModal();
-                    }
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       29. PAGE INITIALIZATION
-    ===================================================== */
-
-    function initializeKheloGram() {
-
-        loadUser();
-
-        setupNavigation();
-        setupGetStartedButtons();
-        setupModalButtons();
-        setupEscapeKey();
-        setupRoleCards();
-        setupForms();
-        setupModalClickHandlers();
-
-        /*
-         * If a user was already logged in,
-         * restore their dashboard.
-         */
-
-        if (
-            currentUser.loggedIn &&
-            currentUser.role
-        ) {
-
-            showDashboard();
-        }
-    }
-
-
-    /* =====================================================
-       30. DOM READY
-    ===================================================== */
-
-    if (
-        document.readyState === "loading"
-    ) {
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            initializeKheloGram
+       SIMPLE SCROLL ANIMATION
+       ===================================================== */
+
+    const animatedElements =
+        document.querySelectorAll(
+            ".feature-card, .stat-card, .impact-card, .ecosystem-card"
         );
 
-    } else {
+    if ("IntersectionObserver" in window) {
 
-        initializeKheloGram();
+        const observer =
+            new IntersectionObserver(
+                function (entries) {
+
+                    entries.forEach(function (entry) {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add(
+                                "visible"
+                            );
+
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.15
+                }
+            );
+
+        animatedElements.forEach(function (element) {
+            observer.observe(element);
+        });
+
     }
 
 
     /* =====================================================
-       31. PUBLIC DATA
-       Useful later for Stage 4 / AI / database work.
-    ===================================================== */
+       CURRENT YEAR
+       ===================================================== */
 
-    window.KHELOGRAM_DATA =
-        KHELOGRAM_DATA;
+    const yearElements =
+        document.querySelectorAll(
+            "[data-current-year]"
+        );
 
-    window.KHELOGRAM_CURRENT_USER =
-        currentUser;
+    yearElements.forEach(function (element) {
 
+        element.textContent =
+            new Date().getFullYear();
 
-    /* =====================================================
-       32. EXTRA COMPATIBILITY FUNCTIONS
-       These prevent "function not defined" errors
-       from older HTML onclick attributes.
-    ===================================================== */
-
-    window.openRole = function () {
-        window.openRoleSelector();
-    };
-
-    window.closeRole = function () {
-        window.closeRoleSelector();
-    };
-
-    window.openAuth = function () {
-        window.openAuthModal();
-    };
-
-    window.closeAuth = function () {
-        window.closeAuthModal();
-    };
-
-    window.registerUser = function (event) {
-        return window.handleRegister(event);
-    };
-
-    window.loginUser = function (event) {
-        return window.handleLogin(event);
-    };
-
-    window.logout = function () {
-        window.logoutKheloGram();
-    };
+    });
 
 
     /* =====================================================
-       END OF KHELOGRAM JAVASCRIPT
-    ===================================================== */
+       CONSOLE MESSAGE
+       ===================================================== */
 
-})();
+    console.log(
+        "%cKheloGram loaded successfully.",
+        "color:#078a52;font-size:16px;font-weight:bold;"
+    );
+
+    console.log(
+        "Stage 3.2 JavaScript is running."
+    );
+
+});
