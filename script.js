@@ -119,13 +119,20 @@ function openRoleSelector() {
 
     const roleModal = document.getElementById("roleModal");
 
-    if (roleModal) {
-        roleModal.style.display = "flex";
+    if (!roleModal) {
+        console.error("ERROR: roleModal was not found in index.html");
+        return;
     }
+
+    // Make the modal visible
+    roleModal.style.display = "flex";
+    roleModal.style.visibility = "visible";
+    roleModal.style.opacity = "1";
+    roleModal.style.zIndex = "99999";
 
     document.body.classList.add("modal-open");
 
-    console.log("Role selector opened.");
+    console.log("Role selector opened successfully.");
 }
 
 
@@ -448,37 +455,45 @@ function scrollToSection(sectionId) {
    13. GET STARTED BUTTONS
    ========================================================= */
 
-function setupGetStartedButtons() {
 
-    // Find all buttons and links on the page
+        function setupGetStartedButtons() {
+
+    // Find all buttons and links
     const elements = document.querySelectorAll("button, a");
 
     elements.forEach(function(element) {
 
         const text = element.textContent.trim().toLowerCase();
 
-        // Detect any button/link that says "Get Started"
         if (text.includes("get started")) {
+
+            // Prevent this function from being attached twice
+            if (element.dataset.kgConnected === "true") {
+                return;
+            }
+
+            element.dataset.kgConnected = "true";
 
             element.addEventListener("click", function(event) {
 
                 event.preventDefault();
+                event.stopPropagation();
 
                 console.log("Get Started button clicked.");
 
-                const user = getUser();
-
-                if (user) {
-                    showDashboard();
-                } else {
-                    openRoleSelector();
-                }
+                // ALWAYS open the role selector first
+                openRoleSelector();
 
             });
 
         }
 
     });
+
+    console.log("Get Started buttons connected.");
+}
+
+
 
     console.log("Get Started buttons connected.");
 }
