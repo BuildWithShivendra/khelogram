@@ -120,9 +120,23 @@ function openRoleSelector() {
     const roleModal = document.getElementById("roleModal");
 
     if (!roleModal) {
-        console.error("ERROR: roleModal was not found in index.html");
+        console.error("roleModal not found.");
         return;
     }
+
+    // Remove the hidden class
+    roleModal.classList.remove("hidden");
+
+    // Show modal
+    roleModal.style.display = "flex";
+    roleModal.style.visibility = "visible";
+    roleModal.style.opacity = "1";
+    roleModal.style.zIndex = "99999";
+
+    document.body.classList.add("modal-open");
+
+    console.log("Role selector opened successfully.");
+}
 
     // Make the modal visible
     roleModal.style.display = "flex";
