@@ -1,12 +1,11 @@
 /* =========================================================
-   KHELOGRAM
-   STAGE 3.3 - COMPLETE JAVASCRIPT
-   Matched with current index.html
+   KHELOGRAM - STAGE 3.3
+   Clean JavaScript
    ========================================================= */
 
 
 /* =========================================================
-   GLOBAL DATA
+   GLOBAL
    ========================================================= */
 
 let selectedRole = "";
@@ -70,8 +69,7 @@ const coachData = [
 
 function getUser() {
 
-    const savedUser =
-        localStorage.getItem("khelogramUser");
+    const savedUser = localStorage.getItem("khelogramUser");
 
     if (!savedUser) {
         return null;
@@ -80,19 +78,13 @@ function getUser() {
     try {
         return JSON.parse(savedUser);
     } catch (error) {
-
-        console.error(
-            "Error reading KheloGram user:",
-            error
-        );
-
+        console.error("Could not read saved user.", error);
         return null;
     }
 }
 
 
 function saveUser(user) {
-
     localStorage.setItem(
         "khelogramUser",
         JSON.stringify(user)
@@ -106,84 +98,42 @@ function saveUser(user) {
 
 function openRoleSelector() {
 
-    const roleModal =
-        document.getElementById("roleModal");
+    const modal = document.getElementById("roleModal");
 
-    if (!roleModal) {
-
-        console.error(
-            "roleModal not found in index.html"
-        );
-
+    if (!modal) {
+        console.error("roleModal was not found.");
         return;
     }
 
-    /*
-       Remove the hidden class.
-       This is important because the HTML starts with:
-       class="modal hidden"
-    */
-    roleModal.classList.remove("hidden");
-
-    roleModal.style.display = "flex";
-    roleModal.style.visibility = "visible";
-    roleModal.style.opacity = "1";
-    roleModal.style.zIndex = "9999";
-
-    document.body.classList.add("modal-open");
-
-    console.log("Role selector opened.");
+    modal.classList.remove("hidden");
 }
 
 
 function closeRoleSelector() {
 
-    const roleModal =
-        document.getElementById("roleModal");
+    const modal = document.getElementById("roleModal");
 
-    if (!roleModal) {
+    if (!modal) {
         return;
     }
 
-    roleModal.classList.add("hidden");
-
-    roleModal.style.display = "none";
-
-    document.body.classList.remove("modal-open");
-
-    console.log("Role selector closed.");
+    modal.classList.add("hidden");
 }
 
 
 /* =========================================================
-   SELECT ROLE
+   ROLE SELECTION
    ========================================================= */
 
 function selectRole(role) {
 
-    /*
-       HTML sends values such as:
-       "Athlete"
-       "Coach"
-       "Gram Panchayat"
-
-       Convert them into our internal format.
-    */
-
-    selectedRole =
-        role
-            .toLowerCase()
-            .replace(/\s+/g, "-");
-
-    console.log(
-        "Selected role:",
-        roleNames[selectedRole] || role
-    );
+    selectedRole = role
+        .toLowerCase()
+        .replace(/\s+/g, "-");
 
     closeRoleSelector();
 
     openAuthModal();
-
 }
 
 
@@ -193,53 +143,28 @@ function selectRole(role) {
 
 function openAuthModal() {
 
-    const authModal =
-        document.getElementById("authModal");
+    const modal = document.getElementById("authModal");
 
-    if (!authModal) {
-
-        console.error(
-            "authModal not found in index.html"
-        );
-
+    if (!modal) {
+        console.error("authModal was not found.");
         return;
     }
 
-    authModal.classList.remove("hidden");
-
-    authModal.style.display = "flex";
-    authModal.style.visibility = "visible";
-    authModal.style.opacity = "1";
-    authModal.style.zIndex = "9999";
-
-    document.body.classList.add("modal-open");
+    modal.classList.remove("hidden");
 
     switchAuth("register");
-
-    console.log(
-        "Authentication modal opened."
-    );
 }
 
 
 function closeAuthModal() {
 
-    const authModal =
-        document.getElementById("authModal");
+    const modal = document.getElementById("authModal");
 
-    if (!authModal) {
+    if (!modal) {
         return;
     }
 
-    authModal.classList.add("hidden");
-
-    authModal.style.display = "none";
-
-    document.body.classList.remove("modal-open");
-
-    console.log(
-        "Authentication modal closed."
-    );
+    modal.classList.add("hidden");
 }
 
 
@@ -249,93 +174,45 @@ function closeAuthModal() {
 
 function switchAuth(type) {
 
-    const nameField =
-        document.getElementById("nameField");
-
-    const authTitle =
-        document.getElementById("authTitle");
-
-    const authSubtitle =
-        document.getElementById("authSubtitle");
-
-    const authButtonText =
-        document.getElementById("authButtonText");
-
-    const registerTab =
-        document.getElementById("registerTab");
-
-    const loginTab =
-        document.getElementById("loginTab");
-
-    const authName =
-        document.getElementById("authName");
-
+    const nameField = document.getElementById("nameField");
+    const authTitle = document.getElementById("authTitle");
+    const authSubtitle = document.getElementById("authSubtitle");
+    const authButtonText = document.getElementById("authButtonText");
+    const registerTab = document.getElementById("registerTab");
+    const loginTab = document.getElementById("loginTab");
+    const authName = document.getElementById("authName");
 
     if (type === "login") {
 
-        if (nameField) {
-            nameField.style.display = "none";
-        }
+        nameField.style.display = "none";
 
-        if (authTitle) {
-            authTitle.textContent =
-                "Welcome back";
-        }
+        authTitle.textContent = "Welcome back";
 
-        if (authSubtitle) {
-            authSubtitle.textContent =
-                "Login to your KheloGram account.";
-        }
+        authSubtitle.textContent =
+            "Login to your KheloGram account.";
 
-        if (authButtonText) {
-            authButtonText.textContent =
-                "Login";
-        }
+        authButtonText.textContent = "Login";
 
-        if (registerTab) {
-            registerTab.classList.remove("active");
-        }
+        registerTab.classList.remove("active");
+        loginTab.classList.add("active");
 
-        if (loginTab) {
-            loginTab.classList.add("active");
-        }
-
-        if (authName) {
-            authName.required = false;
-        }
+        authName.required = false;
 
     } else {
 
-        if (nameField) {
-            nameField.style.display = "block";
-        }
+        nameField.style.display = "block";
 
-        if (authTitle) {
-            authTitle.textContent =
-                "Create your account";
-        }
+        authTitle.textContent = "Create your account";
 
-        if (authSubtitle) {
-            authSubtitle.textContent =
-                "Join the KheloGram ecosystem.";
-        }
+        authSubtitle.textContent =
+            "Join the KheloGram ecosystem.";
 
-        if (authButtonText) {
-            authButtonText.textContent =
-                "Create Account";
-        }
+        authButtonText.textContent = "Create Account";
 
-        if (registerTab) {
-            registerTab.classList.add("active");
-        }
+        registerTab.classList.add("active");
+        loginTab.classList.remove("active");
 
-        if (loginTab) {
-            loginTab.classList.remove("active");
-        }
-
-        if (authName) {
-            authName.required = true;
-        }
+        authName.required = true;
     }
 }
 
@@ -348,26 +225,14 @@ function handleAuthSubmit(event) {
 
     event.preventDefault();
 
-    const authTitle =
-        document.getElementById("authTitle");
+    const title =
+        document.getElementById("authTitle").textContent;
 
-    const isLogin =
-        authTitle &&
-        authTitle.textContent
-            .toLowerCase()
-            .includes("welcome back");
-
-
-    if (isLogin) {
-
+    if (title === "Welcome back") {
         loginUser();
-
     } else {
-
         registerUser();
-
     }
-
 }
 
 
@@ -378,109 +243,59 @@ function handleAuthSubmit(event) {
 function registerUser() {
 
     const name =
-        document.getElementById("authName")
-            .value
-            .trim();
+        document.getElementById("authName").value.trim();
 
     const email =
-        document.getElementById("authEmail")
-            .value
-            .trim();
+        document.getElementById("authEmail").value.trim();
 
     const password =
-        document.getElementById("authPassword")
-            .value
-            .trim();
-
+        document.getElementById("authPassword").value;
 
     if (!name) {
-
-        alert(
-            "Please enter your full name."
-        );
-
+        alert("Please enter your full name.");
         return;
     }
-
 
     if (!email) {
-
-        alert(
-            "Please enter your email."
-        );
-
+        alert("Please enter your email.");
         return;
     }
-
 
     if (password.length < 6) {
-
-        alert(
-            "Password must contain at least 6 characters."
-        );
-
+        alert("Password must contain at least 6 characters.");
         return;
     }
-
 
     if (!selectedRole) {
-
-        alert(
-            "Please select your role first."
-        );
-
+        alert("Please select your role first.");
         return;
     }
 
-
     const user = {
-
         name: name,
-
         email: email,
-
         password: password,
-
         role: selectedRole,
-
         profile: {
-
             age: "",
-
             village: "",
-
             district: "",
-
             sport: "",
-
             skill: "",
-
-            achievements: ""
-
+            achievements: "",
+            coach: ""
         }
-
     };
 
-
     saveUser(user);
-
-    console.log(
-        "User registered:",
-        user
-    );
-
 
     closeAuthModal();
 
     showDashboard();
 
-
     showToast(
-        "Welcome to KheloGram, " +
-        name +
-        "!"
+        "Welcome to KheloGram, " + name + "!"
     );
-
 }
 
 
@@ -491,18 +306,12 @@ function registerUser() {
 function loginUser() {
 
     const email =
-        document.getElementById("authEmail")
-            .value
-            .trim();
+        document.getElementById("authEmail").value.trim();
 
     const password =
-        document.getElementById("authPassword")
-            .value
-            .trim();
-
+        document.getElementById("authPassword").value;
 
     const user = getUser();
-
 
     if (!user) {
 
@@ -513,33 +322,26 @@ function loginUser() {
         return;
     }
 
-
     if (
         email === user.email &&
         password === user.password
     ) {
 
-        selectedRole =
-            user.role;
+        selectedRole = user.role;
 
         closeAuthModal();
 
         showDashboard();
 
         showToast(
-            "Welcome back, " +
-            user.name +
-            "!"
+            "Welcome back, " + user.name + "!"
         );
 
     } else {
 
-        alert(
-            "Incorrect email or password."
-        );
+        alert("Incorrect email or password.");
 
     }
-
 }
 
 
@@ -552,193 +354,52 @@ function showDashboard() {
     const user = getUser();
 
     if (!user) {
-
-        console.log(
-            "No saved user."
-        );
-
         return;
     }
 
-
     const landingPage =
-        document.getElementById(
-            "landingPage"
-        );
+        document.getElementById("landingPage");
 
     const dashboardPage =
-        document.getElementById(
-            "dashboardPage"
-        );
+        document.getElementById("dashboardPage");
 
+    landingPage.classList.add("hidden");
 
-    if (landingPage) {
-
-        landingPage.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    if (dashboardPage) {
-
-        dashboardPage.classList.remove(
-            "hidden"
-        );
-
-    }
-
+    dashboardPage.classList.remove("hidden");
 
     updateDashboardUser(user);
 
     loadProfile(user);
 
-    showDashboardSection(
-        "overview"
-    );
-
-
-    console.log(
-        "Dashboard opened for:",
-        user.name,
-        roleNames[user.role] || user.role
-    );
-
+    showDashboardSection("overview");
 }
 
 
 /* =========================================================
-   DASHBOARD USER INFORMATION
+   DASHBOARD USER
    ========================================================= */
 
 function updateDashboardUser(user) {
 
-    const name =
-        user.name || "User";
+    const name = user.name || "User";
 
     const role =
         roleNames[user.role] ||
         user.role ||
         "Athlete";
 
+    setText("dashboardName", name);
+    setText("userDisplayName", name);
+    setText("userRole", role);
 
-    const dashboardName =
-        document.getElementById(
-            "dashboardName"
-        );
+    const initials = getInitials(name);
 
-    const userDisplayName =
-        document.getElementById(
-            "userDisplayName"
-        );
+    setText("userInitials", initials);
+    setText("passportInitials", initials);
+    setText("profileAvatar", initials);
 
-    const userRole =
-        document.getElementById(
-            "userRole"
-        );
-
-
-    if (dashboardName) {
-        dashboardName.textContent =
-            name;
-    }
-
-    if (userDisplayName) {
-        userDisplayName.textContent =
-            name;
-    }
-
-    if (userRole) {
-        userRole.textContent =
-            role;
-    }
-
-
-    const initials =
-        getInitials(name);
-
-
-    const userInitials =
-        document.getElementById(
-            "userInitials"
-        );
-
-    const passportInitials =
-        document.getElementById(
-            "passportInitials"
-        );
-
-    const profileAvatar =
-        document.getElementById(
-            "profileAvatar"
-        );
-
-
-    if (userInitials) {
-        userInitials.textContent =
-            initials;
-    }
-
-    if (passportInitials) {
-        passportInitials.textContent =
-            initials;
-    }
-
-    if (profileAvatar) {
-        profileAvatar.textContent =
-            initials;
-    }
-
-
-    const passportName =
-        document.getElementById(
-            "passportName"
-        );
-
-    const profileCardName =
-        document.getElementById(
-            "profileCardName"
-        );
-
-
-    if (passportName) {
-        passportName.textContent =
-            name;
-    }
-
-    if (profileCardName) {
-        profileCardName.textContent =
-            name;
-    }
-
-
-    /*
-       Coach menu is mainly relevant
-       to athletes in this prototype.
-    */
-
-    const coachMenu =
-        document.getElementById(
-            "coachMenu"
-        );
-
-    if (coachMenu) {
-
-        if (user.role === "athlete") {
-
-            coachMenu.style.display =
-                "flex";
-
-        } else {
-
-            coachMenu.style.display =
-                "flex";
-
-        }
-
-    }
-
+    setText("passportName", name);
+    setText("profileCardName", name);
 }
 
 
@@ -752,8 +413,7 @@ function getInitials(name) {
         return "KG";
     }
 
-    const words =
-        name.trim().split(/\s+/);
+    const words = name.trim().split(/\s+/);
 
     if (words.length === 1) {
 
@@ -767,7 +427,6 @@ function getInitials(name) {
         words[0][0] +
         words[words.length - 1][0]
     ).toUpperCase();
-
 }
 
 
@@ -775,111 +434,54 @@ function getInitials(name) {
    DASHBOARD SECTIONS
    ========================================================= */
 
-function showDashboardSection(
-    sectionName,
-    clickedButton
-) {
+function showDashboardSection(sectionName, clickedButton) {
 
     const sections =
-        document.querySelectorAll(
-            ".dashboard-section"
-        );
+        document.querySelectorAll(".dashboard-section");
 
+    sections.forEach(function(section) {
+        section.classList.add("hidden");
+    });
 
-    sections.forEach(
-        function(section) {
-
-            section.classList.add(
-                "hidden"
-            );
-
-        }
-    );
-
-
-    const targetSection =
+    const target =
         document.getElementById(
             "section-" + sectionName
         );
 
-
-    if (targetSection) {
-
-        targetSection.classList.remove(
-            "hidden"
-        );
-
+    if (target) {
+        target.classList.remove("hidden");
     }
 
-
     const menuItems =
-        document.querySelectorAll(
-            ".menu-item"
-        );
+        document.querySelectorAll(".menu-item");
 
-
-    menuItems.forEach(
-        function(item) {
-
-            item.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
+    menuItems.forEach(function(item) {
+        item.classList.remove("active");
+    });
 
     if (clickedButton) {
 
-        clickedButton.classList.add(
-            "active"
-        );
+        clickedButton.classList.add("active");
 
-    }
+    } else {
 
+        menuItems.forEach(function(item) {
 
-    /*
-       If called from another button,
-       automatically activate matching menu item.
-    */
+            const text =
+                item.textContent
+                    .trim()
+                    .toLowerCase();
 
-    if (!clickedButton) {
-
-        menuItems.forEach(
-            function(item) {
-
-                const text =
-                    item.textContent
-                        .trim()
-                        .toLowerCase();
-
-                if (
-                    text.includes(
-                        sectionName
-                    )
-                ) {
-
-                    item.classList.add(
-                        "active"
-                    );
-
-                }
-
+            if (text.includes(sectionName)) {
+                item.classList.add("active");
             }
-        );
 
+        });
     }
 
-
-    if (
-        sectionName ===
-        "coaches"
-    ) {
-
+    if (sectionName === "coaches") {
         filterCoaches();
-
     }
-
 }
 
 
@@ -892,81 +494,42 @@ function loadProfile(user) {
     if (!user.profile) {
 
         user.profile = {
-
             age: "",
             village: "",
             district: "",
             sport: "",
             skill: "",
-            achievements: ""
-
+            achievements: "",
+            coach: ""
         };
 
         saveUser(user);
-
     }
 
+    const profile = user.profile;
 
-    const profile =
-        user.profile;
-
-
-    setInputValue(
-        "profileName",
-        user.name
-    );
-
-    setInputValue(
-        "profileAge",
-        profile.age
-    );
-
-    setInputValue(
-        "profileVillage",
-        profile.village
-    );
-
-    setInputValue(
-        "profileDistrict",
-        profile.district
-    );
-
-    setInputValue(
-        "profileSport",
-        profile.sport
-    );
-
-    setInputValue(
-        "profileSkill",
-        profile.skill
-    );
-
+    setInputValue("profileName", user.name);
+    setInputValue("profileAge", profile.age);
+    setInputValue("profileVillage", profile.village);
+    setInputValue("profileDistrict", profile.district);
+    setInputValue("profileSport", profile.sport);
+    setInputValue("profileSkill", profile.skill);
     setInputValue(
         "profileAchievements",
         profile.achievements
     );
 
-
-    updateProfileDisplay(
-        user
-    );
-
+    updateProfileDisplay(user);
 }
 
 
-function setInputValue(
-    id,
-    value
-) {
+function setInputValue(id, value) {
 
-    const element =
-        document.getElementById(id);
+    const element = document.getElementById(id);
 
     if (element) {
-        element.value =
-            value || "";
+        element.value = value || "";
     }
-
 }
 
 
@@ -978,54 +541,46 @@ function saveProfile(event) {
 
     event.preventDefault();
 
-
     const user = getUser();
 
     if (!user) {
         return;
     }
 
-
     user.name =
-        document.getElementById(
-            "profileName"
-        ).value.trim();
-
+        document.getElementById("profileName")
+            .value
+            .trim();
 
     user.profile = {
 
         age:
-            document.getElementById(
-                "profileAge"
-            ).value,
+            document.getElementById("profileAge").value,
 
         village:
-            document.getElementById(
-                "profileVillage"
-            ).value.trim(),
+            document.getElementById("profileVillage")
+                .value
+                .trim(),
 
         district:
-            document.getElementById(
-                "profileDistrict"
-            ).value.trim(),
+            document.getElementById("profileDistrict")
+                .value
+                .trim(),
 
         sport:
-            document.getElementById(
-                "profileSport"
-            ).value,
+            document.getElementById("profileSport").value,
 
         skill:
-            document.getElementById(
-                "profileSkill"
-            ).value,
+            document.getElementById("profileSkill").value,
 
         achievements:
-            document.getElementById(
-                "profileAchievements"
-            ).value.trim()
+            document.getElementById("profileAchievements")
+                .value
+                .trim(),
 
+        coach:
+            user.profile.coach || ""
     };
-
 
     saveUser(user);
 
@@ -1038,27 +593,16 @@ function saveProfile(event) {
     showToast(
         "Sports Passport saved successfully!"
     );
-
 }
 
 
 /* =========================================================
-   UPDATE PROFILE DISPLAY
+   PROFILE DISPLAY
    ========================================================= */
 
 function updateProfileDisplay(user) {
 
-    const profile =
-        user.profile || {};
-
-
-    const sport =
-        profile.sport || "Not set";
-
-
-    const skill =
-        profile.skill || "Not set";
-
+    const profile = user.profile || {};
 
     const location =
         buildLocation(
@@ -1066,164 +610,70 @@ function updateProfileDisplay(user) {
             profile.district
         );
 
+    setText(
+        "passportSport",
+        profile.sport || "Sport not selected"
+    );
 
-    const passportSport =
-        document.getElementById(
-            "passportSport"
-        );
+    setText(
+        "profileCardSport",
+        profile.sport || "Sport not selected"
+    );
 
-    const profileCardSport =
-        document.getElementById(
-            "profileCardSport"
-        );
+    setText(
+        "passportLocation",
+        location || "Add your village and district"
+    );
 
-    const passportLocation =
-        document.getElementById(
-            "passportLocation"
-        );
-
-
-    if (passportSport) {
-
-        passportSport.textContent =
-            profile.sport ||
-            "Sport not selected";
-
-    }
-
-
-    if (profileCardSport) {
-
-        profileCardSport.textContent =
-            profile.sport ||
-            "Sport not selected";
-
-    }
-
-
-    if (passportLocation) {
-
-        passportLocation.textContent =
-            location ||
-            "Add your village and district";
-
-    }
-
-
-    /*
-       Profile completion
-    */
+    const fields = [
+        user.name,
+        profile.age,
+        profile.village,
+        profile.district,
+        profile.sport,
+        profile.skill,
+        profile.achievements
+    ];
 
     let completed = 0;
 
-    const fields = [
+    fields.forEach(function(value) {
 
-        user.name,
-
-        profile.age,
-
-        profile.village,
-
-        profile.district,
-
-        profile.sport,
-
-        profile.skill,
-
-        profile.achievements
-
-    ];
-
-
-    fields.forEach(
-        function(value) {
-
-            if (
-                value &&
-                String(value).trim() !== ""
-            ) {
-
-                completed++;
-
-            }
-
+        if (
+            value &&
+            String(value).trim() !== ""
+        ) {
+            completed++;
         }
-    );
 
+    });
 
     const completion =
         Math.round(
-            (completed /
-                fields.length) *
-            100
+            completed / fields.length * 100
         );
 
+    setText(
+        "profileCompletion",
+        completion + "%"
+    );
 
-    const profileCompletion =
-        document.getElementById(
-            "profileCompletion"
-        );
+    setText(
+        "primarySport",
+        profile.sport || "Not set"
+    );
 
+    setText(
+        "talentStatus",
+        completion >= 70 ? "Ready" : "Building"
+    );
 
-    if (profileCompletion) {
-
-        profileCompletion.textContent =
-            completion + "%";
-
-    }
-
-
-    const primarySport =
-        document.getElementById(
-            "primarySport"
-        );
-
-    if (primarySport) {
-
-        primarySport.textContent =
-            profile.sport ||
-            "Not set";
-
-    }
-
-
-    const talentStatus =
-        document.getElementById(
-            "talentStatus"
-        );
-
-    if (talentStatus) {
-
-        if (completion >= 70) {
-
-            talentStatus.textContent =
-                "Ready";
-
-        } else {
-
-            talentStatus.textContent =
-                "Building";
-
-        }
-
-    }
-
-
-    const coachStatus =
-        document.getElementById(
-            "coachStatus"
-        );
-
-    if (coachStatus) {
-
-        coachStatus.textContent =
-            "Not connected";
-
-    }
-
+    setText(
+        "coachStatus",
+        profile.coach || "Not connected"
+    );
 
     updateInsights(user);
-
 }
 
 
@@ -1231,22 +681,10 @@ function updateProfileDisplay(user) {
    LOCATION
    ========================================================= */
 
-function buildLocation(
-    village,
-    district
-) {
+function buildLocation(village, district) {
 
-    if (
-        village &&
-        district
-    ) {
-
-        return (
-            village +
-            ", " +
-            district
-        );
-
+    if (village && district) {
+        return village + ", " + district;
     }
 
     if (village) {
@@ -1258,12 +696,11 @@ function buildLocation(
     }
 
     return "";
-
 }
 
 
 /* =========================================================
-   AI INSIGHTS - PROTOTYPE
+   AI INSIGHTS
    ========================================================= */
 
 function updateInsights(user) {
@@ -1272,43 +709,9 @@ function updateInsights(user) {
         return;
     }
 
+    const profile = user.profile || {};
 
-    const profile =
-        user.profile || {};
-
-
-    const sport =
-        profile.sport ||
-        "your sport";
-
-
-    const skill =
-        profile.skill ||
-        "your current level";
-
-
-    const aiSummary =
-        document.getElementById(
-            "aiSummary"
-        );
-
-
-    const insightTitle =
-        document.getElementById(
-            "insightTitle"
-        );
-
-
-    const insightDescription =
-        document.getElementById(
-            "insightDescription"
-        );
-
-
-    if (
-        profile.sport &&
-        profile.skill
-    ) {
+    if (profile.sport && profile.skill) {
 
         const message =
             "Your profile shows " +
@@ -1317,62 +720,44 @@ function updateInsights(user) {
             profile.sport +
             ". Keep building your performance record to strengthen your KheloGram talent profile.";
 
-        if (aiSummary) {
-            aiSummary.textContent =
-                message;
-        }
+        setText("aiSummary", message);
 
-        if (insightTitle) {
+        setText(
+            "insightTitle",
+            profile.sport + " Talent Profile"
+        );
 
-            insightTitle.textContent =
-                profile.sport +
-                " Talent Profile";
-
-        }
-
-        if (insightDescription) {
-
-            insightDescription.textContent =
-                message;
-
-        }
+        setText(
+            "insightDescription",
+            message
+        );
 
     } else {
 
-        if (aiSummary) {
+        setText(
+            "aiSummary",
+            "Complete your sports profile to generate a personalized talent profile."
+        );
 
-            aiSummary.textContent =
-                "Complete your sports profile to generate a personalized talent profile.";
+        setText(
+            "insightTitle",
+            "Build your sports passport"
+        );
 
-        }
-
-        if (insightTitle) {
-
-            insightTitle.textContent =
-                "Build your sports passport";
-
-        }
-
-        if (insightDescription) {
-
-            insightDescription.textContent =
-                "Add your sport, skill level and experience to create your initial talent profile.";
-
-        }
-
+        setText(
+            "insightDescription",
+            "Add your sport, skill level and experience to create your initial talent profile."
+        );
     }
-
 
     setText(
         "signalSport",
-        profile.sport ||
-        "Not provided"
+        profile.sport || "Not provided"
     );
 
     setText(
         "signalSkill",
-        profile.skill ||
-        "Not provided"
+        profile.skill || "Not provided"
     );
 
     setText(
@@ -1380,16 +765,13 @@ function updateInsights(user) {
         buildLocation(
             profile.village,
             profile.district
-        ) ||
-        "Not provided"
+        ) || "Not provided"
     );
 
     setText(
         "signalExperience",
-        profile.achievements ||
-        "Not provided"
+        profile.achievements || "Not provided"
     );
-
 }
 
 
@@ -1400,85 +782,48 @@ function updateInsights(user) {
 function filterCoaches() {
 
     const searchInput =
-        document.getElementById(
-            "coachSearch"
-        );
+        document.getElementById("coachSearch");
 
     const sportFilter =
-        document.getElementById(
-            "coachSportFilter"
-        );
-
+        document.getElementById("coachSportFilter");
 
     const search =
         searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
+            ? searchInput.value.trim().toLowerCase()
             : "";
-
 
     const sport =
         sportFilter
             ? sportFilter.value
             : "";
 
-
     const filtered =
-        coachData.filter(
-            function(coach) {
+        coachData.filter(function(coach) {
 
-                const matchesSearch =
+            const matchesSearch =
+                coach.name.toLowerCase().includes(search) ||
+                coach.sport.toLowerCase().includes(search) ||
+                coach.location.toLowerCase().includes(search);
 
-                    coach.name
-                        .toLowerCase()
-                        .includes(search)
+            const matchesSport =
+                !sport ||
+                coach.sport === sport;
 
-                    ||
-
-                    coach.sport
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    coach.location
-                        .toLowerCase()
-                        .includes(search);
-
-
-                const matchesSport =
-
-                    !sport ||
-                    coach.sport === sport;
-
-
-                return (
-                    matchesSearch &&
-                    matchesSport
-                );
-
-            }
-        );
-
+            return matchesSearch && matchesSport;
+        });
 
     renderCoaches(filtered);
-
 }
 
 
 function renderCoaches(coaches) {
 
     const grid =
-        document.getElementById(
-            "coachGrid"
-        );
-
+        document.getElementById("coachGrid");
 
     if (!grid) {
         return;
     }
-
 
     if (coaches.length === 0) {
 
@@ -1493,45 +838,42 @@ function renderCoaches(coaches) {
         return;
     }
 
-
     grid.innerHTML =
-        coaches.map(
-            function(coach) {
+        coaches.map(function(coach) {
 
-                return `
-                    <div class="coach-card">
+            const initials =
+                getInitials(coach.name);
 
-                        <div class="coach-avatar">
-                            ${getInitials(coach.name)}
-                        </div>
+            return `
+                <div class="coach-card">
 
-                        <h3>${coach.name}</h3>
-
-                        <p>
-                            ${coach.sport}
-                        </p>
-
-                        <small>
-                            📍 ${coach.location}
-                        </small>
-
-                        <small>
-                            ⭐ ${coach.experience}
-                        </small>
-
-                        <button
-                            class="secondary-btn"
-                            onclick="connectCoach('${coach.name}')"
-                        >
-                            Connect
-                        </button>
-
+                    <div class="coach-avatar">
+                        ${initials}
                     </div>
-                `;
 
-            }
-        ).join("");
+                    <h3>${coach.name}</h3>
 
+                    <p>${coach.sport}</p>
+
+                    <small>
+                        📍 ${coach.location}
+                    </small>
+
+                    <small>
+                        ⭐ ${coach.experience}
+                    </small>
+
+                    <button
+                        class="secondary-btn"
+                        type="button"
+                        onclick="connectCoach('${coach.name}')">
+                        Connect
+                    </button>
+
+                </div>
+            `;
+
+        }).join("");
 }
 
 
@@ -1543,38 +885,19 @@ function connectCoach(name) {
         return;
     }
 
-
     if (!user.profile) {
         user.profile = {};
     }
 
-
-    user.profile.coach =
-        name;
-
+    user.profile.coach = name;
 
     saveUser(user);
 
-
-    const coachStatus =
-        document.getElementById(
-            "coachStatus"
-        );
-
-
-    if (coachStatus) {
-
-        coachStatus.textContent =
-            name;
-
-    }
-
+    setText("coachStatus", name);
 
     showToast(
-        "Coach connection request sent to " +
-        name
+        "Coach connection request sent to " + name
     );
-
 }
 
 
@@ -1584,50 +907,21 @@ function connectCoach(name) {
 
 function logout() {
 
-    localStorage.removeItem(
-        "khelogramUser"
-    );
+    localStorage.removeItem("khelogramUser");
 
     selectedRole = "";
 
-    const dashboardPage =
-        document.getElementById(
-            "dashboardPage"
-        );
+    const dashboard =
+        document.getElementById("dashboardPage");
 
-    const landingPage =
-        document.getElementById(
-            "landingPage"
-        );
+    const landing =
+        document.getElementById("landingPage");
 
+    dashboard.classList.add("hidden");
 
-    if (dashboardPage) {
+    landing.classList.remove("hidden");
 
-        dashboardPage.classList.add(
-            "hidden"
-        );
-
-    }
-
-
-    if (landingPage) {
-
-        landingPage.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    showToast(
-        "You have been logged out."
-    );
-
-
-    console.log(
-        "KheloGram user logged out."
-    );
-
+    showToast("You have been logged out.");
 }
 
 
@@ -1635,31 +929,18 @@ function logout() {
    SCROLL
    ========================================================= */
 
-function scrollToSection(
-    sectionId
-) {
+function scrollToSection(sectionId) {
 
     const section =
-        document.getElementById(
-            sectionId
-        );
-
+        document.getElementById(sectionId);
 
     if (!section) {
-
-        console.warn(
-            "Section not found:",
-            sectionId
-        );
-
         return;
     }
-
 
     section.scrollIntoView({
         behavior: "smooth"
     });
-
 }
 
 
@@ -1667,45 +948,28 @@ function scrollToSection(
    TOAST
    ========================================================= */
 
+let toastTimer = null;
+
 function showToast(message) {
 
     const toast =
-        document.getElementById(
-            "toast"
-        );
-
+        document.getElementById("toast");
 
     if (!toast) {
-
-        console.log(
-            "Toast:",
-            message
-        );
-
         return;
     }
 
+    toast.textContent = message;
 
-    toast.textContent =
-        message;
+    toast.classList.add("show");
 
+    clearTimeout(toastTimer);
 
-    toast.classList.add(
-        "show"
-    );
+    toastTimer = setTimeout(function() {
 
+        toast.classList.remove("show");
 
-    setTimeout(
-        function() {
-
-            toast.classList.remove(
-                "show"
-            );
-
-        },
-        3000
-    );
-
+    }, 3000);
 }
 
 
@@ -1713,226 +977,127 @@ function showToast(message) {
    HELPER
    ========================================================= */
 
-function setText(
-    id,
-    value
-) {
+function setText(id, value) {
 
     const element =
         document.getElementById(id);
 
     if (element) {
-
-        element.textContent =
-            value;
-
+        element.textContent = value;
     }
-
 }
 
 
 /* =========================================================
-   CLOSE MODALS BY CLICKING OUTSIDE
+   MODAL OUTSIDE CLICK
    ========================================================= */
 
-document.addEventListener(
-    "click",
-    function(event) {
+document.addEventListener("click", function(event) {
 
-        const roleModal =
-            document.getElementById(
-                "roleModal"
-            );
+    const roleModal =
+        document.getElementById("roleModal");
 
-        const authModal =
-            document.getElementById(
-                "authModal"
-            );
+    const authModal =
+        document.getElementById("authModal");
 
-
-        if (
-            roleModal &&
-            event.target === roleModal
-        ) {
-
-            closeRoleSelector();
-
-        }
-
-
-        if (
-            authModal &&
-            event.target === authModal
-        ) {
-
-            closeAuthModal();
-
-        }
-
+    if (
+        roleModal &&
+        event.target === roleModal
+    ) {
+        closeRoleSelector();
     }
-);
+
+    if (
+        authModal &&
+        event.target === authModal
+    ) {
+        closeAuthModal();
+    }
+});
 
 
 /* =========================================================
    ESCAPE KEY
    ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    function(event) {
+document.addEventListener("keydown", function(event) {
 
-        if (event.key === "Escape") {
+    if (event.key === "Escape") {
 
-            closeRoleSelector();
+        closeRoleSelector();
 
-            closeAuthModal();
-
-        }
-
+        closeAuthModal();
     }
-);
+});
 
 
 /* =========================================================
    INITIALIZE
    ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
+document.addEventListener("DOMContentLoaded", function() {
 
-        console.log(
-            "KheloGram Stage 3.3 initialized."
+    console.log("KheloGram Stage 3.3 initialized.");
+
+    const authForm =
+        document.getElementById("authForm");
+
+    if (authForm) {
+
+        authForm.addEventListener(
+            "submit",
+            handleAuthSubmit
         );
-
-
-        /*
-           Connect authentication form
-        */
-
-        const authForm =
-            document.getElementById(
-                "authForm"
-            );
-
-
-        if (authForm) {
-
-            authForm.addEventListener(
-                "submit",
-                handleAuthSubmit
-            );
-
-        }
-
-
-        /*
-           Connect profile form
-        */
-
-        const profileForm =
-            document.getElementById(
-                "profileForm"
-            );
-
-
-        if (profileForm) {
-
-            profileForm.addEventListener(
-                "submit",
-                saveProfile
-            );
-
-        }
-
-
-        /*
-           If a user already exists,
-           restore dashboard.
-        */
-
-        const user =
-            getUser();
-
-
-        if (user) {
-
-            selectedRole =
-                user.role;
-
-            console.log(
-                "Saved KheloGram user found:",
-                user.name
-            );
-
-            showDashboard();
-
-        }
-
-
-        console.log(
-            "KheloGram Stage 3.3 ready."
-        );
-
     }
-);
+
+
+    const profileForm =
+        document.getElementById("profileForm");
+
+    if (profileForm) {
+
+        profileForm.addEventListener(
+            "submit",
+            saveProfile
+        );
+    }
+
+
+    const user = getUser();
+
+    if (user) {
+
+        selectedRole = user.role;
+
+        showDashboard();
+    }
+
+    console.log("KheloGram ready.");
+});
 
 
 /* =========================================================
-   MAKE FUNCTIONS AVAILABLE TO HTML
+   GLOBAL FUNCTIONS FOR HTML
    ========================================================= */
 
-window.openRoleSelector =
-    openRoleSelector;
+window.openRoleSelector = openRoleSelector;
+window.closeRoleSelector = closeRoleSelector;
+window.selectRole = selectRole;
 
-window.closeRoleSelector =
-    closeRoleSelector;
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
+window.switchAuth = switchAuth;
 
-window.selectRole =
-    selectRole;
+window.registerUser = registerUser;
+window.loginUser = loginUser;
 
-window.openAuthModal =
-    openAuthModal;
+window.logout = logout;
+window.showDashboard = showDashboard;
+window.showDashboardSection = showDashboardSection;
 
-window.closeAuthModal =
-    closeAuthModal;
+window.scrollToSection = scrollToSection;
 
-window.switchAuth =
-    switchAuth;
+window.filterCoaches = filterCoaches;
+window.connectCoach = connectCoach;
 
-window.registerUser =
-    registerUser;
-
-window.loginUser =
-    loginUser;
-
-window.logout =
-    logout;
-
-window.showDashboard =
-    showDashboard;
-
-window.showDashboardSection =
-    showDashboardSection;
-
-window.scrollToSection =
-    scrollToSection;
-
-window.filterCoaches =
-    filterCoaches;
-
-window.connectCoach =
-    connectCoach;
-
-
-/* =========================================================
-   FINAL MESSAGE
-   ========================================================= */
-
-console.log(
-    "KheloGram loaded successfully."
-);
-
-console.log(
-    "Stage 3.3 JavaScript ready."
-);
+console.log("KheloGram JavaScript loaded successfully.");
