@@ -1,3 +1,440 @@
+/* =========================================================
+   KHELOGRAM — STAGE 3.2
+   DEMO DATA
+   ========================================================= */
+
+/* =========================
+   ATHLETES
+   ========================= */
+
+const athletes = [
+    {
+        id: 1,
+        name: "Rahul Kumar",
+        sport: "Cricket",
+        village: "Keshavpur",
+        district: "Lucknow",
+        age: 19,
+        performance: 92,
+        status: "Promising",
+        improvement: "+18%"
+    },
+    {
+        id: 2,
+        name: "Amit Singh",
+        sport: "Football",
+        village: "Rampur",
+        district: "Lucknow",
+        age: 18,
+        performance: 87,
+        status: "Rising",
+        improvement: "+14%"
+    },
+    {
+        id: 3,
+        name: "Priya Verma",
+        sport: "Athletics",
+        village: "Lakhanpur",
+        district: "Barabanki",
+        age: 17,
+        performance: 90,
+        status: "Promising",
+        improvement: "+21%"
+    },
+    {
+        id: 4,
+        name: "Vikas Yadav",
+        sport: "Kabaddi",
+        village: "Kamalpur",
+        district: "Unnao",
+        age: 20,
+        performance: 84,
+        status: "Rising",
+        improvement: "+11%"
+    },
+    {
+        id: 5,
+        name: "Neha Singh",
+        sport: "Volleyball",
+        village: "Sultanpur",
+        district: "Sultanpur",
+        age: 18,
+        performance: 88,
+        status: "Promising",
+        improvement: "+16%"
+    }
+];
+
+
+/* =========================
+   SPORTS GROUNDS
+   ========================= */
+
+const grounds = [
+    {
+        id: 1,
+        name: "Keshavpur Sports Ground",
+        village: "Keshavpur",
+        district: "Lucknow",
+        sports: ["Cricket", "Football", "Volleyball"],
+        status: "Active",
+        utilization: 82,
+        condition: "Good",
+        maintenance: false
+    },
+    {
+        id: 2,
+        name: "Rampur Community Ground",
+        village: "Rampur",
+        district: "Lucknow",
+        sports: ["Football", "Kabaddi"],
+        status: "Active",
+        utilization: 74,
+        condition: "Good",
+        maintenance: false
+    },
+    {
+        id: 3,
+        name: "Lakhanpur Rural Stadium",
+        village: "Lakhanpur",
+        district: "Barabanki",
+        sports: ["Athletics", "Cricket"],
+        status: "Maintenance",
+        utilization: 41,
+        condition: "Needs Repair",
+        maintenance: true
+    },
+    {
+        id: 4,
+        name: "Kamalpur Sports Field",
+        village: "Kamalpur",
+        district: "Unnao",
+        sports: ["Kabaddi", "Football"],
+        status: "Active",
+        utilization: 69,
+        condition: "Fair",
+        maintenance: false
+    },
+    {
+        id: 5,
+        name: "Sultanpur Village Ground",
+        village: "Sultanpur",
+        district: "Sultanpur",
+        sports: ["Volleyball", "Cricket"],
+        status: "Active",
+        utilization: 88,
+        condition: "Good",
+        maintenance: false
+    }
+];
+
+
+/* =========================
+   TOURNAMENTS
+   ========================= */
+
+const tournaments = [
+    {
+        id: 1,
+        name: "Rural Cricket Championship",
+        sport: "Cricket",
+        location: "Lucknow",
+        date: "12 September 2026",
+        registrations: 48,
+        capacity: 64,
+        status: "Open"
+    },
+    {
+        id: 2,
+        name: "Village Football Cup",
+        sport: "Football",
+        location: "Rampur",
+        date: "20 September 2026",
+        registrations: 36,
+        capacity: 48,
+        status: "Open"
+    },
+    {
+        id: 3,
+        name: "District Athletics Meet",
+        sport: "Athletics",
+        location: "Barabanki",
+        date: "28 September 2026",
+        registrations: 72,
+        capacity: 100,
+        status: "Open"
+    },
+    {
+        id: 4,
+        name: "Rural Kabaddi League",
+        sport: "Kabaddi",
+        location: "Unnao",
+        date: "5 October 2026",
+        registrations: 28,
+        capacity: 32,
+        status: "Almost Full"
+    }
+];
+
+
+/* =========================
+   COACHES
+   ========================= */
+
+const coaches = [
+    {
+        id: 1,
+        name: "Rajesh Kumar",
+        sport: "Cricket",
+        village: "Keshavpur",
+        athletes: 18,
+        experience: "8 years"
+    },
+    {
+        id: 2,
+        name: "Sanjay Verma",
+        sport: "Football",
+        village: "Rampur",
+        athletes: 14,
+        experience: "6 years"
+    },
+    {
+        id: 3,
+        name: "Anita Sharma",
+        sport: "Athletics",
+        village: "Lakhanpur",
+        athletes: 21,
+        experience: "10 years"
+    }
+];
+
+
+/* =========================
+   TRAINING SESSIONS
+   ========================= */
+
+const trainingSessions = [
+    {
+        id: 1,
+        sport: "Cricket",
+        coach: "Rajesh Kumar",
+        location: "Keshavpur Sports Ground",
+        date: "14 August 2026",
+        time: "5:00 PM",
+        athletes: 18
+    },
+    {
+        id: 2,
+        sport: "Football",
+        coach: "Sanjay Verma",
+        location: "Rampur Community Ground",
+        date: "15 August 2026",
+        time: "6:00 PM",
+        athletes: 14
+    },
+    {
+        id: 3,
+        sport: "Athletics",
+        coach: "Anita Sharma",
+        location: "Lakhanpur Rural Stadium",
+        date: "16 August 2026",
+        time: "6:30 AM",
+        athletes: 21
+    }
+];
+
+
+/* =========================
+   AI TALENT SIGNALS
+   ========================= */
+
+const talentSignals = [
+    {
+        id: 1,
+        athlete: "Rahul Kumar",
+        sport: "Cricket",
+        village: "Keshavpur",
+        score: 92,
+        signal: "Performance rising",
+        recommendation: "District-level trial recommended"
+    },
+    {
+        id: 2,
+        athlete: "Priya Verma",
+        sport: "Athletics",
+        village: "Lakhanpur",
+        score: 90,
+        signal: "Consistent improvement",
+        recommendation: "State talent camp recommended"
+    },
+    {
+        id: 3,
+        athlete: "Amit Singh",
+        sport: "Football",
+        village: "Rampur",
+        score: 87,
+        signal: "Strong recent form",
+        recommendation: "Block-level tournament recommended"
+    }
+];
+
+
+/* =========================
+   MAINTENANCE REQUESTS
+   ========================= */
+
+const maintenanceRequests = [
+    {
+        id: 1,
+        ground: "Lakhanpur Rural Stadium",
+        village: "Lakhanpur",
+        issue: "Ground surface repair",
+        priority: "High",
+        status: "Pending"
+    },
+    {
+        id: 2,
+        ground: "Kamalpur Sports Field",
+        village: "Kamalpur",
+        issue: "Floodlight replacement",
+        priority: "Medium",
+        status: "Pending"
+    },
+    {
+        id: 3,
+        ground: "Sultanpur Village Ground",
+        village: "Sultanpur",
+        issue: "Boundary repair",
+        priority: "Low",
+        status: "In Progress"
+    }
+];
+
+
+/* =========================
+   PLATFORM STATISTICS
+   ========================= */
+
+const platformStats = {
+    sportsGrounds: grounds.length,
+    athletes: athletes.length,
+    tournaments: tournaments.length,
+    talentSignals: talentSignals.length,
+
+    groundUtilization: 78,
+    participationGrowth: 28.4,
+
+    activeGrounds: grounds.filter(
+        ground => ground.status === "Active"
+    ).length,
+
+    maintenanceRequests: maintenanceRequests.filter(
+        request => request.status === "Pending"
+    ).length
+};
+
+
+/* =========================
+   HELPER FUNCTIONS
+   ========================= */
+
+/*
+   Get athlete by ID
+*/
+function getAthleteById(id) {
+    return athletes.find(athlete => athlete.id === id);
+}
+
+
+/*
+   Get ground by ID
+*/
+function getGroundById(id) {
+    return grounds.find(ground => ground.id === id);
+}
+
+
+/*
+   Get tournament by ID
+*/
+function getTournamentById(id) {
+    return tournaments.find(
+        tournament => tournament.id === id
+    );
+}
+
+
+/*
+   Get talent signal by athlete name
+*/
+function getTalentSignal(athleteName) {
+    return talentSignals.find(
+        signal => signal.athlete === athleteName
+    );
+}
+
+
+/*
+   Calculate average athlete performance
+*/
+function getAveragePerformance() {
+    if (athletes.length === 0) {
+        return 0;
+    }
+
+    const total = athletes.reduce(
+        (sum, athlete) => sum + athlete.performance,
+        0
+    );
+
+    return Math.round(total / athletes.length);
+}
+
+
+/*
+   Calculate average ground utilization
+*/
+function getAverageGroundUtilization() {
+    if (grounds.length === 0) {
+        return 0;
+    }
+
+    const total = grounds.reduce(
+        (sum, ground) => sum + ground.utilization,
+        0
+    );
+
+    return Math.round(total / grounds.length);
+}
+
+
+/*
+   Get active grounds
+*/
+function getActiveGrounds() {
+    return grounds.filter(
+        ground => ground.status === "Active"
+    );
+}
+
+
+/*
+   Get upcoming tournaments
+*/
+function getOpenTournaments() {
+    return tournaments.filter(
+        tournament =>
+            tournament.status === "Open" ||
+            tournament.status === "Almost Full"
+    );
+}
+
+
+/* =========================================================
+   END OF STAGE 3.2 DEMO DATA
+   ========================================================= */
+
+
 /* =====================================================
    KHELOGRAM STAGE 3
    Athlete Profile + Coach Discovery
