@@ -43,7 +43,7 @@ button {
 }
 
 
-/* ================= HEADER ================= */
+/* HEADER */
 
 .topbar {
     height: 82px;
@@ -108,7 +108,7 @@ nav a {
 }
 
 
-/* ================= BUTTONS ================= */
+/* BUTTONS */
 
 .primary-btn {
     border: 0;
@@ -134,6 +134,10 @@ nav a {
     font-weight: 700;
 }
 
+.secondary-btn:hover {
+    border-color: var(--green);
+}
+
 .text-btn {
     background: none;
     border: 0;
@@ -146,7 +150,7 @@ nav a {
 }
 
 
-/* ================= HERO ================= */
+/* HERO */
 
 .hero {
     min-height: 680px;
@@ -213,7 +217,7 @@ nav a {
 }
 
 
-/* ================= PREVIEW ================= */
+/* PREVIEW */
 
 .dashboard-window {
     background: white;
@@ -238,7 +242,7 @@ nav a {
 }
 
 .live {
-    margin-left: auto;
+    margin-left: 15px;
     color: var(--green);
     font-size: 12px;
     font-weight: 700;
@@ -322,7 +326,7 @@ nav a {
 }
 
 
-/* ================= SECTIONS ================= */
+/* SECTIONS */
 
 .section {
     padding: 100px 5%;
@@ -400,7 +404,7 @@ nav a {
 }
 
 
-/* ================= DASHBOARD ================= */
+/* DASHBOARD */
 
 .dashboard-page {
     min-height: calc(100vh - 82px);
@@ -675,7 +679,7 @@ nav a {
 }
 
 
-/* ================= PROFILE ================= */
+/* PROFILE */
 
 .profile-layout {
     display: grid;
@@ -741,7 +745,7 @@ nav a {
 }
 
 
-/* ================= COACHES ================= */
+/* COACHES */
 
 .search-row {
     display: grid;
@@ -780,20 +784,21 @@ nav a {
     margin-bottom: 5px;
 }
 
-.coach-sport {
+.coach-card p {
     color: var(--green);
     font-size: 13px;
     font-weight: 700;
 }
 
-.coach-location {
+.coach-card small {
+    display: block;
     color: var(--muted);
-    margin: 12px 0 20px;
-    font-size: 14px;
+    margin-top: 8px;
 }
 
 .coach-card button {
     width: 100%;
+    margin-top: 20px;
 }
 
 .connection-status {
@@ -808,7 +813,7 @@ nav a {
 }
 
 
-/* ================= EMPTY ================= */
+/* EMPTY */
 
 .empty-panel {
     background: white;
@@ -831,7 +836,7 @@ nav a {
 }
 
 
-/* ================= INSIGHTS ================= */
+/* INSIGHTS */
 
 .insight-grid {
     display: grid;
@@ -846,6 +851,7 @@ nav a {
 .signal-list li {
     display: flex;
     justify-content: space-between;
+    gap: 20px;
     padding: 15px 0;
     border-bottom: 1px solid var(--border);
 }
@@ -856,6 +862,7 @@ nav a {
 
 .signal-list strong {
     color: var(--navy);
+    text-align: right;
 }
 
 .prototype-note {
@@ -869,7 +876,7 @@ nav a {
 }
 
 
-/* ================= MODALS ================= */
+/* MODALS */
 
 .modal {
     position: fixed;
@@ -880,7 +887,7 @@ nav a {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    z-index: 100;
+    z-index: 1000;
     overflow-y: auto;
 }
 
@@ -987,7 +994,7 @@ nav a {
 }
 
 
-/* ================= TOAST ================= */
+/* TOAST */
 
 .toast {
     position: fixed;
@@ -1001,7 +1008,7 @@ nav a {
     pointer-events: none;
     transform: translateY(20px);
     transition: .25s;
-    z-index: 200;
+    z-index: 2000;
 }
 
 .toast.show {
@@ -1010,7 +1017,7 @@ nav a {
 }
 
 
-/* ================= RESPONSIVE ================= */
+/* RESPONSIVE */
 
 @media (max-width: 1100px) {
 
@@ -1029,6 +1036,7 @@ nav a {
     .coach-grid {
         grid-template-columns: 1fr 1fr;
     }
+
 }
 
 @media (max-width: 800px) {
@@ -1093,9 +1101,18 @@ nav a {
     .form-grid {
         grid-template-columns: 1fr;
     }
+
 }
 
 @media (max-width: 600px) {
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .brand small {
+        display: none;
+    }
 
     .hero {
         padding: 60px 22px;
@@ -1104,6 +1121,10 @@ nav a {
     .hero h1 {
         font-size: 46px;
         letter-spacing: -2px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
     }
 
     .ecosystem-grid,
@@ -1123,4 +1144,9 @@ nav a {
     .dashboard-top h1 {
         font-size: 32px;
     }
+
+    .dashboard-preview {
+        padding: 20px;
+    }
+
 }
