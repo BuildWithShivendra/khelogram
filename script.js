@@ -1,928 +1,652 @@
 /* =========================================================
-   KHELOGRAM - MAIN JAVASCRIPT
-   Stage 3.2 - Clean Version
+   KHELOGRAM - STAGE 3.3
+   User Session + Role + Dashboard Logic
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function () {
+console.log("KheloGram loaded successfully.");
+console.log("Stage 3.3 JavaScript is running.");
 
-    /* =====================================================
-       BASIC HELPERS
-       ===================================================== */
 
-    function getElement(id) {
-        return document.getElementById(id);
+/* =========================================================
+   1. ROLE INFORMATION
+   ========================================================= */
+
+const roleMap = {
+    athlete: "Athlete",
+    coach: "Coach",
+    "gram-panchayat": "Gram Panchayat",
+    organizer: "Organizer",
+    authority: "Authority"
+};
+
+const roleDescriptions = {
+    athlete: "Track your sports journey",
+    coach: "Develop sporting talent",
+    "gram-panchayat": "Manage sports infrastructure",
+    organizer: "Manage tournaments",
+    authority: "Monitor sports ecosystem"
+};
+
+let selectedRole = null;
+
+
+/* =========================================================
+   2. GET USER FROM LOCAL STORAGE
+   ========================================================= */
+
+function getUser() {
+    const savedUser = localStorage.getItem("khelogramUser");
+
+    if (!savedUser) {
+        return null;
     }
 
-    function showElement(element) {
-        if (element) {
-            element.classList.add("active");
+    try {
+        return JSON.parse(savedUser);
+    } catch (error) {
+        console.error("Could not read saved user.");
+        return null;
+    }
+}
+
+
+/* =========================================================
+   3. SAVE USER
+   ========================================================= */
+
+function saveUser(name, email, password, role) {
+
+    const user = {
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+        createdAt: new Date().toISOString()
+    };
+
+    localStorage.setItem(
+        "khelogramUser",
+        JSON.stringify(user)
+    );
+
+    console.log("User saved successfully.");
+}
+
+
+/* =========================================================
+   4. LOGOUT
+   ========================================================= */
+
+function logout() {
+
+    localStorage.removeItem("khelogramUser");
+
+    selectedRole = null;
+
+    closeAllModals();
+
+    alert("You have been logged out.");
+
+    window.location.reload();
+}
+
+
+/* =========================================================
+   5. CLOSE ALL MODALS
+   ========================================================= */
+
+function closeAllModals() {
+
+    const modals = document.querySelectorAll(
+        ".modal, .overlay, [class*='modal']"
+    );
+
+    modals.forEach(function(modal) {
+        if (modal.style) {
+            modal.style.display = "none";
         }
+    });
+
+    document.body.classList.remove("modal-open");
+}
+
+
+/* =========================================================
+   6. ROLE SELECTOR
+   ========================================================= */
+
+function openRoleSelector() {
+
+    const roleModal = document.getElementById("roleModal");
+
+    if (roleModal) {
+        roleModal.style.display = "flex";
     }
 
-    function hideElement(element) {
-        if (element) {
-            element.classList.remove("active");
-        }
+    document.body.classList.add("modal-open");
+
+    console.log("Role selector opened.");
+}
+
+
+function closeRoleSelector() {
+
+    const roleModal = document.getElementById("roleModal");
+
+    if (roleModal) {
+        roleModal.style.display = "none";
     }
 
-    function lockBody() {
-        document.body.style.overflow = "hidden";
+    document.body.classList.remove("modal-open");
+}
+
+
+function selectRole(role) {
+
+    selectedRole = role;
+
+    console.log("Selected role:", roleMap[role] || role);
+
+    closeRoleSelector();
+
+    openAuthModal();
+}
+
+
+/* =========================================================
+   7. AUTH MODAL
+   ========================================================= */
+
+function openAuthModal() {
+
+    const authModal = document.getElementById("authModal");
+
+    if (authModal) {
+        authModal.style.display = "flex";
     }
 
-    function unlockBody() {
-        document.body.style.overflow = "";
+    document.body.classList.add("modal-open");
+
+    updateAuthRoleText();
+}
+
+
+function closeAuthModal() {
+
+    const authModal = document.getElementById("authModal");
+
+    if (authModal) {
+        authModal.style.display = "none";
     }
 
-
-    /* =====================================================
-       ROLE SELECTION
-       ===================================================== */
-
-    let selectedRole = null;
-
-    const roleModal =
-        getElement("roleModal") ||
-        getElement("roleSelector") ||
-        getElement("role-modal");
-
-    const authModal =
-        getElement("authModal") ||
-        getElement("auth-modal");
-
-    /*
-       Opens the role selection popup.
-       This function is also available globally because
-       some buttons in index.html may use onclick.
-    */
-    window.openRoleSelector = function () {
-
-        const modal =
-            getElement("roleModal") ||
-            getElement("roleSelector") ||
-            getElement("role-modal");
-
-        if (!modal) {
-            console.warn("Role selection modal was not found.");
-            return;
-        }
-
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    };
+    document.body.classList.remove("modal-open");
+}
 
 
-    /*
-       Older HTML may call openRoleModal().
-       Keep it working.
-    */
-    window.openRoleModal = function () {
-        window.openRoleSelector();
-    };
+function updateAuthRoleText() {
 
+    const roleText = document.querySelector(
+        "[data-selected-role]"
+    );
 
-    /*
-       Close role selection.
-    */
-    window.closeRoleSelector = function () {
-
-        const modal =
-            getElement("roleModal") ||
-            getElement("roleSelector") ||
-            getElement("role-modal");
-
-        if (modal) {
-            modal.classList.remove("active");
-        }
-
-        unlockBody();
-    };
-
-
-    window.closeRoleModal = function () {
-        window.closeRoleSelector();
-    };
-
-
-    /*
-       Close modal when clicking outside it.
-    */
-    window.closeModalOutside = function (event) {
-
-        const modal =
-            getElement("roleModal") ||
-            getElement("roleSelector") ||
-            getElement("role-modal");
-
-        if (modal && event.target === modal) {
-            window.closeRoleSelector();
-        }
-    };
-
-
-    /* =====================================================
-       ROLE SELECTION
-       ===================================================== */
-
-    window.selectRole = function (role) {
-
-        selectedRole = role;
-
-        console.log("Selected role:", role);
-
-        window.closeRoleSelector();
-
-        /*
-           Open authentication screen after selecting role.
-        */
-        if (typeof window.openAuthModal === "function") {
-            window.openAuthModal(role);
-        } else if (authModal) {
-            authModal.classList.add("active");
-            document.body.style.overflow = "hidden";
-        }
-
-        /*
-           Update role text if the HTML contains it.
-        */
-        const roleTextElements =
-            document.querySelectorAll("[data-selected-role]");
-
-        roleTextElements.forEach(function (element) {
-            element.textContent = formatRoleName(role);
-        });
-    };
-
-
-    function formatRoleName(role) {
-
-        if (!role) {
-            return "";
-        }
-
-        const roleMap = {
-            athlete: "Athlete",
-            coach: "Coach",
-            panchayat: "Gram Panchayat",
-            "gram-panchayat": "Gram Panchayat",
-            organizer: "Organizer",
-            authority: "Authority"
-        };
-
-        return roleMap[role] || role;
+    if (roleText && selectedRole) {
+        roleText.textContent =
+            roleMap[selectedRole] || selectedRole;
     }
+}
 
 
-    /* =====================================================
-       AUTHENTICATION MODAL
-       ===================================================== */
+/* =========================================================
+   8. REGISTRATION
+   ========================================================= */
 
-    window.openAuthModal = function (role) {
+function registerUser() {
 
-        const modal =
-            getElement("authModal") ||
-            getElement("auth-modal");
+    const nameInput =
+        document.getElementById("registerName");
 
-        if (!modal) {
-            console.warn("Authentication modal was not found.");
-            return;
-        }
+    const emailInput =
+        document.getElementById("registerEmail");
 
-        if (role) {
-            selectedRole = role;
-        }
+    const passwordInput =
+        document.getElementById("registerPassword");
 
-        /*
-           Put selected role into any matching elements.
-        */
-        const roleLabels =
-            modal.querySelectorAll("[data-auth-role]");
+    if (!nameInput || !emailInput || !passwordInput) {
 
-        roleLabels.forEach(function (element) {
-            element.textContent = formatRoleName(selectedRole);
-        });
-
-        modal.classList.add("active");
-        document.body.style.overflow = "hidden";
-    };
-
-
-    window.closeAuthModal = function () {
-
-        const modal =
-            getElement("authModal") ||
-            getElement("auth-modal");
-
-        if (modal) {
-            modal.classList.remove("active");
-        }
-
-        unlockBody();
-    };
-
-
-    window.closeAuthOutside = function (event) {
-
-        const modal =
-            getElement("authModal") ||
-            getElement("auth-modal");
-
-        if (modal && event.target === modal) {
-            window.closeAuthModal();
-        }
-    };
-
-
-    /* =====================================================
-       REGISTER / LOGIN TABS
-       ===================================================== */
-
-    window.showRegister = function () {
-
-        const registerForm =
-            getElement("registerForm") ||
-            document.querySelector(".register-form");
-
-        const loginForm =
-            getElement("loginForm") ||
-            document.querySelector(".login-form");
-
-        const registerTab =
-            getElement("registerTab");
-
-        const loginTab =
-            getElement("loginTab");
-
-        if (registerForm) {
-            registerForm.style.display = "block";
-        }
-
-        if (loginForm) {
-            loginForm.style.display = "none";
-        }
-
-        if (registerTab) {
-            registerTab.classList.add("active");
-        }
-
-        if (loginTab) {
-            loginTab.classList.remove("active");
-        }
-    };
-
-
-    window.showLogin = function () {
-
-        const registerForm =
-            getElement("registerForm") ||
-            document.querySelector(".register-form");
-
-        const loginForm =
-            getElement("loginForm") ||
-            document.querySelector(".login-form");
-
-        const registerTab =
-            getElement("registerTab");
-
-        const loginTab =
-            getElement("loginTab");
-
-        if (registerForm) {
-            registerForm.style.display = "none";
-        }
-
-        if (loginForm) {
-            loginForm.style.display = "block";
-        }
-
-        if (registerTab) {
-            registerTab.classList.remove("active");
-        }
-
-        if (loginTab) {
-            loginTab.classList.add("active");
-        }
-    };
-
-
-    /* =====================================================
-       REGISTRATION
-       ===================================================== */
-
-    window.handleRegister = function (event) {
-
-        if (event) {
-            event.preventDefault();
-        }
-
-        const nameInput =
-            getElement("registerName") ||
-            document.querySelector(
-                'input[name="name"]'
-            );
-
-        const emailInput =
-            getElement("registerEmail") ||
-            document.querySelector(
-                'input[name="email"]'
-            );
-
-        const passwordInput =
-            getElement("registerPassword") ||
-            document.querySelector(
-                'input[name="password"]'
-            );
-
-        const name =
-            nameInput ? nameInput.value.trim() : "";
-
-        const email =
-            emailInput ? emailInput.value.trim() : "";
-
-        const password =
-            passwordInput ? passwordInput.value : "";
-
-        if (!name || !email || !password) {
-            alert("Please fill all the required fields.");
-            return false;
-        }
-
-        if (password.length < 6) {
-            alert("Password should contain at least 6 characters.");
-            return false;
-        }
-
-        /*
-           Store demo user locally.
-           This is frontend-only for now.
-        */
-        const userData = {
-            name: name,
-            email: email,
-            role: selectedRole || "athlete"
-        };
-
-        localStorage.setItem(
-            "khelogramUser",
-            JSON.stringify(userData)
+        console.warn(
+            "Registration input IDs were not found."
         );
+
+        return false;
+    }
+
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (name === "") {
+        alert("Please enter your name.");
+        return false;
+    }
+
+    if (email === "") {
+        alert("Please enter your email.");
+        return false;
+    }
+
+    if (password === "") {
+        alert("Please create a password.");
+        return false;
+    }
+
+    if (!selectedRole) {
+        alert("Please select your role first.");
+        return false;
+    }
+
+    saveUser(
+        name,
+        email,
+        password,
+        selectedRole
+    );
+
+    alert(
+        "Account created successfully!\n\n" +
+        "Welcome to KheloGram, " + name + "!"
+    );
+
+    closeAuthModal();
+
+    showDashboard();
+
+    return false;
+}
+
+
+/* =========================================================
+   9. LOGIN
+   ========================================================= */
+
+function loginUser() {
+
+    const emailInput =
+        document.getElementById("loginEmail");
+
+    const passwordInput =
+        document.getElementById("loginPassword");
+
+    if (!emailInput || !passwordInput) {
+
+        console.warn(
+            "Login input IDs were not found."
+        );
+
+        return false;
+    }
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    const user = getUser();
+
+    if (!user) {
 
         alert(
-            "Account created successfully!\n\n" +
-            "Welcome to KheloGram, " + name + "!"
+            "No KheloGram account found.\n\n" +
+            "Please register first."
         );
 
-        window.closeAuthModal();
-
         return false;
-    };
+    }
+
+    if (
+        email === user.email &&
+        password === user.password
+    ) {
+
+        selectedRole = user.role;
+
+        alert(
+            "Login successful!\n\n" +
+            "Welcome back, " + user.name + "!"
+        );
+
+        closeAuthModal();
+
+        showDashboard();
+
+    } else {
+
+        alert(
+            "Incorrect email or password."
+        );
+    }
+
+    return false;
+}
 
 
-    /* =====================================================
-       LOGIN
-       ===================================================== */
+/* =========================================================
+   10. SHOW DASHBOARD
+   ========================================================= */
 
-    window.handleLogin = function (event) {
+function showDashboard() {
 
-        if (event) {
-            event.preventDefault();
-        }
+    const user = getUser();
 
-        const emailInput =
-            getElement("loginEmail") ||
-            document.querySelector(
-                '.login-form input[type="email"]'
-            );
+    if (!user) {
+        console.log("No logged-in user.");
+        return;
+    }
 
-        const passwordInput =
-            getElement("loginPassword") ||
-            document.querySelector(
-                '.login-form input[type="password"]'
-            );
+    console.log(
+        "Opening dashboard for:",
+        user.name,
+        user.role
+    );
 
-        const email =
-            emailInput ? emailInput.value.trim() : "";
+    /*
+       If your HTML already contains a dashboard,
+       these elements will be updated.
+    */
 
-        const password =
-            passwordInput ? passwordInput.value : "";
-
-        if (!email || !password) {
-            alert("Please enter your email and password.");
-            return false;
-        }
-
-        const savedUser =
-            localStorage.getItem("khelogramUser");
-
-        if (savedUser) {
-
-            const user = JSON.parse(savedUser);
-
-            if (user.email === email) {
-
-                alert(
-                    "Login successful!\n\n" +
-                    "Welcome back, " + user.name + "!"
-                );
-
-                window.closeAuthModal();
-
-                return false;
-            }
-        }
-
-        /*
-           Demo login if no registered account exists.
-        */
-        alert("Login successful!");
-
-        window.closeAuthModal();
-
-        return false;
-    };
-
-
-    /* =====================================================
-       GET STARTED BUTTONS
-       ===================================================== */
-
-    const getStartedButtons =
+    const nameElements =
         document.querySelectorAll(
-            '[data-action="get-started"], .get-started-btn'
+            "[data-user-name]"
         );
 
-    getStartedButtons.forEach(function (button) {
-
-        button.addEventListener("click", function (event) {
-
-            event.preventDefault();
-
-            window.openRoleSelector();
-
-        });
-
+    nameElements.forEach(function(element) {
+        element.textContent = user.name;
     });
 
 
-    /* =====================================================
-       EXPLORE PLATFORM
-       ===================================================== */
-
-    const exploreButtons =
+    const roleElements =
         document.querySelectorAll(
-            '[data-action="explore"], .explore-platform'
+            "[data-user-role]"
         );
 
-    exploreButtons.forEach(function (button) {
+    roleElements.forEach(function(element) {
 
-        button.addEventListener("click", function (event) {
-
-            event.preventDefault();
-
-            const platformSection =
-                getElement("platform");
-
-            if (platformSection) {
-
-                platformSection.scrollIntoView({
-                    behavior: "smooth"
-                });
-
-            }
-
-        });
-
+        element.textContent =
+            roleMap[user.role] || user.role;
     });
 
 
-    /* =====================================================
-       NAVIGATION
-       ===================================================== */
+    /*
+       Update normal text containing
+       "Welcome back"
+    */
 
-    const navigationLinks =
+    const allElements =
+        document.querySelectorAll("h1, h2, h3, p");
+
+    allElements.forEach(function(element) {
+
+        if (
+            element.textContent.includes(
+                "Welcome back"
+            )
+        ) {
+
+            element.textContent =
+                "Welcome back, " +
+                user.name +
+                " 👋";
+        }
+    });
+}
+
+
+/* =========================================================
+   11. UPDATE USER INFORMATION
+   ========================================================= */
+
+function updateUserName(newName) {
+
+    const user = getUser();
+
+    if (!user) {
+        return;
+    }
+
+    user.name = newName;
+
+    localStorage.setItem(
+        "khelogramUser",
+        JSON.stringify(user)
+    );
+
+    showDashboard();
+}
+
+
+/* =========================================================
+   12. NAVIGATION
+   ========================================================= */
+
+function scrollToSection(sectionId) {
+
+    const section =
+        document.getElementById(sectionId);
+
+    if (!section) {
+        console.warn(
+            "Section not found:",
+            sectionId
+        );
+        return;
+    }
+
+    section.scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+/* =========================================================
+   13. GET STARTED BUTTONS
+   ========================================================= */
+
+function setupGetStartedButtons() {
+
+    const buttons =
         document.querySelectorAll(
-            'a[href^="#"]'
+            ".get-started, [data-get-started]"
         );
 
-    navigationLinks.forEach(function (link) {
+    buttons.forEach(function(button) {
 
-        link.addEventListener("click", function (event) {
-
-            const targetId =
-                link.getAttribute("href");
-
-            if (!targetId || targetId === "#") {
-                return;
-            }
-
-            const target =
-                document.querySelector(targetId);
-
-            if (target) {
+        button.addEventListener(
+            "click",
+            function(event) {
 
                 event.preventDefault();
 
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
+                const user = getUser();
 
+                if (user) {
+
+                    showDashboard();
+
+                } else {
+
+                    openRoleSelector();
+                }
             }
-
-        });
-
+        );
     });
+}
 
 
-    /* =====================================================
-       ESC KEY - CLOSE MODALS
-       ===================================================== */
+/* =========================================================
+   14. LOGOUT BUTTONS
+   ========================================================= */
 
-    document.addEventListener("keydown", function (event) {
+function setupLogoutButtons() {
 
-        if (event.key === "Escape") {
-
-            window.closeRoleSelector();
-            window.closeAuthModal();
-
-        }
-
-    });
-
-
-    /* =====================================================
-       CLOSE BUTTONS
-       ===================================================== */
-
-    const closeButtons =
+    const buttons =
         document.querySelectorAll(
-            '[data-close-modal], .modal-close, .close-modal'
+            ".logout, [data-logout]"
         );
 
-    closeButtons.forEach(function (button) {
+    buttons.forEach(function(button) {
 
-        button.addEventListener("click", function () {
+        button.addEventListener(
+            "click",
+            function(event) {
 
-            window.closeRoleSelector();
-            window.closeAuthModal();
+                event.preventDefault();
 
-        });
-
+                logout();
+            }
+        );
     });
+}
 
 
-    /* =====================================================
-       ROLE CARDS
-       ===================================================== */
+/* =========================================================
+   15. ROLE CARDS
+   ========================================================= */
+
+function setupRoleCards() {
 
     const roleCards =
         document.querySelectorAll(
-            "[data-role], .role-card"
+            "[data-role]"
         );
 
-    roleCards.forEach(function (card) {
+    roleCards.forEach(function(card) {
 
-        card.addEventListener("click", function () {
+        card.addEventListener(
+            "click",
+            function() {
 
-            let role =
-                card.getAttribute("data-role");
+                const role =
+                    card.getAttribute(
+                        "data-role"
+                    );
 
-            if (!role) {
-
-                const title =
-                    card.querySelector("h3, h4, strong");
-
-                if (title) {
-                    role =
-                        title.textContent
-                            .toLowerCase()
-                            .replace(/\s+/g, "-");
+                if (role) {
+                    selectRole(role);
                 }
-
             }
-
-            if (role) {
-                window.selectRole(role);
-            }
-
-        });
-
+        );
     });
+}
 
 
-    /* =====================================================
-       MODAL BACKGROUND CLICK
-       ===================================================== */
+/* =========================================================
+   16. CLOSE MODAL WHEN CLICKING OUTSIDE
+   ========================================================= */
 
-    document.addEventListener("click", function (event) {
+document.addEventListener(
+    "click",
+    function(event) {
 
-        const roleModalElement =
-            getElement("roleModal") ||
-            getElement("roleSelector") ||
-            getElement("role-modal");
+        const roleModal =
+            document.getElementById(
+                "roleModal"
+            );
 
-        const authModalElement =
-            getElement("authModal") ||
-            getElement("auth-modal");
+        const authModal =
+            document.getElementById(
+                "authModal"
+            );
 
         if (
-            roleModalElement &&
-            event.target === roleModalElement
+            roleModal &&
+            event.target === roleModal
         ) {
-            window.closeRoleSelector();
+
+            closeRoleSelector();
         }
 
         if (
-            authModalElement &&
-            event.target === authModalElement
+            authModal &&
+            event.target === authModal
         ) {
-            window.closeAuthModal();
+
+            closeAuthModal();
         }
+    }
+);
 
-    });
 
+/* =========================================================
+   17. ESCAPE KEY
+   ========================================================= */
 
-    /* =====================================================
-       DASHBOARD DEMO DATA
-       ===================================================== */
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-    const dashboardData = {
+        if (event.key === "Escape") {
 
-        athlete: {
-            title: "Athlete dashboard",
-            stats: [
-                {
-                    label: "Training Sessions",
-                    value: "24"
-                },
-                {
-                    label: "Tournaments",
-                    value: "7"
-                },
-                {
-                    label: "Talent Signals",
-                    value: "12"
-                }
-            ]
-        },
-
-        coach: {
-            title: "Coach dashboard",
-            stats: [
-                {
-                    label: "Athletes",
-                    value: "48"
-                },
-                {
-                    label: "Training Sessions",
-                    value: "24"
-                },
-                {
-                    label: "Tournaments",
-                    value: "7"
-                },
-                {
-                    label: "Talent Signals",
-                    value: "12"
-                }
-            ]
-        },
-
-        "gram-panchayat": {
-            title: "Gram Panchayat dashboard",
-            stats: [
-                {
-                    label: "Sports Grounds",
-                    value: "12"
-                },
-                {
-                    label: "Registered Athletes",
-                    value: "245"
-                },
-                {
-                    label: "Maintenance",
-                    value: "3"
-                },
-                {
-                    label: "Utilization",
-                    value: "78%"
-                }
-            ]
-        },
-
-        organizer: {
-            title: "Organizer dashboard",
-            stats: [
-                {
-                    label: "Tournaments",
-                    value: "18"
-                },
-                {
-                    label: "Athletes",
-                    value: "320"
-                },
-                {
-                    label: "Upcoming Events",
-                    value: "6"
-                }
-            ]
-        },
-
-        authority: {
-            title: "Authority dashboard",
-            stats: [
-                {
-                    label: "Villages",
-                    value: "128"
-                },
-                {
-                    label: "Grounds",
-                    value: "245"
-                },
-                {
-                    label: "Talent Signals",
-                    value: "74"
-                },
-                {
-                    label: "Participation Growth",
-                    value: "28.4%"
-                }
-            ]
+            closeRoleSelector();
+            closeAuthModal();
         }
+    }
+);
 
-    };
 
+/* =========================================================
+   18. INITIALIZE WEBSITE
+   ========================================================= */
 
-    /* =====================================================
-       LOCAL STORAGE - USER
-       ===================================================== */
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-    function loadSavedUser() {
+        console.log(
+            "KheloGram Stage 3.3 initialized."
+        );
 
-        const savedUser =
-            localStorage.getItem("khelogramUser");
+        setupGetStartedButtons();
 
-        if (!savedUser) {
-            return null;
-        }
+        setupLogoutButtons();
 
-        try {
-            return JSON.parse(savedUser);
-        } catch (error) {
+        setupRoleCards();
 
-            console.warn(
-                "Could not read saved user data."
+        const user = getUser();
+
+        if (user) {
+
+            selectedRole = user.role;
+
+            console.log(
+                "Saved user found:",
+                user.name
             );
 
-            return null;
+            showDashboard();
         }
 
     }
+);
 
 
-    /* =====================================================
-       UPDATE USER DISPLAY
-       ===================================================== */
+/* =========================================================
+   19. MAKE FUNCTIONS AVAILABLE TO HTML
+   ========================================================= */
 
-    function updateUserDisplay() {
+window.openRoleSelector = openRoleSelector;
+window.closeRoleSelector = closeRoleSelector;
 
-        const user =
-            loadSavedUser();
+window.selectRole = selectRole;
 
-        if (!user) {
-            return;
-        }
+window.openAuthModal = openAuthModal;
+window.closeAuthModal = closeAuthModal;
 
-        const nameElements =
-            document.querySelectorAll(
-                "[data-user-name]"
-            );
+window.registerUser = registerUser;
+window.loginUser = loginUser;
 
-        nameElements.forEach(function (element) {
-            element.textContent = user.name;
-        });
+window.logout = logout;
 
-        const roleElements =
-            document.querySelectorAll(
-                "[data-user-role]"
-            );
+window.showDashboard = showDashboard;
 
-        roleElements.forEach(function (element) {
-            element.textContent =
-                formatRoleName(user.role);
-        });
+window.scrollToSection = scrollToSection;
 
-    }
-
-
-    updateUserDisplay();
-
-
-    /* =====================================================
-       LOGOUT
-       ===================================================== */
-
-    window.logoutKheloGram = function () {
-
-        localStorage.removeItem(
-            "khelogramUser"
-        );
-
-        alert("You have been logged out.");
-
-        window.location.reload();
-    };
-
-
-    const logoutButtons =
-        document.querySelectorAll(
-            '[data-action="logout"], .logout-btn'
-        );
-
-    logoutButtons.forEach(function (button) {
-
-        button.addEventListener("click", function (event) {
-
-            event.preventDefault();
-
-            window.logoutKheloGram();
-
-        });
-
-    });
-
-
-    /* =====================================================
-       SIMPLE SCROLL ANIMATION
-       ===================================================== */
-
-    const animatedElements =
-        document.querySelectorAll(
-            ".feature-card, .stat-card, .impact-card, .ecosystem-card"
-        );
-
-    if ("IntersectionObserver" in window) {
-
-        const observer =
-            new IntersectionObserver(
-                function (entries) {
-
-                    entries.forEach(function (entry) {
-
-                        if (entry.isIntersecting) {
-
-                            entry.target.classList.add(
-                                "visible"
-                            );
-
-                            observer.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    });
-
-                },
-                {
-                    threshold: 0.15
-                }
-            );
-
-        animatedElements.forEach(function (element) {
-            observer.observe(element);
-        });
-
-    }
-
-
-    /* =====================================================
-       CURRENT YEAR
-       ===================================================== */
-
-    const yearElements =
-        document.querySelectorAll(
-            "[data-current-year]"
-        );
-
-    yearElements.forEach(function (element) {
-
-        element.textContent =
-            new Date().getFullYear();
-
-    });
-
-
-    /* =====================================================
-       CONSOLE MESSAGE
-       ===================================================== */
-
-    console.log(
-        "%cKheloGram loaded successfully.",
-        "color:#078a52;font-size:16px;font-weight:bold;"
-    );
-
-    console.log(
-        "Stage 3.2 JavaScript is running."
-    );
-
-});
+console.log(
+    "Stage 3.3 JavaScript ready."
+);
