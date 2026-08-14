@@ -1,7 +1,8 @@
+```javascript
 /* =========================================================
    KHELOGRAM
    STAGE 4.1 - COMPLETE JAVASCRIPT
-   Ground Discovery + Stage 3 Features
+   Rural Sports Ground Discovery
    ========================================================= */
 
 
@@ -10,11 +11,6 @@
    ========================================================= */
 
 let selectedRole = "";
-
-
-/* =========================================================
-   ROLE NAMES
-   ========================================================= */
 
 const roleNames = {
     athlete: "Athlete",
@@ -30,49 +26,42 @@ const roleNames = {
    ========================================================= */
 
 const coachData = [
-
     {
         name: "Amit Kumar",
         sport: "Cricket",
         location: "Lucknow",
         experience: "8 years"
     },
-
     {
         name: "Rahul Singh",
         sport: "Football",
         location: "Lucknow",
         experience: "6 years"
     },
-
     {
         name: "Vivek Yadav",
         sport: "Kabaddi",
         location: "Barabanki",
         experience: "7 years"
     },
-
     {
         name: "Priya Sharma",
         sport: "Athletics",
         location: "Lucknow",
         experience: "5 years"
     },
-
     {
         name: "Arjun Verma",
         sport: "Hockey",
         location: "Kanpur",
         experience: "9 years"
     },
-
     {
         name: "Neha Singh",
         sport: "Volleyball",
         location: "Ayodhya",
         experience: "6 years"
     }
-
 ];
 
 
@@ -82,87 +71,70 @@ const coachData = [
    ========================================================= */
 
 const groundData = [
-
     {
-        name: "KheloGram Village Ground",
-        village: "Bakshi Ka Talab",
+        name: "KheloGram Community Ground",
+        village: "Chinhat",
         district: "Lucknow",
         sport: "Multi-Sport",
-        type: "Village Ground",
         status: "Available",
-        facilities: "Open field, Cricket pitch, Football area"
+        facilities: "Football, Cricket, Athletics"
     },
-
     {
-        name: "Gram Khel Maidan",
+        name: "Gram Sports Ground",
         village: "Malihabad",
         district: "Lucknow",
         sport: "Cricket",
-        type: "Village Ground",
         status: "Available",
-        facilities: "Cricket pitch, Practice area"
+        facilities: "Cricket, Volleyball"
     },
-
     {
         name: "Rural Football Ground",
+        village: "Bakshi Ka Talab",
+        district: "Lucknow",
+        sport: "Football",
+        status: "Available",
+        facilities: "Football, Athletics"
+    },
+    {
+        name: "Yuva Khel Maidan",
+        village: "Nawabganj",
+        district: "Barabanki",
+        sport: "Multi-Sport",
+        status: "Available",
+        facilities: "Cricket, Football, Kabaddi"
+    },
+    {
+        name: "Gram Panchayat Sports Field",
         village: "Haidergarh",
         district: "Barabanki",
-        sport: "Football",
-        type: "Community Ground",
-        status: "Available",
-        facilities: "Football field, Goal posts"
-    },
-
-    {
-        name: "Yuva Sports Ground",
-        village: "Dewa",
-        district: "Barabanki",
         sport: "Kabaddi",
-        type: "Village Ground",
-        status: "Available",
-        facilities: "Kabaddi court, Open field"
-    },
-
-    {
-        name: "Gram Athletics Field",
-        village: "Mohan",
-        district: "Unnao",
-        sport: "Athletics",
-        type: "Training Ground",
         status: "Maintenance",
-        facilities: "Running track, Open field"
+        facilities: "Kabaddi, Volleyball"
     },
-
     {
-        name: "Rural Hockey Ground",
-        village: "Bilhaur",
-        district: "Kanpur",
-        sport: "Hockey",
-        type: "Community Ground",
+        name: "Rural Athletics Ground",
+        village: "Akbarpur",
+        district: "Kanpur Dehat",
+        sport: "Athletics",
         status: "Available",
-        facilities: "Hockey field, Practice area"
+        facilities: "Athletics, Running Track"
     },
-
     {
-        name: "Village Volleyball Court",
-        village: "Sohawal",
-        district: "Ayodhya",
-        sport: "Volleyball",
-        type: "Village Ground",
+        name: "Village Cricket Ground",
+        village: "Soraon",
+        district: "Prayagraj",
+        sport: "Cricket",
         status: "Available",
-        facilities: "Volleyball court, Lighting"
+        facilities: "Cricket"
     },
-
     {
-        name: "Community Multi-Sport Ground",
+        name: "Community Sports Field",
         village: "Milkipur",
         district: "Ayodhya",
         sport: "Multi-Sport",
-        type: "Community Ground",
         status: "Available",
-        facilities: "Cricket, Football, Volleyball"
+        facilities: "Football, Cricket, Volleyball"
     }
-
 ];
 
 
@@ -231,9 +203,6 @@ function openRoleSelector() {
 
     document.body.classList.add("modal-open");
 
-    console.log(
-        "Role selector opened."
-    );
 }
 
 
@@ -252,9 +221,6 @@ function closeRoleSelector() {
 
     document.body.classList.remove("modal-open");
 
-    console.log(
-        "Role selector closed."
-    );
 }
 
 
@@ -277,6 +243,7 @@ function selectRole(role) {
     closeRoleSelector();
 
     openAuthModal();
+
 }
 
 
@@ -309,9 +276,6 @@ function openAuthModal() {
 
     switchAuth("register");
 
-    console.log(
-        "Authentication modal opened."
-    );
 }
 
 
@@ -330,9 +294,6 @@ function closeAuthModal() {
 
     document.body.classList.remove("modal-open");
 
-    console.log(
-        "Authentication modal closed."
-    );
 }
 
 
@@ -429,7 +390,9 @@ function switchAuth(type) {
         if (authName) {
             authName.required = true;
         }
+
     }
+
 }
 
 
@@ -460,6 +423,7 @@ function handleAuthSubmit(event) {
         registerUser();
 
     }
+
 }
 
 
@@ -479,26 +443,20 @@ function registerUser() {
         document.getElementById("authPassword");
 
 
-    if (!nameElement ||
-        !emailElement ||
-        !passwordElement) {
-
-        console.error(
-            "Authentication fields not found."
-        );
-
-        return;
-    }
-
-
     const name =
-        nameElement.value.trim();
+        nameElement
+            ? nameElement.value.trim()
+            : "";
 
     const email =
-        emailElement.value.trim();
+        emailElement
+            ? emailElement.value.trim()
+            : "";
 
     const password =
-        passwordElement.value.trim();
+        passwordElement
+            ? passwordElement.value.trim()
+            : "";
 
 
     if (!name) {
@@ -574,23 +532,16 @@ function registerUser() {
 
     saveUser(user);
 
-
-    console.log(
-        "User registered:",
-        user
-    );
-
-
     closeAuthModal();
 
     showDashboard();
-
 
     showToast(
         "Welcome to KheloGram, " +
         name +
         "!"
     );
+
 }
 
 
@@ -607,22 +558,15 @@ function loginUser() {
         document.getElementById("authPassword");
 
 
-    if (!emailElement ||
-        !passwordElement) {
-
-        console.error(
-            "Login fields not found."
-        );
-
-        return;
-    }
-
-
     const email =
-        emailElement.value.trim();
+        emailElement
+            ? emailElement.value.trim()
+            : "";
 
     const password =
-        passwordElement.value.trim();
+        passwordElement
+            ? passwordElement.value.trim()
+            : "";
 
 
     const user =
@@ -662,7 +606,9 @@ function loginUser() {
         alert(
             "Incorrect email or password."
         );
+
     }
+
 }
 
 
@@ -674,7 +620,6 @@ function showDashboard() {
 
     const user =
         getUser();
-
 
     if (!user) {
 
@@ -702,6 +647,7 @@ function showDashboard() {
         landingPage.classList.add(
             "hidden"
         );
+
     }
 
 
@@ -710,6 +656,7 @@ function showDashboard() {
         dashboardPage.classList.remove(
             "hidden"
         );
+
     }
 
 
@@ -721,12 +668,6 @@ function showDashboard() {
         "overview"
     );
 
-
-    console.log(
-        "Dashboard opened for:",
-        user.name,
-        roleNames[user.role] || user.role
-    );
 }
 
 
@@ -745,108 +686,51 @@ function updateDashboardUser(user) {
         "Athlete";
 
 
-    const dashboardName =
-        document.getElementById(
-            "dashboardName"
-        );
+    setText(
+        "dashboardName",
+        name
+    );
 
-    const userDisplayName =
-        document.getElementById(
-            "userDisplayName"
-        );
+    setText(
+        "userDisplayName",
+        name
+    );
 
-    const userRole =
-        document.getElementById(
-            "userRole"
-        );
-
-
-    if (dashboardName) {
-        dashboardName.textContent =
-            name;
-    }
-
-    if (userDisplayName) {
-        userDisplayName.textContent =
-            name;
-    }
-
-    if (userRole) {
-        userRole.textContent =
-            role;
-    }
+    setText(
+        "userRole",
+        role
+    );
 
 
     const initials =
         getInitials(name);
 
 
-    const userInitials =
-        document.getElementById(
-            "userInitials"
-        );
+    setText(
+        "userInitials",
+        initials
+    );
 
-    const passportInitials =
-        document.getElementById(
-            "passportInitials"
-        );
+    setText(
+        "passportInitials",
+        initials
+    );
 
-    const profileAvatar =
-        document.getElementById(
-            "profileAvatar"
-        );
+    setText(
+        "profileAvatar",
+        initials
+    );
 
+    setText(
+        "passportName",
+        name
+    );
 
-    if (userInitials) {
-        userInitials.textContent =
-            initials;
-    }
+    setText(
+        "profileCardName",
+        name
+    );
 
-    if (passportInitials) {
-        passportInitials.textContent =
-            initials;
-    }
-
-    if (profileAvatar) {
-        profileAvatar.textContent =
-            initials;
-    }
-
-
-    const passportName =
-        document.getElementById(
-            "passportName"
-        );
-
-    const profileCardName =
-        document.getElementById(
-            "profileCardName"
-        );
-
-
-    if (passportName) {
-        passportName.textContent =
-            name;
-    }
-
-    if (profileCardName) {
-        profileCardName.textContent =
-            name;
-    }
-
-
-    const coachMenu =
-        document.getElementById(
-            "coachMenu"
-        );
-
-
-    if (coachMenu) {
-
-        coachMenu.style.display =
-            "flex";
-
-    }
 }
 
 
@@ -860,9 +744,10 @@ function getInitials(name) {
         return "KG";
     }
 
-
     const words =
-        name.trim().split(/\s+/);
+        name
+            .trim()
+            .split(/\s+/);
 
 
     if (words.length === 1) {
@@ -870,6 +755,7 @@ function getInitials(name) {
         return words[0]
             .substring(0, 2)
             .toUpperCase();
+
     }
 
 
@@ -877,6 +763,7 @@ function getInitials(name) {
         words[0][0] +
         words[words.length - 1][0]
     ).toUpperCase();
+
 }
 
 
@@ -977,8 +864,7 @@ function showDashboardSection(
 
 
     if (
-        sectionName ===
-        "coaches"
+        sectionName === "coaches"
     ) {
 
         filterCoaches();
@@ -986,19 +872,14 @@ function showDashboardSection(
     }
 
 
-    /* =====================================================
-       STAGE 4.1
-       LOAD GROUNDS WHEN GROUNDS SECTION OPENS
-       ===================================================== */
-
     if (
-        sectionName ===
-        "grounds"
+        sectionName === "grounds"
     ) {
 
         filterGrounds();
 
     }
+
 }
 
 
@@ -1023,6 +904,7 @@ function loadProfile(user) {
         };
 
         saveUser(user);
+
     }
 
 
@@ -1035,36 +917,30 @@ function loadProfile(user) {
         user.name
     );
 
-
     setInputValue(
         "profileAge",
         profile.age
     );
-
 
     setInputValue(
         "profileVillage",
         profile.village
     );
 
-
     setInputValue(
         "profileDistrict",
         profile.district
     );
-
 
     setInputValue(
         "profileSport",
         profile.sport
     );
 
-
     setInputValue(
         "profileSkill",
         profile.skill
     );
-
 
     setInputValue(
         "profileAchievements",
@@ -1072,9 +948,8 @@ function loadProfile(user) {
     );
 
 
-    updateProfileDisplay(
-        user
-    );
+    updateProfileDisplay(user);
+
 }
 
 
@@ -1090,13 +965,13 @@ function setInputValue(
     const element =
         document.getElementById(id);
 
-
     if (element) {
 
         element.value =
             value || "";
 
     }
+
 }
 
 
@@ -1154,13 +1029,10 @@ function saveProfile(event) {
         );
 
 
-    if (!nameElement) {
-        return;
-    }
-
-
     user.name =
-        nameElement.value.trim();
+        nameElement
+            ? nameElement.value.trim()
+            : user.name;
 
 
     user.profile = {
@@ -1196,13 +1068,14 @@ function saveProfile(event) {
                 : "",
 
         coach:
-            user.profile.coach || ""
+            user.profile
+                ? user.profile.coach || ""
+                : ""
 
     };
 
 
     saveUser(user);
-
 
     updateDashboardUser(user);
 
@@ -1210,10 +1083,10 @@ function saveProfile(event) {
 
     updateInsights(user);
 
-
     showToast(
         "Sports Passport saved successfully!"
     );
+
 }
 
 
@@ -1227,6 +1100,20 @@ function updateProfileDisplay(user) {
         user.profile || {};
 
 
+    setText(
+        "passportSport",
+        profile.sport ||
+        "Sport not selected"
+    );
+
+
+    setText(
+        "profileCardSport",
+        profile.sport ||
+        "Sport not selected"
+    );
+
+
     const location =
         buildLocation(
             profile.village,
@@ -1234,47 +1121,11 @@ function updateProfileDisplay(user) {
         );
 
 
-    const passportSport =
-        document.getElementById(
-            "passportSport"
-        );
-
-    const profileCardSport =
-        document.getElementById(
-            "profileCardSport"
-        );
-
-    const passportLocation =
-        document.getElementById(
-            "passportLocation"
-        );
-
-
-    if (passportSport) {
-
-        passportSport.textContent =
-            profile.sport ||
-            "Sport not selected";
-
-    }
-
-
-    if (profileCardSport) {
-
-        profileCardSport.textContent =
-            profile.sport ||
-            "Sport not selected";
-
-    }
-
-
-    if (passportLocation) {
-
-        passportLocation.textContent =
-            location ||
-            "Add your village and district";
-
-    }
+    setText(
+        "passportLocation",
+        location ||
+        "Add your village and district"
+    );
 
 
     let completed = 0;
@@ -1320,79 +1171,40 @@ function updateProfileDisplay(user) {
             (
                 completed /
                 fields.length
-            ) *
-            100
+            ) * 100
         );
 
 
-    const profileCompletion =
-        document.getElementById(
-            "profileCompletion"
-        );
+    setText(
+        "profileCompletion",
+        completion + "%"
+    );
 
 
-    if (profileCompletion) {
-
-        profileCompletion.textContent =
-            completion + "%";
-
-    }
-
-
-    const primarySport =
-        document.getElementById(
-            "primarySport"
-        );
+    setText(
+        "primarySport",
+        profile.sport ||
+        "Not set"
+    );
 
 
-    if (primarySport) {
-
-        primarySport.textContent =
-            profile.sport ||
-            "Not set";
-
-    }
-
-
-    const talentStatus =
-        document.getElementById(
-            "talentStatus"
-        );
+    setText(
+        "talentStatus",
+        completion >= 70
+            ? "Ready"
+            : "Building"
+    );
 
 
-    if (talentStatus) {
-
-        if (completion >= 70) {
-
-            talentStatus.textContent =
-                "Ready";
-
-        } else {
-
-            talentStatus.textContent =
-                "Building";
-
-        }
-
-    }
-
-
-    const coachStatus =
-        document.getElementById(
-            "coachStatus"
-        );
-
-
-    if (coachStatus) {
-
-        coachStatus.textContent =
-            profile.coach ||
-            "Not connected";
-
-    }
+    setText(
+        "coachStatus",
+        profile.coach ||
+        "Not connected"
+    );
 
 
     updateInsights(user);
+
 }
 
 
@@ -1430,6 +1242,7 @@ function buildLocation(
 
 
     return "";
+
 }
 
 
@@ -1448,24 +1261,6 @@ function updateInsights(user) {
         user.profile || {};
 
 
-    const aiSummary =
-        document.getElementById(
-            "aiSummary"
-        );
-
-
-    const insightTitle =
-        document.getElementById(
-            "insightTitle"
-        );
-
-
-    const insightDescription =
-        document.getElementById(
-            "insightDescription"
-        );
-
-
     if (
         profile.sport &&
         profile.skill
@@ -1479,54 +1274,42 @@ function updateInsights(user) {
             ". Keep building your performance record to strengthen your KheloGram talent profile.";
 
 
-        if (aiSummary) {
-
-            aiSummary.textContent =
-                message;
-
-        }
+        setText(
+            "aiSummary",
+            message
+        );
 
 
-        if (insightTitle) {
-
-            insightTitle.textContent =
-                profile.sport +
-                " Talent Profile";
-
-        }
+        setText(
+            "insightTitle",
+            profile.sport +
+            " Talent Profile"
+        );
 
 
-        if (insightDescription) {
-
-            insightDescription.textContent =
-                message;
-
-        }
+        setText(
+            "insightDescription",
+            message
+        );
 
     } else {
 
-        if (aiSummary) {
-
-            aiSummary.textContent =
-                "Complete your sports profile to generate a personalized talent profile.";
-
-        }
+        setText(
+            "aiSummary",
+            "Complete your sports profile to generate a personalized talent profile."
+        );
 
 
-        if (insightTitle) {
-
-            insightTitle.textContent =
-                "Build your sports passport";
-
-        }
+        setText(
+            "insightTitle",
+            "Build your sports passport"
+        );
 
 
-        if (insightDescription) {
-
-            insightDescription.textContent =
-                "Add your sport, skill level and experience to create your initial talent profile.";
-
-        }
+        setText(
+            "insightDescription",
+            "Add your sport, skill level and experience to create your initial talent profile."
+        );
 
     }
 
@@ -1560,6 +1343,7 @@ function updateInsights(user) {
         profile.achievements ||
         "Not provided"
     );
+
 }
 
 
@@ -1573,7 +1357,6 @@ function filterCoaches() {
         document.getElementById(
             "coachSearch"
         );
-
 
     const sportFilter =
         document.getElementById(
@@ -1633,9 +1416,8 @@ function filterCoaches() {
         );
 
 
-    renderCoaches(
-        filtered
-    );
+    renderCoaches(filtered);
+
 }
 
 
@@ -1675,16 +1457,13 @@ function renderCoaches(coaches) {
             function(coach) {
 
                 return `
-
                     <div class="coach-card">
 
                         <div class="coach-avatar">
                             ${getInitials(coach.name)}
                         </div>
 
-                        <h3>
-                            ${coach.name}
-                        </h3>
+                        <h3>${coach.name}</h3>
 
                         <p>
                             ${coach.sport}
@@ -1700,18 +1479,17 @@ function renderCoaches(coaches) {
 
                         <button
                             class="secondary-btn"
-                            type="button"
                             onclick="connectCoach('${coach.name}')"
                         >
                             Connect
                         </button>
 
                     </div>
-
                 `;
 
             }
         ).join("");
+
 }
 
 
@@ -1731,7 +1509,6 @@ function connectCoach(name) {
 
 
     if (!user.profile) {
-
         user.profile = {};
     }
 
@@ -1743,24 +1520,17 @@ function connectCoach(name) {
     saveUser(user);
 
 
-    const coachStatus =
-        document.getElementById(
-            "coachStatus"
-        );
-
-
-    if (coachStatus) {
-
-        coachStatus.textContent =
-            name;
-
-    }
+    setText(
+        "coachStatus",
+        name
+    );
 
 
     showToast(
         "Coach connection request sent to " +
         name
     );
+
 }
 
 
@@ -1776,13 +1546,6 @@ function filterGrounds() {
             "groundSearch"
         );
 
-
-    const sportFilter =
-        document.getElementById(
-            "groundSportFilter"
-        );
-
-
     const districtFilter =
         document.getElementById(
             "groundDistrictFilter"
@@ -1797,12 +1560,6 @@ function filterGrounds() {
             : "";
 
 
-    const sport =
-        sportFilter
-            ? sportFilter.value
-            : "";
-
-
     const district =
         districtFilter
             ? districtFilter.value
@@ -1813,39 +1570,39 @@ function filterGrounds() {
         groundData.filter(
             function(ground) {
 
-                const searchText =
-                    (
-                        ground.name +
-                        " " +
-                        ground.village +
-                        " " +
-                        ground.district +
-                        " " +
-                        ground.sport +
-                        " " +
-                        ground.type
-                    ).toLowerCase();
-
-
                 const matchesSearch =
-                    searchText.includes(
-                        search
-                    );
 
+                    ground.name
+                        .toLowerCase()
+                        .includes(search)
 
-                const matchesSport =
-                    !sport ||
-                    ground.sport === sport;
+                    ||
+
+                    ground.village
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    ground.district
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    ground.sport
+                        .toLowerCase()
+                        .includes(search);
 
 
                 const matchesDistrict =
+
                     !district ||
                     ground.district === district;
 
 
                 return (
                     matchesSearch &&
-                    matchesSport &&
                     matchesDistrict
                 );
 
@@ -1853,14 +1610,12 @@ function filterGrounds() {
         );
 
 
-    renderGrounds(
-        filtered
-    );
+    renderGrounds(filtered);
+
 }
 
 
 /* =========================================================
-   STAGE 4.1
    RENDER GROUNDS
    ========================================================= */
 
@@ -1880,21 +1635,13 @@ function renderGrounds(grounds) {
     if (grounds.length === 0) {
 
         grid.innerHTML = `
-
             <div class="empty-panel">
-
                 <div>🔎</div>
-
-                <h3>
-                    No sports grounds found
-                </h3>
-
+                <h3>No sports grounds found</h3>
                 <p>
-                    Try another sport, district or location.
+                    Try another village, district or sport.
                 </p>
-
             </div>
-
         `;
 
         return;
@@ -1912,7 +1659,6 @@ function renderGrounds(grounds) {
 
 
                 return `
-
                     <div class="ground-card">
 
                         <div class="ground-card-top">
@@ -1927,35 +1673,32 @@ function renderGrounds(grounds) {
 
                         </div>
 
-
                         <h3>
                             ${ground.name}
                         </h3>
-
 
                         <p class="ground-location">
                             📍 ${ground.village},
                             ${ground.district}
                         </p>
 
+                        <div class="ground-info">
 
-                        <div class="ground-details">
+                            <div>
+                                <small>SPORT</small>
+                                <strong>
+                                    ${ground.sport}
+                                </strong>
+                            </div>
 
-                            <span>
-                                🏃 ${ground.sport}
-                            </span>
-
-                            <span>
-                                🏛️ ${ground.type}
-                            </span>
+                            <div>
+                                <small>FACILITIES</small>
+                                <strong>
+                                    ${ground.facilities}
+                                </strong>
+                            </div>
 
                         </div>
-
-
-                        <p class="ground-facilities">
-                            ${ground.facilities}
-                        </p>
-
 
                         <button
                             class="secondary-btn"
@@ -1966,16 +1709,15 @@ function renderGrounds(grounds) {
                         </button>
 
                     </div>
-
                 `;
 
             }
         ).join("");
+
 }
 
 
 /* =========================================================
-   STAGE 4.1
    VIEW GROUND
    ========================================================= */
 
@@ -1984,26 +1726,18 @@ function viewGround(name) {
     const ground =
         groundData.find(
             function(item) {
-
                 return item.name === name;
-
             }
         );
 
 
     if (!ground) {
-
-        showToast(
-            "Ground information not found."
-        );
-
         return;
     }
 
 
     alert(
-
-        "KheloGram Ground\n\n" +
+        "GROUND DETAILS\n\n" +
 
         "Name: " +
         ground.name +
@@ -2017,16 +1751,13 @@ function viewGround(name) {
         "\nSport: " +
         ground.sport +
 
-        "\nType: " +
-        ground.type +
-
         "\nStatus: " +
         ground.status +
 
         "\nFacilities: " +
         ground.facilities
-
     );
+
 }
 
 
@@ -2040,7 +1771,6 @@ function logout() {
         "khelogramUser"
     );
 
-
     selectedRole = "";
 
 
@@ -2048,7 +1778,6 @@ function logout() {
         document.getElementById(
             "dashboardPage"
         );
-
 
     const landingPage =
         document.getElementById(
@@ -2078,10 +1807,6 @@ function logout() {
         "You have been logged out."
     );
 
-
-    console.log(
-        "KheloGram user logged out."
-    );
 }
 
 
@@ -2113,6 +1838,7 @@ function scrollToSection(
     section.scrollIntoView({
         behavior: "smooth"
     });
+
 }
 
 
@@ -2158,6 +1884,7 @@ function showToast(message) {
         },
         3000
     );
+
 }
 
 
@@ -2180,11 +1907,12 @@ function setText(
             value;
 
     }
+
 }
 
 
 /* =========================================================
-   CLOSE MODALS BY CLICKING OUTSIDE
+   CLOSE MODALS
    ========================================================= */
 
 document.addEventListener(
@@ -2195,7 +1923,6 @@ document.addEventListener(
             document.getElementById(
                 "roleModal"
             );
-
 
         const authModal =
             document.getElementById(
@@ -2259,9 +1986,7 @@ document.addEventListener(
         );
 
 
-        /* -----------------------------------------------
-           AUTH FORM
-        ------------------------------------------------ */
+        /* AUTH FORM */
 
         const authForm =
             document.getElementById(
@@ -2279,9 +2004,7 @@ document.addEventListener(
         }
 
 
-        /* -----------------------------------------------
-           PROFILE FORM
-        ------------------------------------------------ */
+        /* PROFILE FORM */
 
         const profileForm =
             document.getElementById(
@@ -2299,69 +2022,7 @@ document.addEventListener(
         }
 
 
-        /* -----------------------------------------------
-           GROUND SEARCH
-        ------------------------------------------------ */
-
-        const groundSearch =
-            document.getElementById(
-                "groundSearch"
-            );
-
-
-        if (groundSearch) {
-
-            groundSearch.addEventListener(
-                "input",
-                filterGrounds
-            );
-
-        }
-
-
-        /* -----------------------------------------------
-           GROUND SPORT FILTER
-        ------------------------------------------------ */
-
-        const groundSportFilter =
-            document.getElementById(
-                "groundSportFilter"
-            );
-
-
-        if (groundSportFilter) {
-
-            groundSportFilter.addEventListener(
-                "change",
-                filterGrounds
-            );
-
-        }
-
-
-        /* -----------------------------------------------
-           GROUND DISTRICT FILTER
-        ------------------------------------------------ */
-
-        const groundDistrictFilter =
-            document.getElementById(
-                "groundDistrictFilter"
-            );
-
-
-        if (groundDistrictFilter) {
-
-            groundDistrictFilter.addEventListener(
-                "change",
-                filterGrounds
-            );
-
-        }
-
-
-        /* -----------------------------------------------
-           RESTORE SAVED USER
-        ------------------------------------------------ */
+        /* RESTORE USER */
 
         const user =
             getUser();
@@ -2372,16 +2033,16 @@ document.addEventListener(
             selectedRole =
                 user.role;
 
-
-            console.log(
-                "Saved KheloGram user found:",
-                user.name
-            );
-
-
             showDashboard();
 
         }
+
+
+        /* INITIAL GROUND RENDER */
+
+        renderGrounds(
+            groundData
+        );
 
 
         console.log(
@@ -2438,16 +2099,8 @@ window.filterCoaches =
 window.connectCoach =
     connectCoach;
 
-
-/* =========================================================
-   STAGE 4.1 FUNCTIONS
-   ========================================================= */
-
 window.filterGrounds =
     filterGrounds;
-
-window.renderGrounds =
-    renderGrounds;
 
 window.viewGround =
     viewGround;
@@ -2464,3 +2117,4 @@ console.log(
 console.log(
     "Stage 4.1 JavaScript ready."
 );
+```
