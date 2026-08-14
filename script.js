@@ -1,7 +1,27 @@
 /* =========================================================
-   KHELOGRAM - STAGE 7
-   Stage 1-5 + Stage 6 + Stage 7
-   Beginner-friendly localStorage prototype
+   KHELOGRAM - STAGE 8
+
+   Stage 1 + Stage 2 + Stage 3 + Stage 4
+   + Stage 5 + Stage 6 + Stage 7 + Stage 8
+
+   Beginner-friendly localStorage prototype.
+
+   Stage 8 improvements:
+   - Responsive navigation
+   - Mobile sidebar
+   - Better animations
+   - Toast messages
+   - Loading screen
+   - Community
+   - Achievements
+   - AI Talent Insights
+   - Sports Intelligence
+   - Improved tournament interaction
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL VARIABLES
    ========================================================= */
 
 let selectedRole = "Athlete";
@@ -9,417 +29,461 @@ let authMode = "register";
 let currentTournamentId = null;
 let toastTimer = null;
 
+
+/* =========================================================
+   LOCAL STORAGE KEYS
+   ========================================================= */
+
 const STORAGE_KEYS = {
+
     USER: "khelogramUser",
+
     PROFILE: "khelogramProfile",
+
     COACH: "khelogramCoach",
+
     TOURNAMENTS: "khelogramTournamentRegistrations",
+
     POSTS: "khelogramCommunityPosts",
+
     LIKES: "khelogramCommunityLikes",
+
     ACHIEVEMENTS: "khelogramAchievements"
+
 };
+
 
 /* =========================================================
    DEMO COACH DATA
    ========================================================= */
 
 const coaches = [
+
     {
-        id:1,
-        name:"Ravi Kumar",
-        sport:"Cricket",
-        location:"Lucknow",
-        experience:"8 years",
-        initials:"RK"
+        id: 1,
+        name: "Ravi Kumar",
+        sport: "Cricket",
+        location: "Lucknow",
+        experience: "8 years",
+        initials: "RK"
     },
+
     {
-        id:2,
-        name:"Amit Singh",
-        sport:"Football",
-        location:"Barabanki",
-        experience:"6 years",
-        initials:"AS"
+        id: 2,
+        name: "Amit Singh",
+        sport: "Football",
+        location: "Barabanki",
+        experience: "6 years",
+        initials: "AS"
     },
+
     {
-        id:3,
-        name:"Priya Sharma",
-        sport:"Athletics",
-        location:"Kanpur",
-        experience:"9 years",
-        initials:"PS"
+        id: 3,
+        name: "Priya Sharma",
+        sport: "Athletics",
+        location: "Kanpur",
+        experience: "9 years",
+        initials: "PS"
     },
+
     {
-        id:4,
-        name:"Suresh Yadav",
-        sport:"Kabaddi",
-        location:"Ayodhya",
-        experience:"7 years",
-        initials:"SY"
+        id: 4,
+        name: "Suresh Yadav",
+        sport: "Kabaddi",
+        location: "Ayodhya",
+        experience: "7 years",
+        initials: "SY"
     },
+
     {
-        id:5,
-        name:"Neha Verma",
-        sport:"Hockey",
-        location:"Lucknow",
-        experience:"5 years",
-        initials:"NV"
+        id: 5,
+        name: "Neha Verma",
+        sport: "Hockey",
+        location: "Lucknow",
+        experience: "5 years",
+        initials: "NV"
     },
+
     {
-        id:6,
-        name:"Vikas Mishra",
-        sport:"Volleyball",
-        location:"Unnao",
-        experience:"10 years",
-        initials:"VM"
+        id: 6,
+        name: "Vikas Mishra",
+        sport: "Volleyball",
+        location: "Unnao",
+        experience: "10 years",
+        initials: "VM"
     }
+
 ];
 
+
 /* =========================================================
-   GROUND DATA
+   DEMO GROUND DATA
    ========================================================= */
 
 const grounds = [
+
     {
-        id:1,
-        name:"Lucknow Rural Sports Ground",
-        district:"Lucknow",
-        village:"Mohanlalganj",
-        sport:"Cricket",
-        capacity:500,
-        facility:"Changing Room",
-        condition:"Good",
-        status:"Available",
-        icon:"🏟️"
+        id: 1,
+        name: "Lucknow Rural Sports Ground",
+        district: "Lucknow",
+        village: "Mohanlalganj",
+        sport: "Cricket",
+        capacity: 500,
+        facility: "Changing Room",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
     },
+
     {
-        id:2,
-        name:"Barabanki Community Ground",
-        district:"Barabanki",
-        village:"Nawabganj",
-        sport:"Football",
-        capacity:350,
-        facility:"Flood Lights",
-        condition:"Good",
-        status:"Available",
-        icon:"🏟️"
+        id: 2,
+        name: "Barabanki Community Ground",
+        district: "Barabanki",
+        village: "Nawabganj",
+        sport: "Football",
+        capacity: 350,
+        facility: "Flood Lights",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
     },
+
     {
-        id:3,
-        name:"Ayodhya Rural Sports Field",
-        district:"Ayodhya",
-        village:"Sohawal",
-        sport:"Kabaddi",
-        capacity:250,
-        facility:"Open Field",
-        condition:"Fair",
-        status:"Maintenance",
-        icon:"🏟️"
+        id: 3,
+        name: "Ayodhya Rural Sports Field",
+        district: "Ayodhya",
+        village: "Sohawal",
+        sport: "Kabaddi",
+        capacity: 250,
+        facility: "Open Field",
+        condition: "Fair",
+        status: "Maintenance",
+        icon: "🏟️"
     },
+
     {
-        id:4,
-        name:"Kanpur Village Athletics Ground",
-        district:"Kanpur",
-        village:"Bilhaur",
-        sport:"Athletics",
-        capacity:400,
-        facility:"Running Track",
-        condition:"Good",
-        status:"Available",
-        icon:"🏟️"
+        id: 4,
+        name: "Kanpur Village Athletics Ground",
+        district: "Kanpur",
+        village: "Bilhaur",
+        sport: "Athletics",
+        capacity: 400,
+        facility: "Running Track",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
     },
+
     {
-        id:5,
-        name:"Unnao Community Sports Ground",
-        district:"Unnao",
-        village:"Safipur",
-        sport:"Hockey",
-        capacity:300,
-        facility:"Flood Lights",
-        condition:"Good",
-        status:"Occupied",
-        icon:"🏟️"
+        id: 5,
+        name: "Unnao Community Sports Ground",
+        district: "Unnao",
+        village: "Safipur",
+        sport: "Hockey",
+        capacity: 300,
+        facility: "Flood Lights",
+        condition: "Good",
+        status: "Occupied",
+        icon: "🏟️"
     },
+
     {
-        id:6,
-        name:"Barabanki Volleyball Arena",
-        district:"Barabanki",
-        village:"Fatehpur",
-        sport:"Volleyball",
-        capacity:180,
-        facility:"Volleyball Court",
-        condition:"Good",
-        status:"Available",
-        icon:"🏟️"
+        id: 6,
+        name: "Barabanki Volleyball Arena",
+        district: "Barabanki",
+        village: "Fatehpur",
+        sport: "Volleyball",
+        capacity: 180,
+        facility: "Volleyball Court",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
     }
+
 ];
+
 
 /* =========================================================
    TOURNAMENT DATA
    ========================================================= */
 
 const tournaments = [
+
     {
-        id:"T001",
-        name:"KheloGram Rural Cricket Cup",
-        sport:"Cricket",
-        district:"Lucknow",
-        village:"Mohanlalganj",
-        venue:"Lucknow Rural Sports Ground",
-        startDate:"2026-09-05",
-        endDate:"2026-09-07",
-        registrationDeadline:"2026-08-30",
-        participants:64,
-        capacity:80,
-        entryFee:"Free",
-        organizer:"Mohanlalganj Sports Committee",
-        category:"U-19",
-        icon:"🏏",
-        description:"A village-level cricket competition connecting young rural players with local sporting opportunities.",
-        prize:"Trophy + Certificates",
-        contact:"KheloGram Sports Desk"
+        id: "T001",
+        name: "KheloGram Rural Cricket Cup",
+        sport: "Cricket",
+        district: "Lucknow",
+        village: "Mohanlalganj",
+        venue: "Lucknow Rural Sports Ground",
+        startDate: "2026-09-05",
+        endDate: "2026-09-07",
+        registrationDeadline: "2026-08-30",
+        participants: 64,
+        capacity: 80,
+        entryFee: "Free",
+        organizer: "Mohanlalganj Sports Committee",
+        category: "U-19",
+        icon: "🏏",
+        description:
+            "A village-level cricket competition connecting young rural players with local sporting opportunities.",
+        prize: "Trophy + Certificates",
+        contact: "KheloGram Sports Desk"
     },
+
     {
-        id:"T002",
-        name:"Awadh Grassroots Football League",
-        sport:"Football",
-        district:"Barabanki",
-        village:"Nawabganj",
-        venue:"Barabanki Community Ground",
-        startDate:"2026-09-12",
-        endDate:"2026-09-14",
-        registrationDeadline:"2026-09-05",
-        participants:48,
-        capacity:64,
-        entryFee:"Free",
-        organizer:"Barabanki District Sports Club",
-        category:"Open",
-        icon:"⚽",
-        description:"A grassroots football tournament designed to give village teams structured competitive experience.",
-        prize:"Trophy + Sports Kits",
-        contact:"District Sports Coordinator"
+        id: "T002",
+        name: "Awadh Grassroots Football League",
+        sport: "Football",
+        district: "Barabanki",
+        village: "Nawabganj",
+        venue: "Barabanki Community Ground",
+        startDate: "2026-09-12",
+        endDate: "2026-09-14",
+        registrationDeadline: "2026-09-05",
+        participants: 48,
+        capacity: 64,
+        entryFee: "Free",
+        organizer: "Barabanki District Sports Club",
+        category: "Open",
+        icon: "⚽",
+        description:
+            "A grassroots football tournament designed to give village teams structured competitive experience.",
+        prize: "Trophy + Sports Kits",
+        contact: "District Sports Coordinator"
     },
+
     {
-        id:"T003",
-        name:"Ayodhya Rural Kabaddi Championship",
-        sport:"Kabaddi",
-        district:"Ayodhya",
-        village:"Sohawal",
-        venue:"Ayodhya Rural Sports Field",
-        startDate:"2026-09-20",
-        endDate:"2026-09-21",
-        registrationDeadline:"2026-09-14",
-        participants:40,
-        capacity:48,
-        entryFee:"₹100",
-        organizer:"Ayodhya Rural Kabaddi Association",
-        category:"Open",
-        icon:"🤼",
-        description:"Competitive kabaddi for village athletes with an opportunity to be noticed by district-level coaches.",
-        prize:"₹10,000 + Trophy",
-        contact:"Kabaddi Association Desk"
+        id: "T003",
+        name: "Ayodhya Rural Kabaddi Championship",
+        sport: "Kabaddi",
+        district: "Ayodhya",
+        village: "Sohawal",
+        venue: "Ayodhya Rural Sports Field",
+        startDate: "2026-09-20",
+        endDate: "2026-09-21",
+        registrationDeadline: "2026-09-14",
+        participants: 40,
+        capacity: 48,
+        entryFee: "₹100",
+        organizer: "Ayodhya Rural Kabaddi Association",
+        category: "Open",
+        icon: "🤼",
+        description:
+            "Competitive kabaddi for village athletes with an opportunity to be noticed by district-level coaches.",
+        prize: "₹10,000 + Trophy",
+        contact: "Kabaddi Association Desk"
     },
+
     {
-        id:"T004",
-        name:"KheloGram Athletics Talent Meet",
-        sport:"Athletics",
-        district:"Kanpur",
-        village:"Bilhaur",
-        venue:"Kanpur Village Athletics Ground",
-        startDate:"2026-09-27",
-        endDate:"2026-09-28",
-        registrationDeadline:"2026-09-20",
-        participants:55,
-        capacity:100,
-        entryFee:"Free",
-        organizer:"Kanpur Rural Athletics Council",
-        category:"U-17",
-        icon:"🏃",
-        description:"Track and field events designed to identify promising young athletes from rural communities.",
-        prize:"Medals + Certificates",
-        contact:"Athletics Event Coordinator"
+        id: "T004",
+        name: "KheloGram Athletics Talent Meet",
+        sport: "Athletics",
+        district: "Kanpur",
+        village: "Bilhaur",
+        venue: "Kanpur Village Athletics Ground",
+        startDate: "2026-09-27",
+        endDate: "2026-09-28",
+        registrationDeadline: "2026-09-20",
+        participants: 55,
+        capacity: 100,
+        entryFee: "Free",
+        organizer: "Kanpur Rural Athletics Council",
+        category: "U-17",
+        icon: "🏃",
+        description:
+            "Track and field events designed to identify promising young athletes from rural communities.",
+        prize: "Medals + Certificates",
+        contact: "Athletics Event Coordinator"
     },
+
     {
-        id:"T005",
-        name:"Unnao Rural Hockey Challenge",
-        sport:"Hockey",
-        district:"Unnao",
-        village:"Safipur",
-        venue:"Unnao Community Sports Ground",
-        startDate:"2026-10-03",
-        endDate:"2026-10-05",
-        registrationDeadline:"2026-09-25",
-        participants:70,
-        capacity:80,
-        entryFee:"₹150",
-        organizer:"Unnao Hockey Development Group",
-        category:"Open",
-        icon:"🏑",
-        description:"A competitive rural hockey event focused on team development and district-level talent discovery.",
-        prize:"₹15,000 + Trophy",
-        contact:"Hockey Development Desk"
+        id: "T005",
+        name: "Unnao Rural Hockey Challenge",
+        sport: "Hockey",
+        district: "Unnao",
+        village: "Safipur",
+        venue: "Unnao Community Sports Ground",
+        startDate: "2026-10-03",
+        endDate: "2026-10-05",
+        registrationDeadline: "2026-09-25",
+        participants: 70,
+        capacity: 80,
+        entryFee: "₹150",
+        organizer: "Unnao Hockey Development Group",
+        category: "Open",
+        icon: "🏑",
+        description:
+            "A competitive rural hockey event focused on team development and district-level talent discovery.",
+        prize: "₹15,000 + Trophy",
+        contact: "Hockey Development Desk"
     },
+
     {
-        id:"T006",
-        name:"Barabanki Village Volleyball Open",
-        sport:"Volleyball",
-        district:"Barabanki",
-        village:"Fatehpur",
-        venue:"Barabanki Volleyball Arena",
-        startDate:"2026-10-10",
-        endDate:"2026-10-11",
-        registrationDeadline:"2026-10-03",
-        participants:30,
-        capacity:48,
-        entryFee:"Free",
-        organizer:"Fatehpur Village Sports Committee",
-        category:"Open",
-        icon:"🏐",
-        description:"An open volleyball competition bringing village teams together for organized competition.",
-        prize:"Trophy + Certificates",
-        contact:"Tournament Coordinator"
+        id: "T006",
+        name: "Barabanki Village Volleyball Open",
+        sport: "Volleyball",
+        district: "Barabanki",
+        village: "Fatehpur",
+        venue: "Barabanki Volleyball Arena",
+        startDate: "2026-10-10",
+        endDate: "2026-10-11",
+        registrationDeadline: "2026-10-03",
+        participants: 30,
+        capacity: 48,
+        entryFee: "Free",
+        organizer: "Fatehpur Village Sports Committee",
+        category: "Open",
+        icon: "🏐",
+        description:
+            "An open volleyball competition bringing village teams together for organized competition.",
+        prize: "Trophy + Certificates",
+        contact: "Tournament Coordinator"
     },
+
     {
-        id:"T007",
-        name:"Lucknow Rural Badminton Open",
-        sport:"Badminton",
-        district:"Lucknow",
-        village:"Malihabad",
-        venue:"Malihabad Community Sports Hall",
-        startDate:"2026-10-17",
-        endDate:"2026-10-18",
-        registrationDeadline:"2026-10-10",
-        participants:22,
-        capacity:40,
-        entryFee:"₹100",
-        organizer:"Malihabad Sports Collective",
-        category:"Open",
-        icon:"🏸",
-        description:"A local badminton competition for emerging rural players.",
-        prize:"Medals + Certificates",
-        contact:"Badminton Event Desk"
+        id: "T007",
+        name: "Lucknow Rural Badminton Open",
+        sport: "Badminton",
+        district: "Lucknow",
+        village: "Malihabad",
+        venue: "Malihabad Community Sports Hall",
+        startDate: "2026-10-17",
+        endDate: "2026-10-18",
+        registrationDeadline: "2026-10-10",
+        participants: 22,
+        capacity: 40,
+        entryFee: "₹100",
+        organizer: "Malihabad Sports Collective",
+        category: "Open",
+        icon: "🏸",
+        description:
+            "A local badminton competition for emerging rural players.",
+        prize: "Medals + Certificates",
+        contact: "Badminton Event Desk"
     },
+
     {
-        id:"T008",
-        name:"Awadh Wrestling Talent Search",
-        sport:"Wrestling",
-        district:"Ayodhya",
-        village:"Rudauli",
-        venue:"Rudauli Rural Akhara",
-        startDate:"2026-10-24",
-        endDate:"2026-10-25",
-        registrationDeadline:"2026-10-17",
-        participants:36,
-        capacity:50,
-        entryFee:"Free",
-        organizer:"Awadh Rural Wrestling Council",
-        category:"U-19",
-        icon:"🤼",
-        description:"A grassroots wrestling meet focused on discovering promising rural athletes.",
-        prize:"Trophy + Sports Scholarship Recommendation",
-        contact:"Wrestling Council Desk"
+        id: "T008",
+        name: "Awadh Wrestling Talent Search",
+        sport: "Wrestling",
+        district: "Ayodhya",
+        village: "Rudauli",
+        venue: "Rudauli Rural Akhara",
+        startDate: "2026-10-24",
+        endDate: "2026-10-25",
+        registrationDeadline: "2026-10-17",
+        participants: 36,
+        capacity: 50,
+        entryFee: "Free",
+        organizer: "Awadh Rural Wrestling Council",
+        category: "U-19",
+        icon: "🤼",
+        description:
+            "A grassroots wrestling meet focused on discovering promising rural athletes.",
+        prize: "Trophy + Sports Scholarship Recommendation",
+        contact: "Wrestling Council Desk"
     }
+
 ];
 
+
 /* =========================================================
-   COMMUNITY DEMO POSTS
+   COMMUNITY DEFAULT POSTS
    ========================================================= */
 
 const defaultPosts = [
+
     {
-        id:"P001",
-        name:"KheloGram Sports Desk",
-        role:"Community",
-        sport:"Football",
-        title:"Grassroots football season is starting!",
-        content:"Village teams around Barabanki are preparing for structured competition. Share your training updates with the community.",
-        createdAt:"2026-08-10T09:30:00",
-        likes:18
+        id: "P001",
+        name: "KheloGram Sports Desk",
+        role: "Community",
+        sport: "Football",
+        title: "Grassroots football season is starting!",
+        content:
+            "Village teams around Barabanki are preparing for structured competition. Share your training updates with the community.",
+        createdAt: "2026-08-10T09:30:00",
+        likes: 18
     },
+
     {
-        id:"P002",
-        name:"Priya Sharma",
-        role:"Athlete",
-        sport:"Athletics",
-        title:"First podium finish 🥉",
-        content:"Completed my first village athletics meet and finished on the podium. Thank you to everyone who supported my training.",
-        createdAt:"2026-08-09T15:00:00",
-        likes:27
+        id: "P002",
+        name: "Priya Sharma",
+        role: "Athlete",
+        sport: "Athletics",
+        title: "First podium finish 🥉",
+        content:
+            "Completed my first village athletics meet and finished on the podium. Thank you to everyone who supported my training.",
+        createdAt: "2026-08-09T15:00:00",
+        likes: 27
     },
+
     {
-        id:"P003",
-        name:"Mohanlalganj Sports Committee",
-        role:"Organizer",
-        sport:"Cricket",
-        title:"Cricket Cup registrations open",
-        content:"The KheloGram Rural Cricket Cup is accepting registrations. Check the Tournaments section for details.",
-        createdAt:"2026-08-07T10:15:00",
-        likes:12
+        id: "P003",
+        name: "Mohanlalganj Sports Committee",
+        role: "Organizer",
+        sport: "Cricket",
+        title: "Cricket Cup registrations open",
+        content:
+            "The KheloGram Rural Cricket Cup is accepting registrations. Check the Tournaments section for details.",
+        createdAt: "2026-08-07T10:15:00",
+        likes: 12
     }
+
 ];
 
+
 /* =========================================================
-   STAGE 7 DEMO ATHLETE DATA
+   DEMO ATHLETE DATA FOR AI
    ========================================================= */
 
 const demoAthletes = [
+
     {
-        name:"Rahul Verma",
-        sport:"Cricket",
-        district:"Lucknow",
-        village:"Mohanlalganj",
-        participation:8,
-        achievements:3,
-        score:84
+        name: "Rahul Verma",
+        sport: "Cricket",
+        district: "Lucknow",
+        village: "Mohanlalganj",
+        participation: 8,
+        achievements: 3,
+        score: 84
     },
+
     {
-        name:"Anjali Singh",
-        sport:"Athletics",
-        district:"Kanpur",
-        village:"Bilhaur",
-        participation:10,
-        achievements:4,
-        score:91
+        name: "Anjali Singh",
+        sport: "Athletics",
+        district: "Kanpur",
+        village: "Bilhaur",
+        participation: 10,
+        achievements: 4,
+        score: 91
     },
+
     {
-        name:"Aman Yadav",
-        sport:"Football",
-        district:"Barabanki",
-        village:"Nawabganj",
-        participation:7,
-        achievements:2,
-        score:78
+        name: "Aman Yadav",
+        sport: "Football",
+        district: "Barabanki",
+        village: "Nawabganj",
+        participation: 7,
+        achievements: 2,
+        score: 78
     },
+
     {
-        name:"Sita Devi",
-        sport:"Kabaddi",
-        district:"Ayodhya",
-        village:"Sohawal",
-        participation:9,
-        achievements:3,
-        score:86
-    },
-    {
-        name:"Vivek Kumar",
-        sport:"Hockey",
-        district:"Unnao",
-        village:"Safipur",
-        participation:6,
-        achievements:2,
-        score:75
-    },
-    {
-        name:"Neha Patel",
-        sport:"Volleyball",
-        district:"Barabanki",
-        village:"Fatehpur",
-        participation:8,
-        achievements:3,
-        score:82
+        name: "Sita Devi",
+        sport: "Kabaddi",
+        district: "Ayodhya",
+        village: "Sohawal",
+        participation: 9,
+        achievements: 3,
+        score: 86
     }
+
 ];
 
+
 /* =========================================================
-   START APPLICATION
+   APPLICATION START
    ========================================================= */
 
 document.addEventListener(
@@ -427,114 +491,367 @@ document.addEventListener(
     initializeApplication
 );
 
-function initializeApplication(){
+
+function initializeApplication() {
 
     setupAuthForm();
+
     setupProfileForm();
+
     setupPostForm();
+
     setupAchievementForm();
 
     renderCoaches();
+
     renderGrounds();
-    initializeTournamentSection();
+
+    renderTournaments();
+
+    renderCommunity();
+
+    renderAchievements();
 
     loadProfileIntoForm();
+
     loadStoredUser();
 
     updateDashboardData();
+
     updateInsights();
 
-    renderCommunity();
-    renderAchievements();
     renderSportsIntelligence();
+
+    setupScrollReveal();
+
+    setTimeout(function () {
+
+        document
+            .getElementById("pageLoader")
+            ?.classList.add("loaded");
+
+    }, 500);
+
 }
 
+
 /* =========================================================
-   LANDING
+   HELPER FUNCTIONS
    ========================================================= */
 
-function scrollToSection(id){
+function getStorage(key, fallback) {
+
+    try {
+
+        const value = localStorage.getItem(key);
+
+        if (!value) {
+            return fallback;
+        }
+
+        return JSON.parse(value);
+
+    } catch (error) {
+
+        console.error("Storage error:", error);
+
+        return fallback;
+
+    }
+
+}
+
+
+function setStorage(key, value) {
+
+    try {
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(value)
+        );
+
+    } catch (error) {
+
+        console.error("Could not save data:", error);
+
+    }
+
+}
+
+
+function getInitials(name) {
+
+    if (!name) {
+        return "KG";
+    }
+
+    const words = name
+        .trim()
+        .split(/\s+/);
+
+    if (words.length === 1) {
+
+        return words[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+    return (
+        words[0][0] +
+        words[words.length - 1][0]
+    ).toUpperCase();
+
+}
+
+
+function escapeHTML(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(
+    message,
+    type = "success"
+) {
+
+    const toast =
+        document.getElementById("toast");
+
+    const messageElement =
+        document.getElementById("toastMessage");
+
+    const icon =
+        document.getElementById("toastIcon");
+
+    if (!toast || !messageElement) {
+        return;
+    }
+
+    clearTimeout(toastTimer);
+
+    messageElement.textContent =
+        message;
+
+    toast.classList.remove(
+        "success",
+        "error",
+        "show"
+    );
+
+    toast.classList.add(type);
+
+    icon.textContent =
+        type === "success" ? "✓" : "!";
+
+    requestAnimationFrame(function () {
+
+        toast.classList.add("show");
+
+    });
+
+    toastTimer = setTimeout(function () {
+
+        toast.classList.remove("show");
+
+    }, 3200);
+
+}
+
+
+/* =========================================================
+   LANDING PAGE
+   ========================================================= */
+
+function goHome() {
+
+    document
+        .getElementById("dashboardPage")
+        ?.classList.add("hidden");
+
+    document
+        .getElementById("landingPage")
+        ?.classList.remove("hidden");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function scrollToSection(id) {
 
     const element =
         document.getElementById(id);
 
-    if(!element) return;
+    if (!element) {
+        return;
+    }
 
     element.scrollIntoView({
-        behavior:"smooth"
+        behavior: "smooth"
     });
+
 }
+
+
+function toggleMobileNav() {
+
+    const nav =
+        document.getElementById("mobileNav");
+
+    nav?.classList.toggle("open");
+
+}
+
+
+function closeMobileNav() {
+
+    document
+        .getElementById("mobileNav")
+        ?.classList.remove("open");
+
+}
+
 
 /* =========================================================
    ROLE SELECTOR
    ========================================================= */
 
-function openRoleSelector(){
+function openRoleSelector() {
 
     document
         .getElementById("roleModal")
         ?.classList.remove("hidden");
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
 }
 
-function closeRoleSelector(){
+
+function closeRoleSelector() {
 
     document
         .getElementById("roleModal")
         ?.classList.add("hidden");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
 }
 
-function selectRole(role){
+
+function selectRole(role) {
 
     selectedRole = role;
 
+    const roleText =
+        document.getElementById(
+            "selectedRoleText"
+        );
+
+    if (roleText) {
+        roleText.textContent = role;
+    }
+
     closeRoleSelector();
+
     openAuthModal();
+
 }
+
 
 /* =========================================================
    AUTH MODAL
    ========================================================= */
 
-function openAuthModal(){
+function openAuthModal() {
 
     document
         .getElementById("authModal")
         ?.classList.remove("hidden");
 
+    document.body.classList.add(
+        "modal-open"
+    );
+
     switchAuth("register");
+
 }
 
-function closeAuthModal(){
+
+function closeAuthModal() {
 
     document
         .getElementById("authModal")
         ?.classList.add("hidden");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
 }
 
-function switchAuth(mode){
+
+function switchAuth(mode) {
 
     authMode = mode;
 
     const registerTab =
-        document.getElementById("registerTab");
+        document.getElementById(
+            "registerTab"
+        );
 
     const loginTab =
-        document.getElementById("loginTab");
+        document.getElementById(
+            "loginTab"
+        );
 
     const nameField =
-        document.getElementById("nameField");
+        document.getElementById(
+            "nameField"
+        );
 
     const title =
-        document.getElementById("authTitle");
+        document.getElementById(
+            "authTitle"
+        );
 
     const subtitle =
-        document.getElementById("authSubtitle");
+        document.getElementById(
+            "authSubtitle"
+        );
 
     const button =
-        document.getElementById("authButtonText");
+        document.getElementById(
+            "authButtonText"
+        );
 
     const password =
-        document.getElementById("authPassword");
+        document.getElementById(
+            "authPassword"
+        );
 
     registerTab?.classList.toggle(
         "active",
@@ -546,280 +863,330 @@ function switchAuth(mode){
         mode === "login"
     );
 
-    if(mode === "register"){
 
-        if(nameField){
-            nameField.style.display = "block";
+    if (mode === "register") {
+
+        if (nameField) {
+            nameField.style.display =
+                "block";
         }
 
-        if(title){
+        if (title) {
             title.textContent =
                 "Create your account";
         }
 
-        if(subtitle){
+        if (subtitle) {
             subtitle.textContent =
                 "Join the KheloGram ecosystem.";
         }
 
-        if(button){
+        if (button) {
             button.textContent =
                 "Create Account";
         }
 
-        if(password){
+        if (password) {
             password.placeholder =
                 "Create a password";
         }
 
-    }else{
+    } else {
 
-        if(nameField){
-            nameField.style.display = "none";
+        if (nameField) {
+            nameField.style.display =
+                "none";
         }
 
-        if(title){
+        if (title) {
             title.textContent =
                 "Welcome back";
         }
 
-        if(subtitle){
+        if (subtitle) {
             subtitle.textContent =
                 "Login to your KheloGram dashboard.";
         }
 
-        if(button){
+        if (button) {
             button.textContent =
                 "Login";
         }
 
-        if(password){
+        if (password) {
             password.placeholder =
                 "Enter your password";
         }
+
     }
+
 }
+
 
 /* =========================================================
    AUTH FORM
    ========================================================= */
 
-function setupAuthForm(){
+function setupAuthForm() {
 
     const form =
-        document.getElementById("authForm");
+        document.getElementById(
+            "authForm"
+        );
 
-    if(!form) return;
+    if (!form) {
+        return;
+    }
 
     form.addEventListener(
         "submit",
-        function(event){
+        function(event) {
 
             event.preventDefault();
 
             const name =
                 document
                     .getElementById("authName")
-                    ?.value
-                    .trim() || "";
+                    .value
+                    .trim();
 
             const email =
                 document
                     .getElementById("authEmail")
-                    ?.value
-                    .trim() || "";
+                    .value
+                    .trim();
 
             const password =
                 document
                     .getElementById("authPassword")
-                    ?.value || "";
+                    .value
+                    .trim();
 
-            if(!email || !password){
+
+            if (!email || !password) {
 
                 showToast(
-                    "Please enter your email and password."
+                    "Please enter email and password.",
+                    "error"
                 );
 
                 return;
+
             }
 
-            let user;
 
-            if(authMode === "register"){
+            if (
+                authMode === "register" &&
+                !name
+            ) {
 
-                user = {
+                showToast(
+                    "Please enter your name.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const existingUser =
+                getStorage(
+                    STORAGE_KEYS.USER,
+                    null
+                );
+
+
+            if (authMode === "register") {
+
+                const user = {
+
                     name:
                         name ||
-                        "KheloGram Athlete",
+                        "KheloGram User",
 
-                    email:email,
+                    email: email,
 
-                    role:selectedRole,
+                    role:
+                        selectedRole,
 
                     createdAt:
                         new Date().toISOString()
+
                 };
 
-            }else{
+                setStorage(
+                    STORAGE_KEYS.USER,
+                    user
+                );
 
-                user =
-                    getStoredUser() ||
-                    {
-                        name:
-                            name ||
-                            "KheloGram User",
 
-                        email:email,
+                if (
+                    !getStorage(
+                        STORAGE_KEYS.PROFILE,
+                        null
+                    )
+                ) {
 
-                        role:selectedRole
-                    };
+                    setStorage(
+                        STORAGE_KEYS.PROFILE,
+                        {
+                            name: name,
+                            age: "",
+                            village: "",
+                            district: "",
+                            sport: "",
+                            skill: "",
+                            achievements: ""
+                        }
+                    );
 
-                user.email = email;
+                }
+
+
+                showToast(
+                    "Account created successfully!"
+                );
+
+            } else {
+
+                if (!existingUser) {
+
+                    showToast(
+                        "No account found. Please register first.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                showToast(
+                    "Login successful!"
+                );
+
             }
 
-            setStorageItem(
-                STORAGE_KEYS.USER,
-                user
-            );
 
             closeAuthModal();
 
             showDashboard();
 
-            showToast(
-                authMode === "register"
-                    ? "Account created successfully."
-                    : "Welcome back to KheloGram."
-            );
-        }
-    );
+        });
+
 }
+
 
 /* =========================================================
-   USER
+   LOAD STORED USER
    ========================================================= */
 
-function getStoredUser(){
-
-    return getStorageItem(
-        STORAGE_KEYS.USER,
-        null
-    );
-}
-
-function loadStoredUser(){
+function loadStoredUser() {
 
     const user =
-        getStoredUser();
+        getStorage(
+            STORAGE_KEYS.USER,
+            null
+        );
 
-    if(user){
-        updateUserUI(user);
-    }
-}
-
-function showDashboard(){
-
-    document
-        .getElementById("landingPage")
-        ?.classList.add("hidden");
-
-    document
-        .getElementById("dashboardPage")
-        ?.classList.remove("hidden");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-    const user =
-        getStoredUser();
-
-    if(user){
-        updateUserUI(user);
+    if (!user) {
+        return;
     }
 
-    updateDashboardData();
-    renderCommunity();
-    renderAchievements();
-    renderSportsIntelligence();
+    updateUserInterface(user);
+
 }
 
-function updateUserUI(user){
+
+function updateUserInterface(user) {
 
     const name =
-        user.name || "User";
+        user.name ||
+        "Athlete";
 
     const initials =
         getInitials(name);
 
-    setText(
-        "dashboardName",
-        name.split(/\s+/)[0]
-    );
 
-    setText(
-        "userDisplayName",
-        name
-    );
-
-    setText(
-        "userRole",
-        user.role || "Athlete"
-    );
-
-    setText(
-        "userInitials",
-        initials
-    );
-
-    setText(
-        "passportInitials",
-        initials
-    );
-
-    setText(
-        "profileAvatar",
-        initials
-    );
-
-    if(!getStoredProfile()?.name){
-
-        setText(
-            "profileCardName",
-            name
+    const dashboardName =
+        document.getElementById(
+            "dashboardName"
         );
+
+    const userDisplayName =
+        document.getElementById(
+            "userDisplayName"
+        );
+
+    const userRole =
+        document.getElementById(
+            "userRole"
+        );
+
+    const userInitials =
+        document.getElementById(
+            "userInitials"
+        );
+
+
+    if (dashboardName) {
+        dashboardName.textContent =
+            name;
     }
 
-    setText(
-        "dashboardSubtitle",
-        `${user.role || "Athlete"} sports ecosystem.`
-    );
+    if (userDisplayName) {
+        userDisplayName.textContent =
+            name;
+    }
+
+    if (userRole) {
+        userRole.textContent =
+            user.role ||
+            "Athlete";
+    }
+
+    if (userInitials) {
+        userInitials.textContent =
+            initials;
+    }
+
 }
 
-function logout(){
 
-    localStorage.removeItem(
-        STORAGE_KEYS.USER
-    );
+/* =========================================================
+   SHOW DASHBOARD
+   ========================================================= */
 
-    document
-        .getElementById("dashboardPage")
-        ?.classList.add("hidden");
+function showDashboard() {
 
     document
         .getElementById("landingPage")
+        ?.classList.add("hidden");
+
+    document
+        .getElementById("dashboardPage")
         ?.classList.remove("hidden");
 
-    showToast(
-        "You have been logged out."
-    );
-
     window.scrollTo({
-        top:0,
-        behavior:"smooth"
+        top: 0,
+        behavior: "smooth"
     });
+
+    updateDashboardData();
+
+    updateInsights();
+
+    renderCommunity();
+
+    renderAchievements();
+
+    renderTournaments();
+
+    closeMobileNav();
+
 }
+
 
 /* =========================================================
    DASHBOARD NAVIGATION
@@ -827,173 +1194,301 @@ function logout(){
 
 function showDashboardSection(
     sectionName,
-    button
-){
+    clickedButton = null
+) {
 
-    document
-        .querySelectorAll(".dashboard-section")
-        .forEach(section => {
-            section.classList.add("hidden");
+    const sections =
+        document.querySelectorAll(
+            ".dashboard-section"
+        );
+
+    sections.forEach(function(section) {
+
+        section.classList.add(
+            "hidden"
+        );
+
+    });
+
+
+    const selectedSection =
+        document.getElementById(
+            "section-" + sectionName
+        );
+
+    if (selectedSection) {
+
+        selectedSection.classList.remove(
+            "hidden"
+        );
+
+        selectedSection.animate(
+            [
+                {
+                    opacity: 0,
+                    transform: "translateY(8px)"
+                },
+                {
+                    opacity: 1,
+                    transform: "translateY(0)"
+                }
+            ],
+            {
+                duration: 250,
+                easing: "ease-out"
+            }
+        );
+
+    }
+
+
+    const menuItems =
+        document.querySelectorAll(
+            ".menu-item"
+        );
+
+    menuItems.forEach(function(item) {
+
+        item.classList.remove(
+            "active"
+        );
+
+    });
+
+
+    if (clickedButton) {
+
+        clickedButton.classList.add(
+            "active"
+        );
+
+    } else {
+
+        menuItems.forEach(function(item) {
+
+            if (
+                item
+                    .getAttribute("onclick")
+                    ?.includes(
+                        "'" +
+                        sectionName +
+                        "'"
+                    )
+            ) {
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
         });
 
+    }
+
+
+    closeSidebar();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+function openSidebar() {
+
     document
-        .getElementById(
-            `section-${sectionName}`
-        )
+        .getElementById("sidebar")
+        ?.classList.add("open");
+
+    document
+        .getElementById("sidebarOverlay")
+        ?.classList.add("open");
+
+}
+
+
+function closeSidebar() {
+
+    document
+        .getElementById("sidebar")
+        ?.classList.remove("open");
+
+    document
+        .getElementById("sidebarOverlay")
+        ?.classList.remove("open");
+
+}
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+function logout() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    document
+        .getElementById("dashboardPage")
+        ?.classList.add("hidden");
+
+    document
+        .getElementById("landingPage")
         ?.classList.remove("hidden");
 
-    document
-        .querySelectorAll(".menu-item")
-        .forEach(item => {
-            item.classList.remove("active");
-        });
 
-    if(button){
-        button.classList.add("active");
-    }
+    closeSidebar();
 
-    if(sectionName === "coaches"){
-        renderCoaches();
-    }
 
-    if(sectionName === "grounds"){
-        renderGrounds();
-    }
+    showToast(
+        "You have been logged out."
+    );
 
-    if(sectionName === "tournaments"){
-        initializeTournamentSection();
-    }
-
-    if(sectionName === "community"){
-        renderCommunity();
-    }
-
-    if(sectionName === "achievements"){
-        renderAchievements();
-    }
-
-    if(sectionName === "insights"){
-        updateInsights();
-    }
-
-    if(sectionName === "intelligence"){
-        renderSportsIntelligence();
-    }
-
-    if(sectionName === "overview"){
-        updateDashboardData();
-    }
-
-    if(sectionName === "profile"){
-        loadProfileIntoForm();
-    }
 }
+
 
 /* =========================================================
    PROFILE
    ========================================================= */
 
-function setupProfileForm(){
+function setupProfileForm() {
 
     const form =
-        document.getElementById("profileForm");
+        document.getElementById(
+            "profileForm"
+        );
 
-    if(!form) return;
+    if (!form) {
+        return;
+    }
+
 
     form.addEventListener(
         "submit",
-        function(event){
+        function(event) {
 
             event.preventDefault();
+
 
             const profile = {
 
                 name:
                     document
                         .getElementById("profileName")
-                        ?.value
-                        .trim() || "",
+                        .value
+                        .trim(),
 
                 age:
                     document
                         .getElementById("profileAge")
-                        ?.value || "",
+                        .value
+                        .trim(),
 
                 village:
                     document
                         .getElementById("profileVillage")
-                        ?.value
-                        .trim() || "",
+                        .value
+                        .trim(),
 
                 district:
                     document
                         .getElementById("profileDistrict")
-                        ?.value
-                        .trim() || "",
+                        .value
+                        .trim(),
 
                 sport:
                     document
                         .getElementById("profileSport")
-                        ?.value || "",
+                        .value,
 
                 skill:
                     document
                         .getElementById("profileSkill")
-                        ?.value || "",
+                        .value,
 
                 achievements:
                     document
                         .getElementById("profileAchievements")
-                        ?.value
-                        .trim() || ""
+                        .value
+                        .trim()
+
             };
 
-            setStorageItem(
+
+            setStorage(
                 STORAGE_KEYS.PROFILE,
                 profile
             );
 
-            const user =
-                getStoredUser();
 
-            if(user && profile.name){
+            const user =
+                getStorage(
+                    STORAGE_KEYS.USER,
+                    null
+                );
+
+
+            if (user) {
 
                 user.name =
-                    profile.name;
+                    profile.name ||
+                    user.name;
 
-                setStorageItem(
+                setStorage(
                     STORAGE_KEYS.USER,
                     user
                 );
 
-                updateUserUI(user);
+                updateUserInterface(user);
+
             }
 
+
             updateDashboardData();
+
             updateInsights();
-            renderAchievements();
+
 
             showToast(
-                "Sports Passport saved successfully."
+                "Sports Passport saved successfully!"
             );
-        }
-    );
+
+        });
+
 }
 
-function getStoredProfile(){
 
-    return getStorageItem(
-        STORAGE_KEYS.PROFILE,
-        null
-    );
-}
+/* =========================================================
+   LOAD PROFILE
+   ========================================================= */
 
-function loadProfileIntoForm(){
+function loadProfileIntoForm() {
 
     const profile =
-        getStoredProfile();
+        getStorage(
+            STORAGE_KEYS.PROFILE,
+            null
+        );
 
-    if(!profile) return;
+    if (!profile) {
+        return;
+    }
+
 
     setValue(
         "profileName",
@@ -1029,89 +1524,122 @@ function loadProfileIntoForm(){
         "profileAchievements",
         profile.achievements
     );
+
 }
 
-function calculateProfileCompletion(profile){
 
-    if(!profile){
-        return 0;
+function setValue(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+        element.value =
+            value || "";
     }
 
-    const fields = [
-        profile.name,
-        profile.age,
-        profile.village,
-        profile.district,
-        profile.sport,
-        profile.skill,
-        profile.achievements
-    ];
-
-    const completed =
-        fields.filter(value =>
-            value !== undefined &&
-            value !== null &&
-            String(value).trim() !== ""
-        ).length;
-
-    return Math.round(
-        completed /
-        fields.length *
-        100
-    );
 }
 
-function updateDashboardData(){
+
+/* =========================================================
+   DASHBOARD DATA
+   ========================================================= */
+
+function updateDashboardData() {
 
     const profile =
-        getStoredProfile();
-
-    const user =
-        getStoredUser();
-
-    const completion =
-        calculateProfileCompletion(
-            profile
+        getStorage(
+            STORAGE_KEYS.PROFILE,
+            {}
         );
 
+
     const achievements =
-        getAchievementsForCurrentUser();
+        getStorage(
+            STORAGE_KEYS.ACHIEVEMENTS,
+            []
+        );
+
+
+    const posts =
+        getStorage(
+            STORAGE_KEYS.POSTS,
+            defaultPosts
+        );
+
+
+    const user =
+        getStorage(
+            STORAGE_KEYS.USER,
+            {}
+        );
+
+
+    const name =
+        profile.name ||
+        user.name ||
+        "Athlete";
+
+
+    const initials =
+        getInitials(name);
+
+
+    const completionFields = [
+
+        profile.name,
+
+        profile.age,
+
+        profile.village,
+
+        profile.district,
+
+        profile.sport,
+
+        profile.skill,
+
+        profile.achievements
+
+    ];
+
+
+    const completed =
+        completionFields.filter(
+            function(value) {
+                return (
+                    value !== null &&
+                    value !== undefined &&
+                    String(value).trim() !== ""
+                );
+            }
+        ).length;
+
+
+    const completion =
+        Math.round(
+            completed /
+            completionFields.length *
+            100
+        );
+
 
     setText(
         "profileCompletion",
-        `${completion}%`
+        completion + "%"
     );
 
     setText(
         "primarySport",
-        profile?.sport || "Not set"
-    );
-
-    setText(
-        "passportName",
-        profile?.name ||
-        user?.name ||
-        "Complete your profile"
-    );
-
-    setText(
-        "passportLocation",
-        profile?.village &&
-        profile?.district
-            ? `${profile.village}, ${profile.district}`
-            : "Add your village and district"
-    );
-
-    setText(
-        "passportSport",
-        profile?.sport ||
-        "Sport not selected"
+        profile.sport ||
+        "Not set"
     );
 
     setText(
         "coachStatus",
-        localStorage.getItem(
-            STORAGE_KEYS.COACH
+        getStorage(
+            STORAGE_KEYS.COACH,
+            null
         )
             ? "Connected"
             : "Not connected"
@@ -1122,1906 +1650,1076 @@ function updateDashboardData(){
         achievements.length
     );
 
+
+    const progress =
+        document.getElementById(
+            "profileProgressBar"
+        );
+
+    if (progress) {
+        progress.style.width =
+            completion + "%";
+    }
+
+
+    setText(
+        "passportInitials",
+        initials
+    );
+
+    setText(
+        "profileAvatar",
+        initials
+    );
+
+
+    setText(
+        "passportName",
+        name
+    );
+
+
+    setText(
+        "profileCardName",
+        name
+    );
+
+
+    setText(
+        "profileCardSport",
+        profile.sport ||
+        "Sport not selected"
+    );
+
+
+    const location =
+        [
+            profile.village,
+            profile.district
+        ]
+            .filter(Boolean)
+            .join(", ");
+
+
+    setText(
+        "passportLocation",
+        location ||
+        "Add your village and district"
+    );
+
+
+    setText(
+        "passportSport",
+        profile.sport ||
+        "Sport not selected"
+    );
+
+
     setText(
         "profileAchievementTotal",
         achievements.length
     );
 
+
     setText(
         "profilePostTotal",
-        getUserPosts().length
+        posts.filter(function(post) {
+
+            return (
+                post.name === name
+            );
+
+        }).length
     );
+
 
     setText(
         "profileCardName",
-        profile?.name ||
-        user?.name ||
-        "Your Name"
+        name
     );
 
-    setText(
-        "profileCardSport",
-        profile?.sport ||
-        "Sport not selected"
-    );
-
-    const talent =
-        completion >= 80
-            ? "Ready"
-            : completion >= 50
-                ? "Developing"
-                : "Building";
-
-    setText(
-        "talentStatus",
-        talent
-    );
-
-    const talentScore =
-        calculateTalentScore();
-
-    setText(
-        "aiSummary",
-        profile?.sport
-            ? `Your ${profile.sport} profile currently has a prototype talent signal of ${talentScore}/100 with ${achievements.length} achievement(s). Continue adding verified participation and results.`
-            : "Complete your sports profile to generate a personalized talent profile."
-    );
 }
+
+
+function setText(id, text) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+        element.textContent =
+            text;
+    }
+
+}
+
 
 /* =========================================================
    COACHES
    ========================================================= */
 
 function renderCoaches(
-    list = coaches
-){
+    data = coaches
+) {
 
     const grid =
         document.getElementById(
             "coachGrid"
         );
 
-    if(!grid) return;
-
-    if(!list.length){
-
-        grid.innerHTML = `
-            <div class="empty-panel">
-                <div>🔎</div>
-                <h3>No coaches found</h3>
-                <p>Try another sport or location.</p>
-            </div>
-        `;
-
+    if (!grid) {
         return;
     }
 
-    grid.innerHTML =
-        list.map(coach => {
 
-            const connected =
-                localStorage.getItem(
-                    STORAGE_KEYS.COACH
-                ) === String(coach.id);
+    if (!data.length) {
+
+        grid.innerHTML =
+            createEmptyState(
+                "🧑‍🏫",
+                "No coaches found",
+                "Try another search or sport."
+            );
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        data.map(function(coach) {
 
             return `
+
                 <div class="coach-card">
 
-                    <div class="coach-avatar">
-                        ${escapeHTML(
-                            coach.initials
-                        )}
+                    <div class="coach-top">
+
+                        <div class="coach-avatar">
+                            ${escapeHTML(coach.initials)}
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                ${escapeHTML(coach.name)}
+                            </h3>
+
+                            <p>
+                                ${escapeHTML(coach.sport)}
+                            </p>
+
+                        </div>
+
                     </div>
 
-                    <h3>
-                        ${escapeHTML(
-                            coach.name
-                        )}
-                    </h3>
 
-                    <p>
-                        ${escapeHTML(
-                            coach.sport
-                        )}
-                    </p>
+                    <div class="coach-info">
 
-                    <small>
-                        📍 ${escapeHTML(
-                            coach.location
-                        )}
-                    </small>
+                        <div>
+                            <span>Location</span>
+                            <strong>
+                                ${escapeHTML(coach.location)}
+                            </strong>
+                        </div>
 
-                    <small>
-                        Experience:
-                        ${escapeHTML(
-                            coach.experience
-                        )}
-                    </small>
+                        <div>
+                            <span>Experience</span>
+                            <strong>
+                                ${escapeHTML(coach.experience)}
+                            </strong>
+                        </div>
 
-                    ${
-                        connected
-                            ? `
-                                <div class="connection-status">
-                                    ✓ Connected
-                                </div>
-                            `
-                            : `
-                                <button
-                                    class="primary-btn"
-                                    onclick="connectCoach(${coach.id})"
-                                >
-                                    Connect Coach →
-                                </button>
-                            `
-                    }
+                    </div>
+
+
+                    <button
+                        class="primary-btn connect-btn"
+                        onclick="connectCoach(${coach.id})"
+                    >
+                        Connect
+                    </button>
 
                 </div>
+
             `;
+
         }).join("");
+
 }
 
-function filterCoaches(){
+
+function filterCoaches() {
 
     const search =
-        document
-            .getElementById("coachSearch")
-            ?.value
+        (
+            document
+                .getElementById("coachSearch")
+                ?.value ||
+            ""
+        )
             .toLowerCase()
-            .trim() || "";
+            .trim();
+
 
     const sport =
         document
-            .getElementById(
-                "coachSportFilter"
-            )
-            ?.value || "";
+            .getElementById("coachSportFilter")
+            ?.value ||
+        "";
 
-    renderCoaches(
-        coaches.filter(coach => {
 
-            const text =
-                `${coach.name} ${coach.sport} ${coach.location}`
-                    .toLowerCase();
+    const filtered =
+        coaches.filter(function(coach) {
+
+            const matchesSearch =
+                !search ||
+                coach.name
+                    .toLowerCase()
+                    .includes(search) ||
+                coach.sport
+                    .toLowerCase()
+                    .includes(search) ||
+                coach.location
+                    .toLowerCase()
+                    .includes(search);
+
+
+            const matchesSport =
+                !sport ||
+                coach.sport === sport;
+
 
             return (
-                (!search ||
-                    text.includes(search)) &&
-                (!sport ||
-                    coach.sport === sport)
+                matchesSearch &&
+                matchesSport
             );
-        })
-    );
+
+        });
+
+
+    renderCoaches(filtered);
+
 }
 
-function connectCoach(id){
+
+function connectCoach(id) {
 
     const coach =
-        coaches.find(
-            item => item.id === id
-        );
+        coaches.find(function(item) {
 
-    if(!coach) return;
+            return item.id === id;
 
-    localStorage.setItem(
+        });
+
+
+    if (!coach) {
+        return;
+    }
+
+
+    setStorage(
         STORAGE_KEYS.COACH,
-        String(id)
+        coach
     );
+
 
     updateDashboardData();
-    updateInsights();
-    renderSportsIntelligence();
-    renderCoaches();
+
 
     showToast(
-        `Connected with ${coach.name}.`
+        "Connected with " +
+        coach.name +
+        "!"
     );
+
 }
+
 
 /* =========================================================
    GROUNDS
    ========================================================= */
 
 function renderGrounds(
-    list = grounds
-){
+    data = grounds
+) {
 
     const grid =
         document.getElementById(
             "groundGrid"
         );
 
-    if(!grid) return;
-
-    setText(
-        "groundCount",
-        list.length
-    );
-
-    if(!list.length){
-
-        grid.innerHTML = `
-            <div class="empty-panel">
-                🏟️
-                <h3>No grounds found</h3>
-                <p>Try another search or filter.</p>
-            </div>
-        `;
-
+    if (!grid) {
         return;
     }
 
+
+    setText(
+        "groundCount",
+        data.length
+    );
+
+
+    if (!data.length) {
+
+        grid.innerHTML =
+            createEmptyState(
+                "🏟️",
+                "No grounds found",
+                "Try changing the filters."
+            );
+
+        return;
+
+    }
+
+
     grid.innerHTML =
-        list.map(ground => `
+        data.map(function(ground) {
 
-            <div class="ground-card">
+            const statusClass =
+                ground.status
+                    .toLowerCase()
+                    .replace(
+                        " ",
+                        "-"
+                    );
 
-                <div class="ground-card-top">
 
-                    <div class="ground-icon">
-                        ${ground.icon}
+            return `
+
+                <div class="ground-card">
+
+                    <div class="ground-card-top">
+
+                        <div class="ground-icon">
+                            ${ground.icon}
+                        </div>
+
+                        <span
+                            class="
+                                status-badge
+                                status-${statusClass}
+                            "
+                        >
+                            ${escapeHTML(ground.status)}
+                        </span>
+
                     </div>
 
-                    <span
-                        class="ground-status ${ground.status
-                            .toLowerCase()
-                            .replace(/\s+/g,"-")}"
-                    >
-                        ${escapeHTML(
-                            ground.status
-                        )}
-                    </span>
+
+                    <h3>
+                        ${escapeHTML(ground.name)}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(ground.village)},
+                        ${escapeHTML(ground.district)}
+                    </p>
+
+
+                    <div class="ground-details">
+
+                        <div>
+                            <span>Sport</span>
+                            <strong>
+                                ${escapeHTML(ground.sport)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Capacity</span>
+                            <strong>
+                                ${ground.capacity}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Facility</span>
+                            <strong>
+                                ${escapeHTML(ground.facility)}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Condition</span>
+                            <strong>
+                                ${escapeHTML(ground.condition)}
+                            </strong>
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <h3>
-                    ${escapeHTML(
-                        ground.name
-                    )}
-                </h3>
+            `;
 
-                <div class="ground-location">
-                    📍 ${escapeHTML(
-                        ground.village
-                    )},
-                    ${escapeHTML(
-                        ground.district
-                    )}
-                </div>
+        }).join("");
 
-                <div class="ground-details">
-
-                    <div class="ground-detail">
-                        <small>SPORT</small>
-                        <strong>
-                            ${escapeHTML(
-                                ground.sport
-                            )}
-                        </strong>
-                    </div>
-
-                    <div class="ground-detail">
-                        <small>CAPACITY</small>
-                        <strong>
-                            ${ground.capacity}
-                        </strong>
-                    </div>
-
-                    <div class="ground-detail">
-                        <small>FACILITY</small>
-                        <strong>
-                            ${escapeHTML(
-                                ground.facility
-                            )}
-                        </strong>
-                    </div>
-
-                    <div class="ground-detail">
-                        <small>CONDITION</small>
-                        <strong>
-                            ${escapeHTML(
-                                ground.condition
-                            )}
-                        </strong>
-                    </div>
-
-                </div>
-
-                <div class="ground-card-actions">
-
-                    <button
-                        class="secondary-btn"
-                        onclick="showGroundDetails(${ground.id})"
-                    >
-                        View Details
-                    </button>
-
-                </div>
-
-            </div>
-
-        `).join("");
 }
 
-function filterGrounds(){
+
+function filterGrounds() {
 
     const search =
-        document
-            .getElementById(
-                "groundSearch"
-            )
-            ?.value
+        (
+            document
+                .getElementById("groundSearch")
+                ?.value ||
+            ""
+        )
             .toLowerCase()
-            .trim() || "";
+            .trim();
+
 
     const district =
         document
             .getElementById(
                 "groundDistrictFilter"
             )
-            ?.value || "";
+            ?.value ||
+        "";
+
 
     const sport =
         document
             .getElementById(
                 "groundSportFilter"
             )
-            ?.value || "";
+            ?.value ||
+        "";
 
-    renderGrounds(
-        grounds.filter(ground => {
+
+    const filtered =
+        grounds.filter(function(ground) {
 
             const text =
-                `${ground.name} ${ground.village} ${ground.district} ${ground.sport}`
+                (
+                    ground.name +
+                    " " +
+                    ground.village +
+                    " " +
+                    ground.district
+                )
                     .toLowerCase();
 
+
             return (
+
                 (!search ||
                     text.includes(search)) &&
+
                 (!district ||
                     ground.district === district) &&
+
                 (!sport ||
                     ground.sport === sport)
+
             );
-        })
-    );
+
+        });
+
+
+    renderGrounds(filtered);
+
 }
 
-function showGroundDetails(id){
-
-    const ground =
-        grounds.find(
-            item => item.id === id
-        );
-
-    if(!ground) return;
-
-    const modal =
-        document.getElementById(
-            "groundDetailsModal"
-        );
-
-    if(!modal) return;
-
-    modal.innerHTML = `
-        <div class="modal-card">
-
-            <button
-                class="close-btn"
-                onclick="closeGroundDetails()"
-            >
-                ×
-            </button>
-
-            <div class="ground-detail-icon">
-                🏟️
-            </div>
-
-            <small>
-                ${escapeHTML(
-                    ground.district.toUpperCase()
-                )}
-            </small>
-
-            <h2>
-                ${escapeHTML(
-                    ground.name
-                )}
-            </h2>
-
-            <p>
-                📍 ${escapeHTML(
-                    ground.village
-                )},
-                ${escapeHTML(
-                    ground.district
-                )}
-            </p>
-
-            <div class="ground-detail-grid">
-
-                <div>
-                    <small>SPORT</small>
-                    <strong>
-                        ${escapeHTML(
-                            ground.sport
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>CAPACITY</small>
-                    <strong>
-                        ${ground.capacity}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>FACILITY</small>
-                    <strong>
-                        ${escapeHTML(
-                            ground.facility
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>CONDITION</small>
-                    <strong>
-                        ${escapeHTML(
-                            ground.condition
-                        )}
-                    </strong>
-                </div>
-
-            </div>
-
-            <p class="prototype-note">
-                <strong>Status:</strong>
-                ${escapeHTML(
-                    ground.status
-                )}.
-                Ground access is a prototype action.
-            </p>
-
-            <button
-                class="primary-btn full-btn"
-                onclick="
-                    showToast(
-                        'Ground access request recorded for the prototype.'
-                    );
-                    closeGroundDetails();
-                "
-            >
-                Request Ground Access →
-            </button>
-
-        </div>
-    `;
-
-    modal.classList.remove("hidden");
-}
-
-function closeGroundDetails(){
-
-    document
-        .getElementById(
-            "groundDetailsModal"
-        )
-        ?.classList.add("hidden");
-}
 
 /* =========================================================
    TOURNAMENTS
    ========================================================= */
 
-function initializeTournamentSection(){
-
-    const section =
-        document.getElementById(
-            "section-tournaments"
-        );
-
-    if(!section) return;
-
-    if(!section.dataset.ready){
-
-        section.innerHTML =
-            getTournamentSectionHTML();
-
-        section.dataset.ready = "true";
-
-        setupTournamentControls();
-    }
-
-    renderTournamentPage();
-}
-
-function getTournamentSectionHTML(){
-
-    return `
-        <div class="tournament-page">
-
-            <div class="section-label">
-                OPPORTUNITIES
-            </div>
-
-            <div class="tournament-hero">
-
-                <div class="tournament-hero-top">
-
-                    <div>
-
-                        <small class="section-label">
-                            KHELOGRAM COMPETITION NETWORK
-                        </small>
-
-                        <h2>
-                            Discover your next
-                            sporting opportunity.
-                        </h2>
-
-                        <p>
-                            Find rural tournaments,
-                            register for competitions
-                            and build your sports journey
-                            from village participation
-                            to higher-level opportunities.
-                        </p>
-
-                    </div>
-
-                    <div class="tournament-hero-icon">
-                        🏆
-                    </div>
-
-                </div>
-
-                <div
-                    id="tournamentStats"
-                    class="tournament-stat-strip"
-                ></div>
-
-            </div>
-
-            <div class="tournament-controls">
-
-                <div class="tournament-control">
-
-                    <label>
-                        SEARCH TOURNAMENTS
-                    </label>
-
-                    <input
-                        id="tournamentSearch"
-                        placeholder="Search tournament, sport or location..."
-                    >
-
-                </div>
-
-                <div class="tournament-control">
-
-                    <label>
-                        SPORT
-                    </label>
-
-                    <select
-                        id="tournamentSportFilter"
-                    >
-                        <option value="">
-                            All sports
-                        </option>
-                        <option>Cricket</option>
-                        <option>Football</option>
-                        <option>Kabaddi</option>
-                        <option>Athletics</option>
-                        <option>Hockey</option>
-                        <option>Volleyball</option>
-                        <option>Badminton</option>
-                        <option>Wrestling</option>
-                    </select>
-
-                </div>
-
-                <div class="tournament-control">
-
-                    <label>
-                        DISTRICT
-                    </label>
-
-                    <select
-                        id="tournamentDistrictFilter"
-                    >
-                        <option value="">
-                            All districts
-                        </option>
-                        <option>Lucknow</option>
-                        <option>Barabanki</option>
-                        <option>Kanpur</option>
-                        <option>Ayodhya</option>
-                        <option>Unnao</option>
-                    </select>
-
-                </div>
-
-            </div>
-
-            <div class="tournament-results-bar">
-
-                <strong id="tournamentResultCount">
-                    0 tournaments
-                </strong>
-
-                <span>
-                    Registration data is saved on this device.
-                </span>
-
-            </div>
-
-            <div
-                id="tournamentGrid"
-                class="tournament-grid"
-            ></div>
-
-            <div
-                id="myTournamentsPanel"
-                class="panel my-tournaments-panel"
-            ></div>
-
-        </div>
-    `;
-}
-
-function setupTournamentControls(){
-
-    document
-        .getElementById(
-            "tournamentSearch"
-        )
-        ?.addEventListener(
-            "input",
-            renderTournamentPage
-        );
-
-    document
-        .getElementById(
-            "tournamentSportFilter"
-        )
-        ?.addEventListener(
-            "change",
-            renderTournamentPage
-        );
-
-    document
-        .getElementById(
-            "tournamentDistrictFilter"
-        )
-        ?.addEventListener(
-            "change",
-            renderTournamentPage
-        );
-}
-
-function getTournamentRegistrations(){
-
-    return getStorageItem(
-        STORAGE_KEYS.TOURNAMENTS,
-        []
-    );
-}
-
-function isRegistered(id){
-
-    return getTournamentRegistrations()
-        .some(
-            registration =>
-                registration.tournamentId === id
-        );
-}
-
-function getTournamentStatus(tournament){
-
-    if(
-        tournament.participants >=
-        tournament.capacity
-    ){
-
-        return {
-            key:"full",
-            label:"FULL",
-            className:"full"
-        };
-    }
-
-    const today =
-        new Date();
-
-    const deadline =
-        parseDate(
-            tournament.registrationDeadline
-        );
-
-    const start =
-        parseDate(
-            tournament.startDate
-        );
-
-    if(
-        deadline &&
-        today > endOfDay(deadline)
-    ){
-
-        return {
-            key:"closed",
-            label:"REGISTRATION CLOSED",
-            className:"soon"
-        };
-    }
-
-    if(
-        start &&
-        today >=
-            new Date(
-                start.getTime() -
-                7 * 24 * 60 * 60 * 1000
-            )
-    ){
-
-        return {
-            key:"soon",
-            label:"STARTING SOON",
-            className:"soon"
-        };
-    }
-
-    return {
-        key:"open",
-        label:"REGISTRATION OPEN",
-        className:"open"
-    };
-}
-
-function renderTournamentPage(){
+function renderTournaments() {
 
     const grid =
         document.getElementById(
             "tournamentGrid"
         );
 
-    if(!grid) return;
+    if (!grid) {
+        return;
+    }
+
 
     const search =
-        document
-            .getElementById(
-                "tournamentSearch"
-            )
-            ?.value
+        (
+            document
+                .getElementById(
+                    "tournamentSearch"
+                )
+                ?.value ||
+            ""
+        )
             .toLowerCase()
-            .trim() || "";
+            .trim();
+
 
     const sport =
         document
             .getElementById(
                 "tournamentSportFilter"
             )
-            ?.value || "";
+            ?.value ||
+        "";
 
-    const district =
-        document
-            .getElementById(
-                "tournamentDistrictFilter"
-            )
-            ?.value || "";
 
     const filtered =
-        tournaments.filter(tournament => {
-
-            const text =
-                `${tournament.name}
-                 ${tournament.sport}
-                 ${tournament.district}
-                 ${tournament.village}
-                 ${tournament.venue}
-                 ${tournament.organizer}`
-                    .toLowerCase();
-
-            return (
-                (!search ||
-                    text.includes(search)) &&
-                (!sport ||
-                    tournament.sport === sport) &&
-                (!district ||
-                    tournament.district === district)
-            );
-        });
-
-    renderTournamentStats();
-
-    setText(
-        "tournamentResultCount",
-        `${filtered.length} ${
-            filtered.length === 1
-                ? "tournament"
-                : "tournaments"
-        }`
-    );
-
-    grid.innerHTML =
-        filtered.length
-            ? filtered
-                .map(createTournamentCard)
-                .join("")
-            : `
-                <div class="tournament-empty">
-                    🔎
-                    <h3>No tournaments found</h3>
-                    <p>
-                        Try changing your search or filters.
-                    </p>
-                </div>
-            `;
-
-    renderMyTournaments();
-}
-
-function renderTournamentStats(){
-
-    const stats =
-        document.getElementById(
-            "tournamentStats"
-        );
-
-    if(!stats) return;
-
-    const open =
-        tournaments.filter(tournament => {
-
-            const status =
-                getTournamentStatus(
-                    tournament
-                );
-
-            return (
-                status.key === "open" ||
-                status.key === "soon"
-            );
-
-        }).length;
-
-    stats.innerHTML = `
-
-        <div class="tournament-stat">
-            <small>TOURNAMENTS</small>
-            <strong>
-                ${tournaments.length}
-            </strong>
-        </div>
-
-        <div class="tournament-stat">
-            <small>OPEN OPPORTUNITIES</small>
-            <strong>
-                ${open}
-            </strong>
-        </div>
-
-        <div class="tournament-stat">
-            <small>SPORTS</small>
-            <strong>
-                ${
-                    new Set(
-                        tournaments.map(
-                            tournament =>
-                                tournament.sport
-                        )
-                    ).size
-                }
-            </strong>
-        </div>
-
-        <div class="tournament-stat">
-            <small>MY REGISTRATIONS</small>
-            <strong>
-                ${getTournamentRegistrations().length}
-            </strong>
-        </div>
-
-    `;
-}
-
-function createTournamentCard(tournament){
-
-    const status =
-        getTournamentStatus(
-            tournament
-        );
-
-    const registered =
-        isRegistered(
-            tournament.id
-        );
-
-    const percentage =
-        Math.min(
-            100,
-            Math.round(
-                tournament.participants /
-                tournament.capacity *
-                100
-            )
-        );
-
-    return `
-
-        <article class="tournament-card">
-
-            <div class="tournament-card-top">
-
-                <div class="tournament-sport-icon">
-                    ${tournament.icon}
-                </div>
-
-                <span
-                    class="tournament-status ${status.className}"
-                >
-                    ${status.label}
-                </span>
-
-            </div>
-
-            <h3>
-                ${escapeHTML(
-                    tournament.name
-                )}
-            </h3>
-
-            <div class="tournament-location">
-                📍
-                ${escapeHTML(
-                    tournament.village
-                )},
-                ${escapeHTML(
-                    tournament.district
-                )}
-            </div>
-
-            <div class="tournament-info-grid">
-
-                <div class="tournament-info">
-                    <small>DATE</small>
-                    <strong>
-                        ${formatDate(
-                            tournament.startDate
-                        )}
-                    </strong>
-                </div>
-
-                <div class="tournament-info">
-                    <small>CATEGORY</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.category
-                        )}
-                    </strong>
-                </div>
-
-                <div class="tournament-info">
-                    <small>DEADLINE</small>
-                    <strong>
-                        ${formatDate(
-                            tournament.registrationDeadline
-                        )}
-                    </strong>
-                </div>
-
-                <div class="tournament-info">
-                    <small>ENTRY</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.entryFee
-                        )}
-                    </strong>
-                </div>
-
-            </div>
-
-            <p class="tournament-description">
-                ${escapeHTML(
-                    tournament.description
-                )}
-            </p>
-
-            <div class="tournament-progress">
-
-                <div class="tournament-progress-header">
-
-                    <span>
-                        Participants
-                    </span>
-
-                    <strong>
-                        ${tournament.participants}
-                        /
-                        ${tournament.capacity}
-                    </strong>
-
-                </div>
-
-                <div class="tournament-progress-track">
-
-                    <div
-                        class="tournament-progress-fill"
-                        style="width:${percentage}%"
-                    ></div>
-
-                </div>
-
-            </div>
-
-            ${
-                registered
-                    ? `
-                        <div class="tournament-registered">
-                            ✓ You are registered
-                        </div>
-                    `
-                    : ""
-            }
-
-            <div class="tournament-card-actions">
-
-                <button
-                    class="secondary-btn"
-                    onclick="openTournamentDetails('${tournament.id}')"
-                >
-                    View Details
-                </button>
-
-                ${
-                    registered
-                        ? `
-                            <button
-                                class="secondary-btn"
-                                onclick="cancelTournamentRegistration('${tournament.id}')"
-                            >
-                                Cancel
-                            </button>
-                        `
-                        : `
-                            <button
-                                class="primary-btn"
-                                ${
-                                    status.key !== "open"
-                                        ? "disabled"
-                                        : ""
-                                }
-                                onclick="registerForTournament('${tournament.id}')"
-                            >
-                                ${
-                                    status.key === "full"
-                                        ? "Full"
-                                        : status.key === "closed"
-                                            ? "Closed"
-                                            : "Register →"
-                                }
-                            </button>
-                        `
-                }
-
-            </div>
-
-        </article>
-    `;
-}
-
-function openTournamentDetails(id){
-
-    const tournament =
-        tournaments.find(
-            item => item.id === id
-        );
-
-    if(!tournament) return;
-
-    currentTournamentId =
-        id;
-
-    const status =
-        getTournamentStatus(
-            tournament
-        );
-
-    const registered =
-        isRegistered(id);
-
-    const modal =
-        document.getElementById(
-            "tournamentDetailsModal"
-        );
-
-    if(!modal) return;
-
-    modal.innerHTML = `
-
-        <div class="modal-card">
-
-            <button
-                class="close-btn"
-                onclick="closeTournamentDetails()"
-            >
-                ×
-            </button>
-
-            <div class="tournament-detail-header">
-
-                <div class="tournament-detail-icon">
-                    ${tournament.icon}
-                </div>
-
-                <div>
-
-                    <small>
-                        ${escapeHTML(
-                            tournament.sport.toUpperCase()
-                        )}
-                    </small>
-
-                    <h2>
-                        ${escapeHTML(
-                            tournament.name
-                        )}
-                    </h2>
-
-                    <p>
-                        📍
-                        ${escapeHTML(
-                            tournament.village
-                        )},
-                        ${escapeHTML(
-                            tournament.district
-                        )}
-                        ·
-                        ${escapeHTML(
-                            tournament.venue
-                        )}
-                    </p>
-
-                </div>
-
-            </div>
-
-            <div class="tournament-status-row">
-
-                <span
-                    class="tournament-status ${status.className}"
-                >
-                    ${status.label}
-                </span>
-
-                <span class="badge">
-                    ${escapeHTML(
-                        tournament.category
-                    )}
-                </span>
-
-            </div>
-
-            <div class="ground-detail-grid">
-
-                <div>
-                    <small>START</small>
-                    <strong>
-                        ${formatDate(
-                            tournament.startDate
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>END</small>
-                    <strong>
-                        ${formatDate(
-                            tournament.endDate
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>DEADLINE</small>
-                    <strong>
-                        ${formatDate(
-                            tournament.registrationDeadline
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>PARTICIPANTS</small>
-                    <strong>
-                        ${tournament.participants}
-                        /
-                        ${tournament.capacity}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>ENTRY</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.entryFee
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>PRIZE</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.prize
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>ORGANIZER</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.organizer
-                        )}
-                    </strong>
-                </div>
-
-                <div>
-                    <small>CONTACT</small>
-                    <strong>
-                        ${escapeHTML(
-                            tournament.contact
-                        )}
-                    </strong>
-                </div>
-
-            </div>
-
-            <p class="section-description">
-                ${escapeHTML(
-                    tournament.description
-                )}
-            </p>
-
-            <div class="prototype-note">
-
-                ${
-                    registered
-                        ? "✓ You are registered for this tournament."
-                        : "Registration closes on " +
-                          formatDate(
-                              tournament.registrationDeadline
-                          ) +
-                          "."
-                }
-
-            </div>
-
-            <div class="ground-card-actions">
-
-                <button
-                    class="secondary-btn"
-                    onclick="closeTournamentDetails()"
-                >
-                    Close
-                </button>
-
-                ${
-                    registered
-                        ? `
-                            <button
-                                class="secondary-btn"
-                                onclick="cancelTournamentRegistration('${id}')"
-                            >
-                                Cancel Registration
-                            </button>
-                        `
-                        : `
-                            <button
-                                class="primary-btn"
-                                ${
-                                    status.key !== "open"
-                                        ? "disabled"
-                                        : ""
-                                }
-                                onclick="registerForTournament('${id}')"
-                            >
-                                Register →
-                            </button>
-                        `
-                }
-
-            </div>
-
-        </div>
-    `;
-
-    modal.classList.remove(
-        "hidden"
-    );
-}
-
-function closeTournamentDetails(){
-
-    document
-        .getElementById(
-            "tournamentDetailsModal"
-        )
-        ?.classList.add("hidden");
-
-    currentTournamentId =
-        null;
-}
-
-function registerForTournament(id){
-
-    const tournament =
-        tournaments.find(
-            item => item.id === id
-        );
-
-    if(!tournament) return;
-
-    const user =
-        getStoredUser();
-
-    if(!user){
-
-        showToast(
-            "Please create an account before registering."
-        );
-
-        openRoleSelector();
-
-        return;
-    }
-
-    const status =
-        getTournamentStatus(
-            tournament
-        );
-
-    if(status.key === "full"){
-
-        showToast(
-            "This tournament is already full."
-        );
-
-        return;
-    }
-
-    if(status.key === "closed"){
-
-        showToast(
-            "Registration for this tournament is closed."
-        );
-
-        return;
-    }
-
-    if(isRegistered(id)){
-
-        showToast(
-            "You are already registered."
-        );
-
-        return;
-    }
-
-    const profile =
-        getStoredProfile();
-
-    const registrations =
-        getTournamentRegistrations();
-
-    registrations.push({
-
-        tournamentId:id,
-
-        registeredAt:
-            new Date().toISOString(),
-
-        name:
-            profile?.name ||
-            user.name,
-
-        sport:
-            profile?.sport ||
-            tournament.sport,
-
-        district:
-            profile?.district ||
-            tournament.district
-    });
-
-    setStorageItem(
-        STORAGE_KEYS.TOURNAMENTS,
-        registrations
-    );
-
-    showToast(
-        `Registered for ${tournament.name}.`
-    );
-
-    renderTournamentPage();
-    updateInsights();
-    renderSportsIntelligence();
-
-    if(currentTournamentId === id){
-
-        openTournamentDetails(
-            id
-        );
-    }
-}
-
-function cancelTournamentRegistration(id){
-
-    const tournament =
-        tournaments.find(
-            item => item.id === id
-        );
-
-    if(!tournament) return;
-
-    const confirmed =
-        window.confirm(
-            `Cancel your registration for "${tournament.name}"?`
-        );
-
-    if(!confirmed) return;
-
-    const registrations =
-        getTournamentRegistrations()
-            .filter(
-                registration =>
-                    registration.tournamentId !== id
-            );
-
-    setStorageItem(
-        STORAGE_KEYS.TOURNAMENTS,
-        registrations
-    );
-
-    showToast(
-        "Tournament registration cancelled."
-    );
-
-    renderTournamentPage();
-    updateInsights();
-    renderSportsIntelligence();
-
-    closeTournamentDetails();
-}
-
-function renderMyTournaments(){
-
-    const panel =
-        document.getElementById(
-            "myTournamentsPanel"
-        );
-
-    if(!panel) return;
-
-    const list =
-        getTournamentRegistrations()
-            .map(registration =>
-                tournaments.find(
-                    tournament =>
-                        tournament.id ===
-                        registration.tournamentId
-                )
-            )
-            .filter(Boolean);
-
-    if(!list.length){
-
-        panel.innerHTML = `
-
-            <small>
-                MY COMPETITIONS
-            </small>
-
-            <h3>
-                Your tournament registrations
-            </h3>
-
-            <p class="section-description">
-                You have not registered for a tournament yet.
-            </p>
-        `;
-
-        return;
-    }
-
-    panel.innerHTML = `
-
-        <small>
-            MY COMPETITIONS
-        </small>
-
-        <h3>
-            Your tournament registrations
-        </h3>
-
-        <div class="my-tournament-list">
-
-            ${
-                list.map(tournament => `
-
-                    <div class="my-tournament-item">
-
-                        <div class="my-tournament-item-left">
-
-                            <div class="my-tournament-mini-icon">
-                                ${tournament.icon}
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    ${escapeHTML(
-                                        tournament.name
-                                    )}
-                                </strong>
-
-                                <small>
-                                    ${formatDate(
-                                        tournament.startDate
-                                    )}
-                                    ·
-                                    ${escapeHTML(
-                                        tournament.district
-                                    )}
-                                </small>
-
-                            </div>
-
-                        </div>
-
-                        <button
-                            class="secondary-btn"
-                            onclick="openTournamentDetails('${tournament.id}')"
-                        >
-                            View
-                        </button>
-
-                    </div>
-
-                `).join("")
-            }
-
-        </div>
-    `;
-}
-
-/* =========================================================
-   STAGE 6 - COMMUNITY
-   ========================================================= */
-
-function getPosts(){
-
-    const stored =
-        getStorageItem(
-            STORAGE_KEYS.POSTS,
-            null
-        );
-
-    if(stored === null){
-
-        setStorageItem(
-            STORAGE_KEYS.POSTS,
-            defaultPosts
-        );
-
-        return defaultPosts;
-    }
-
-    return stored;
-}
-
-function getUserPosts(){
-
-    const user =
-        getStoredUser();
-
-    if(!user) return [];
-
-    return getPosts()
-        .filter(
-            post =>
-                post.ownerEmail ===
-                user.email
-        );
-}
-
-function getLikedPosts(){
-
-    return getStorageItem(
-        STORAGE_KEYS.LIKES,
-        []
-    );
-}
-
-function renderCommunity(){
-
-    const feed =
-        document.getElementById(
-            "communityFeed"
-        );
-
-    if(!feed) return;
-
-    const search =
-        document
-            .getElementById(
-                "communitySearch"
-            )
-            ?.value
-            .toLowerCase()
-            .trim() || "";
-
-    const sport =
-        document
-            .getElementById(
-                "communitySportFilter"
-            )
-            ?.value || "";
-
-    const posts =
-        getPosts()
-            .filter(post => {
+        tournaments.filter(
+            function(tournament) {
 
                 const text =
-                    `${post.title}
-                     ${post.content}
-                     ${post.name}
-                     ${post.sport}`
+                    (
+                        tournament.name +
+                        " " +
+                        tournament.sport +
+                        " " +
+                        tournament.district
+                    )
                         .toLowerCase();
 
+
                 return (
+
                     (!search ||
                         text.includes(search)) &&
+
                     (!sport ||
-                        post.sport === sport)
+                        tournament.sport === sport)
+
                 );
-            })
-            .sort(
-                (a,b) =>
-                    new Date(b.createdAt) -
-                    new Date(a.createdAt)
+
+            }
+        );
+
+
+    const registrations =
+        getStorage(
+            STORAGE_KEYS.TOURNAMENTS,
+            []
+        );
+
+
+    setText(
+        "registeredTournamentCount",
+        registrations.length
+    );
+
+
+    if (!filtered.length) {
+
+        grid.innerHTML =
+            createEmptyState(
+                "🏆",
+                "No tournaments found",
+                "Try another search."
             );
 
-    const liked =
-        getLikedPosts();
+        return;
 
-    feed.innerHTML =
-        posts.length
-            ? posts.map(post => {
+    }
 
-                const mine =
-                    getStoredUser()?.email ===
-                    post.ownerEmail;
 
-                const likeCount =
-                    post.likes || 0;
+    grid.innerHTML =
+        filtered.map(
+            function(tournament) {
+
+                const registered =
+                    registrations.includes(
+                        tournament.id
+                    );
+
+
+                const spots =
+                    tournament.capacity -
+                    tournament.participants;
+
 
                 return `
 
-                    <article class="post-card">
+                    <div class="tournament-card">
 
-                        <div class="post-head">
+                        <div class="tournament-card-top">
 
-                            <div class="post-avatar">
-                                ${escapeHTML(
-                                    getInitials(
-                                        post.name
-                                    )
-                                )}
+                            <div class="tournament-icon">
+                                ${tournament.icon}
                             </div>
 
-                            <div class="post-meta">
-
-                                <strong>
-                                    ${escapeHTML(
-                                        post.name
-                                    )}
-                                </strong>
-
-                                <small>
-                                    ${escapeHTML(
-                                        post.role ||
-                                        "Community"
-                                    )}
-                                    ·
-                                    ${formatRelativeDate(
-                                        post.createdAt
-                                    )}
-                                </small>
-
-                            </div>
-
-                            <span class="badge post-sport">
-                                ${escapeHTML(
-                                    post.sport
-                                )}
+                            <span class="tournament-category">
+                                ${escapeHTML(tournament.category)}
                             </span>
 
                         </div>
 
+
+                        ${
+                            registered
+                                ? `
+                                    <span class="registered-label">
+                                        ✓ Registered
+                                    </span>
+                                  `
+                                : ""
+                        }
+
+
                         <h3>
-                            ${escapeHTML(
-                                post.title
-                            )}
+                            ${escapeHTML(tournament.name)}
                         </h3>
 
                         <p>
-                            ${escapeHTML(
-                                post.content
-                            )}
+                            ${escapeHTML(tournament.description)}
                         </p>
 
-                        <div class="post-actions">
 
-                            <button
-                                class="post-action ${
-                                    liked.includes(
-                                        post.id
-                                    )
-                                        ? "liked"
-                                        : ""
-                                }"
-                                onclick="togglePostLike('${post.id}')"
-                            >
-                                ♥ ${likeCount}
-                            </button>
+                        <div class="tournament-meta">
 
-                            <button
-                                class="post-action"
-                                onclick="
-                                    showToast(
-                                        'Comments will be connected in a later backend stage.'
-                                    )
-                                "
-                            >
-                                💬 Comment
-                            </button>
+                            <div>
+                                <span>Sport</span>
+                                <strong>
+                                    ${escapeHTML(tournament.sport)}
+                                </strong>
+                            </div>
 
-                            ${
-                                mine
-                                    ? `
-                                        <button
-                                            class="post-action"
-                                            onclick="deletePost('${post.id}')"
-                                        >
-                                            🗑 Delete
-                                        </button>
-                                    `
-                                    : ""
-                            }
+                            <div>
+                                <span>Venue</span>
+                                <strong>
+                                    ${escapeHTML(tournament.venue)}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Date</span>
+                                <strong>
+                                    ${formatDate(tournament.startDate)}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Available spots</span>
+                                <strong>
+                                    ${spots}
+                                </strong>
+                            </div>
 
                         </div>
 
-                    </article>
+
+                        <div class="tournament-actions">
+
+                            <button
+                                class="secondary-btn"
+                                onclick="
+                                    openTournamentModal(
+                                        '${tournament.id}'
+                                    )
+                                "
+                            >
+                                Details
+                            </button>
+
+
+                            <button
+                                class="primary-btn"
+                                ${
+                                    registered
+                                        ? "disabled"
+                                        : ""
+                                }
+                                onclick="
+                                    registerTournament(
+                                        '${tournament.id}'
+                                    )
+                                "
+                            >
+                                ${
+                                    registered
+                                        ? "Registered"
+                                        : "Register"
+                                }
+                            </button>
+
+                        </div>
+
+                    </div>
+
                 `;
 
-            }).join("")
-            : `
+            }
+        ).join("");
 
-                <div class="empty-panel">
-
-                    📰
-
-                    <h3>
-                        No posts found
-                    </h3>
-
-                    <p>
-                        Be the first to share a sports story.
-                    </p>
-
-                </div>
-            `;
-
-    updateCommunityStats();
 }
 
-function updateCommunityStats(){
 
-    const posts =
-        getPosts();
+function initializeTournamentSection() {
 
-    setText(
-        "communityPostCount",
-        posts.length
-    );
+    renderTournaments();
 
-    setText(
-        "communityLikeCount",
-        posts.reduce(
-            (sum,post) =>
-                sum +
-                (post.likes || 0),
-            0
-        )
-    );
-
-    setText(
-        "communitySportCount",
-        new Set(
-            posts.map(
-                post => post.sport
-            )
-        ).size
-    );
-
-    setText(
-        "profilePostTotal",
-        getUserPosts().length
-    );
 }
 
-function openPostModal(){
+
+function registerTournament(id) {
+
+    const tournament =
+        tournaments.find(
+            function(item) {
+
+                return item.id === id;
+
+            }
+        );
+
+
+    if (!tournament) {
+        return;
+    }
+
+
+    let registrations =
+        getStorage(
+            STORAGE_KEYS.TOURNAMENTS,
+            []
+        );
+
+
+    if (
+        registrations.includes(id)
+    ) {
+
+        showToast(
+            "You are already registered.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        tournament.participants >=
+        tournament.capacity
+    ) {
+
+        showToast(
+            "This tournament is full.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    registrations.push(id);
+
+
+    setStorage(
+        STORAGE_KEYS.TOURNAMENTS,
+        registrations
+    );
+
+
+    renderTournaments();
+
+
+    showToast(
+        "Tournament registration successful!"
+    );
+
+}
+
+
+function openTournamentModal(id) {
+
+    const tournament =
+        tournaments.find(
+            function(item) {
+
+                return item.id === id;
+
+            }
+        );
+
+
+    if (!tournament) {
+        return;
+    }
+
+
+    currentTournamentId =
+        id;
+
+
+    const registrations =
+        getStorage(
+            STORAGE_KEYS.TOURNAMENTS,
+            []
+        );
+
+
+    const registered =
+        registrations.includes(id);
+
+
+    const details =
+        document.getElementById(
+            "tournamentDetails"
+        );
+
+
+    if (!details) {
+        return;
+    }
+
+
+    details.innerHTML = `
+
+        <div class="detail-hero">
+
+            <div class="detail-hero-icon">
+                ${tournament.icon}
+            </div>
+
+            <h2>
+                ${escapeHTML(tournament.name)}
+            </h2>
+
+            <p>
+                ${escapeHTML(tournament.description)}
+            </p>
+
+        </div>
+
+
+        <div class="detail-info-grid">
+
+            <div class="detail-info">
+                <small>SPORT</small>
+                <strong>
+                    ${escapeHTML(tournament.sport)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>CATEGORY</small>
+                <strong>
+                    ${escapeHTML(tournament.category)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>DATE</small>
+                <strong>
+                    ${formatDate(tournament.startDate)}
+                    -
+                    ${formatDate(tournament.endDate)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>REGISTRATION DEADLINE</small>
+                <strong>
+                    ${formatDate(tournament.registrationDeadline)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>VENUE</small>
+                <strong>
+                    ${escapeHTML(tournament.venue)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>ENTRY FEE</small>
+                <strong>
+                    ${escapeHTML(tournament.entryFee)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>ORGANIZER</small>
+                <strong>
+                    ${escapeHTML(tournament.organizer)}
+                </strong>
+            </div>
+
+            <div class="detail-info">
+                <small>PRIZE</small>
+                <strong>
+                    ${escapeHTML(tournament.prize)}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <button
+            class="primary-btn"
+            style="width:100%;"
+            ${
+                registered
+                    ? "disabled"
+                    : ""
+            }
+            onclick="
+                registerTournament('${tournament.id}');
+                closeTournamentModal();
+            "
+        >
+            ${
+                registered
+                    ? "Already Registered"
+                    : "Register for Tournament"
+            }
+        </button>
+
+    `;
+
 
     document
         .getElementById(
-            "postModal"
+            "tournamentModal"
         )
         ?.classList.remove("hidden");
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
 }
 
-function closePostModal(){
+
+function closeTournamentModal() {
 
     document
         .getElementById(
-            "postModal"
+            "tournamentModal"
         )
         ?.classList.add("hidden");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
 }
 
-function setupPostForm(){
+
+function formatDate(dateString) {
+
+    if (!dateString) {
+        return "-";
+    }
+
+    const date =
+        new Date(dateString);
+
+    if (Number.isNaN(date.getTime())) {
+        return dateString;
+    }
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   COMMUNITY
+   ========================================================= */
+
+function setupPostForm() {
 
     const form =
         document.getElementById(
             "postForm"
         );
 
-    if(!form) return;
+    if (!form) {
+        return;
+    }
+
 
     form.addEventListener(
         "submit",
-        function(event){
+        function(event) {
 
             event.preventDefault();
 
-            const user =
-                getStoredUser();
 
-            if(!user){
+            const title =
+                document
+                    .getElementById(
+                        "postTitle"
+                    )
+                    .value
+                    .trim();
+
+
+            const sport =
+                document
+                    .getElementById(
+                        "postSport"
+                    )
+                    .value;
+
+
+            const content =
+                document
+                    .getElementById(
+                        "postContent"
+                    )
+                    .value
+                    .trim();
+
+
+            if (!title || !content) {
 
                 showToast(
-                    "Please login before creating a post."
+                    "Please enter a title and story.",
+                    "error"
                 );
 
-                closePostModal();
-                openRoleSelector();
-
                 return;
+
             }
 
-            const posts =
-                getPosts();
 
-            posts.push({
+            const user =
+                getStorage(
+                    STORAGE_KEYS.USER,
+                    {}
+                );
+
+
+            const profile =
+                getStorage(
+                    STORAGE_KEYS.PROFILE,
+                    {}
+                );
+
+
+            const posts =
+                getStorage(
+                    STORAGE_KEYS.POSTS,
+                    defaultPosts
+                );
+
+
+            const post = {
 
                 id:
                     "P" +
                     Date.now(),
 
                 name:
+                    profile.name ||
                     user.name ||
                     "KheloGram User",
 
@@ -3030,383 +2728,506 @@ function setupPostForm(){
                     "Athlete",
 
                 sport:
-                    document
-                        .getElementById(
-                            "postSport"
-                        )
-                        .value,
+                    sport ||
+                    profile.sport ||
+                    "Sports",
 
                 title:
-                    document
-                        .getElementById(
-                            "postTitle"
-                        )
-                        .value
-                        .trim(),
+                    title,
 
                 content:
-                    document
-                        .getElementById(
-                            "postContent"
-                        )
-                        .value
-                        .trim(),
+                    content,
 
                 createdAt:
                     new Date().toISOString(),
 
-                likes:0,
+                likes:
+                    0
 
-                ownerEmail:
-                    user.email
-            });
+            };
 
-            setStorageItem(
+
+            posts.unshift(post);
+
+
+            setStorage(
                 STORAGE_KEYS.POSTS,
                 posts
             );
 
-            event.target.reset();
+
+            form.reset();
 
             closePostModal();
 
             renderCommunity();
+
             updateDashboardData();
 
+
             showToast(
-                "Your community post was published."
+                "Your post was published successfully!"
             );
-        }
-    );
+
+        });
+
 }
 
-function togglePostLike(id){
+
+function getPosts() {
+
+    const stored =
+        localStorage.getItem(
+            STORAGE_KEYS.POSTS
+        );
+
+
+    if (!stored) {
+
+        setStorage(
+            STORAGE_KEYS.POSTS,
+            defaultPosts
+        );
+
+        return defaultPosts;
+
+    }
+
+
+    return getStorage(
+        STORAGE_KEYS.POSTS,
+        defaultPosts
+    );
+
+}
+
+
+function renderCommunity() {
+
+    const feed =
+        document.getElementById(
+            "communityFeed"
+        );
+
+    if (!feed) {
+        return;
+    }
+
 
     const posts =
         getPosts();
 
-    const liked =
-        getLikedPosts();
+
+    const search =
+        (
+            document
+                .getElementById(
+                    "communitySearch"
+                )
+                ?.value ||
+            ""
+        )
+            .toLowerCase()
+            .trim();
+
+
+    const sport =
+        document
+            .getElementById(
+                "communitySportFilter"
+            )
+            ?.value ||
+        "";
+
+
+    const filtered =
+        posts.filter(
+            function(post) {
+
+                const text =
+                    (
+                        post.title +
+                        " " +
+                        post.content +
+                        " " +
+                        post.name
+                    )
+                        .toLowerCase();
+
+
+                return (
+
+                    (!search ||
+                        text.includes(search)) &&
+
+                    (!sport ||
+                        post.sport === sport)
+
+                );
+
+            }
+        );
+
+
+    const likes =
+        filtered.reduce(
+            function(total, post) {
+
+                return total +
+                    Number(post.likes || 0);
+
+            },
+            0
+        );
+
+
+    setText(
+        "communityPostCount",
+        posts.length
+    );
+
+    setText(
+        "communityLikeCount",
+        likes
+    );
+
+
+    if (!filtered.length) {
+
+        feed.innerHTML =
+            createEmptyState(
+                "📰",
+                "No posts found",
+                "Be the first person to share a sports story."
+            );
+
+        return;
+
+    }
+
+
+    feed.innerHTML =
+        filtered.map(
+            function(post) {
+
+                const initials =
+                    getInitials(
+                        post.name
+                    );
+
+
+                return `
+
+                    <article
+                        class="post-card"
+                    >
+
+                        <div
+                            class="post-header"
+                        >
+
+                            <div
+                                class="post-avatar"
+                            >
+                                ${escapeHTML(initials)}
+                            </div>
+
+
+                            <div
+                                class="post-author"
+                            >
+
+                                <strong>
+                                    ${escapeHTML(post.name)}
+                                </strong>
+
+                                <small>
+                                    ${escapeHTML(post.role)}
+                                    •
+                                    ${formatRelativeTime(
+                                        post.createdAt
+                                    )}
+                                </small>
+
+                            </div>
+
+
+                            <span
+                                class="post-sport"
+                            >
+                                ${escapeHTML(
+                                    post.sport ||
+                                    "Sports"
+                                )}
+                            </span>
+
+                        </div>
+
+
+                        <h3>
+                            ${escapeHTML(post.title)}
+                        </h3>
+
+
+                        <p>
+                            ${escapeHTML(post.content)}
+                        </p>
+
+
+                        <div
+                            class="post-footer"
+                        >
+
+                            <button
+                                class="post-action"
+                                onclick="
+                                    likePost(
+                                        '${post.id}'
+                                    )
+                                "
+                            >
+                                <i class="fa-regular fa-heart"></i>
+                                ${post.likes || 0}
+                            </button>
+
+
+                            <button
+                                class="post-action"
+                                onclick="
+                                    sharePost(
+                                        '${post.id}'
+                                    )
+                                "
+                            >
+                                <i class="fa-solid fa-share"></i>
+                                Share
+                            </button>
+
+                        </div>
+
+                    </article>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+function likePost(id) {
+
+    const posts =
+        getPosts();
+
 
     const post =
         posts.find(
-            item => item.id === id
+            function(item) {
+
+                return item.id === id;
+
+            }
         );
 
-    if(!post) return;
 
-    const index =
-        liked.indexOf(id);
-
-    if(index >= 0){
-
-        liked.splice(
-            index,
-            1
-        );
-
-        post.likes =
-            Math.max(
-                0,
-                (post.likes || 0) - 1
-            );
-
-    }else{
-
-        liked.push(id);
-
-        post.likes =
-            (post.likes || 0) + 1;
-    }
-
-    setStorageItem(
-        STORAGE_KEYS.LIKES,
-        liked
-    );
-
-    setStorageItem(
-        STORAGE_KEYS.POSTS,
-        posts
-    );
-
-    renderCommunity();
-}
-
-function deletePost(id){
-
-    if(
-        !window.confirm(
-            "Delete this post?"
-        )
-    ){
+    if (!post) {
         return;
     }
 
-    const user =
-        getStoredUser();
 
-    const posts =
-        getPosts()
-            .filter(
-                post =>
-                    !(
-                        post.id === id &&
-                        post.ownerEmail ===
-                        user?.email
-                    )
-            );
+    post.likes =
+        Number(post.likes || 0) +
+        1;
 
-    setStorageItem(
+
+    setStorage(
         STORAGE_KEYS.POSTS,
         posts
     );
 
+
     renderCommunity();
-    updateDashboardData();
+
 
     showToast(
-        "Post deleted."
+        "Post liked!"
     );
+
 }
 
-/* =========================================================
-   STAGE 6 - ACHIEVEMENTS
-   ========================================================= */
 
-function getAchievements(){
+function sharePost(id) {
 
-    return getStorageItem(
-        STORAGE_KEYS.ACHIEVEMENTS,
-        []
-    );
-}
+    const posts =
+        getPosts();
 
-function getAchievementsForCurrentUser(){
 
-    const user =
-        getStoredUser();
+    const post =
+        posts.find(
+            function(item) {
 
-    if(!user) return [];
+                return item.id === id;
 
-    return getAchievements()
-        .filter(
-            achievement =>
-                achievement.ownerEmail ===
-                user.email
-        );
-}
-
-function renderAchievements(){
-
-    const grid =
-        document.getElementById(
-            "achievementGrid"
+            }
         );
 
-    if(!grid) return;
 
-    const list =
-        getAchievementsForCurrentUser()
-            .sort(
-                (a,b) =>
-                    Number(b.year) -
-                    Number(a.year)
-            );
-
-    setText(
-        "achievementPageCount",
-        list.length
-    );
-
-    setText(
-        "achievementCount",
-        list.length
-    );
-
-    setText(
-        "profileAchievementTotal",
-        list.length
-    );
-
-    setText(
-        "achievementSportSummary",
-        getStoredProfile()?.sport ||
-        "Not set"
-    );
-
-    const completion =
-        calculateProfileCompletion(
-            getStoredProfile()
-        );
-
-    setText(
-        "achievementMilestone",
-        completion >= 80
-            ? "Ready"
-            : completion >= 50
-                ? "Developing"
-                : "Building"
-    );
-
-    if(!list.length){
-
-        grid.innerHTML = `
-
-            <div class="empty-panel">
-
-                🏆
-
-                <h3>
-                    No achievements yet
-                </h3>
-
-                <p>
-                    Add your first achievement
-                    to strengthen your Sports Passport.
-                </p>
-
-                <button
-                    class="primary-btn"
-                    onclick="openAchievementModal()"
-                >
-                    Add Achievement →
-                </button>
-
-            </div>
-        `;
-
+    if (!post) {
         return;
     }
 
-    grid.innerHTML =
-        list.map(achievement => `
 
-            <article class="achievement-card">
+    const text =
+        post.title +
+        " - " +
+        post.content;
 
-                <div class="achievement-icon">
-                    ${
-                        achievement.icon ||
-                        "🏆"
-                    }
-                </div>
 
-                <h3>
-                    ${escapeHTML(
-                        achievement.title
-                    )}
-                </h3>
+    if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ) {
 
-                <span class="badge">
-                    ${escapeHTML(
-                        achievement.sport
-                    )}
-                </span>
+        navigator.clipboard
+            .writeText(text)
+            .then(function() {
 
-                <span class="achievement-level">
-                    ${escapeHTML(
-                        achievement.level
-                    )}
-                </span>
+                showToast(
+                    "Post copied to clipboard!"
+                );
 
-                <p>
-                    ${escapeHTML(
-                        achievement.description ||
-                        "Achievement recorded in your Sports Passport."
-                    )}
-                </p>
+            })
+            .catch(function() {
 
-                <div class="achievement-card-footer">
+                showToast(
+                    "Unable to copy post.",
+                    "error"
+                );
 
-                    <small>
-                        ${escapeHTML(
-                            String(
-                                achievement.year
-                            )
-                        )}
-                    </small>
+            });
 
-                    <button
-                        class="delete-btn"
-                        onclick="deleteAchievement('${achievement.id}')"
-                    >
-                        Delete
-                    </button>
+    } else {
 
-                </div>
-
-            </article>
-
-        `).join("");
-}
-
-function openAchievementModal(){
-
-    const profile =
-        getStoredProfile();
-
-    if(profile?.sport){
-
-        setValue(
-            "achievementSport",
-            profile.sport
+        showToast(
+            "Sharing is not available in this browser.",
+            "error"
         );
+
     }
 
+}
+
+
+function formatRelativeTime(dateString) {
+
+    const date =
+        new Date(dateString);
+
+    const now =
+        new Date();
+
+
+    const seconds =
+        Math.floor(
+            (now - date) / 1000
+        );
+
+
+    if (seconds < 60) {
+        return "just now";
+    }
+
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    if (minutes < 60) {
+        return minutes + "m ago";
+    }
+
+
+    const hours =
+        Math.floor(
+            minutes / 60
+        );
+
+
+    if (hours < 24) {
+        return hours + "h ago";
+    }
+
+
+    const days =
+        Math.floor(
+            hours / 24
+        );
+
+
+    return days + "d ago";
+
+}
+
+
+/* =========================================================
+   COMMUNITY MODAL
+   ========================================================= */
+
+function openPostModal() {
+
     document
         .getElementById(
-            "achievementModal"
+            "postModal"
         )
         ?.classList.remove("hidden");
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
 }
 
-function closeAchievementModal(){
+
+function closePostModal() {
 
     document
         .getElementById(
-            "achievementModal"
+            "postModal"
         )
         ?.classList.add("hidden");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
 }
 
-function setupAchievementForm(){
+
+/* =========================================================
+   ACHIEVEMENTS
+   ========================================================= */
+
+function setupAchievementForm() {
 
     const form =
         document.getElementById(
             "achievementForm"
         );
 
-    if(!form) return;
+    if (!form) {
+        return;
+    }
+
 
     form.addEventListener(
         "submit",
-        function(event){
+        function(event) {
 
             event.preventDefault();
 
-            const user =
-                getStoredUser();
-
-            if(!user){
-
-                showToast(
-                    "Please login before adding an achievement."
-                );
-
-                closeAchievementModal();
-                openRoleSelector();
-
-                return;
-            }
-
-            const achievements =
-                getAchievements();
-
-            const sport =
-                document
-                    .getElementById(
-                        "achievementSport"
-                    )
-                    .value;
 
             const title =
                 document
@@ -3416,1318 +3237,894 @@ function setupAchievementForm(){
                     .value
                     .trim();
 
-            achievements.push({
+
+            const sport =
+                document
+                    .getElementById(
+                        "achievementSport"
+                    )
+                    .value;
+
+
+            const date =
+                document
+                    .getElementById(
+                        "achievementDate"
+                    )
+                    .value;
+
+
+            const description =
+                document
+                    .getElementById(
+                        "achievementDescription"
+                    )
+                    .value
+                    .trim();
+
+
+            if (!title || !date) {
+
+                showToast(
+                    "Please enter title and date.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const achievements =
+                getStorage(
+                    STORAGE_KEYS.ACHIEVEMENTS,
+                    []
+                );
+
+
+            achievements.unshift({
 
                 id:
                     "A" +
                     Date.now(),
 
-                ownerEmail:
-                    user.email,
+                title:
+                    title,
 
-                name:
-                    user.name,
+                sport:
+                    sport ||
+                    "Sports",
 
-                sport:sport,
-
-                title:title,
-
-                level:
-                    document
-                        .getElementById(
-                            "achievementLevel"
-                        )
-                        .value,
-
-                year:
-                    document
-                        .getElementById(
-                            "achievementYear"
-                        )
-                        .value,
+                date:
+                    date,
 
                 description:
-                    document
-                        .getElementById(
-                            "achievementDescription"
-                        )
-                        .value
-                        .trim(),
+                    description
 
-                icon:
-                    getAchievementIcon(
-                        title
-                    )
             });
 
-            setStorageItem(
+
+            setStorage(
                 STORAGE_KEYS.ACHIEVEMENTS,
                 achievements
             );
 
-            event.target.reset();
 
-            document
-                .getElementById(
-                    "achievementYear"
-                ).value =
-                new Date().getFullYear();
+            form.reset();
 
             closeAchievementModal();
 
             renderAchievements();
+
             updateDashboardData();
+
             updateInsights();
 
+
             showToast(
-                "Achievement added to your Sports Passport."
+                "Achievement added successfully!"
             );
-        }
-    );
+
+        });
+
 }
 
-function deleteAchievement(id){
 
-    if(
-        !window.confirm(
-            "Delete this achievement?"
-        )
-    ){
+function renderAchievements() {
+
+    const grid =
+        document.getElementById(
+            "achievementGrid"
+        );
+
+    if (!grid) {
         return;
     }
 
-    setStorageItem(
-        STORAGE_KEYS.ACHIEVEMENTS,
-        getAchievements()
-            .filter(
-                achievement =>
-                    achievement.id !== id
-            )
-    );
-
-    renderAchievements();
-    updateDashboardData();
-    updateInsights();
-
-    showToast(
-        "Achievement deleted."
-    );
-}
-
-function getAchievementIcon(title){
-
-    const text =
-        title.toLowerCase();
-
-    if(
-        text.includes("winner") ||
-        text.includes("champion")
-    ){
-        return "🏆";
-    }
-
-    if(
-        text.includes("runner") ||
-        text.includes("second")
-    ){
-        return "🥈";
-    }
-
-    if(
-        text.includes("third") ||
-        text.includes("bronze")
-    ){
-        return "🥉";
-    }
-
-    if(
-        text.includes("best")
-    ){
-        return "⭐";
-    }
-
-    return "🏅";
-}
-
-/* =========================================================
-   STAGE 7 - AI TALENT INSIGHTS
-   ========================================================= */
-
-function getCurrentUserTournamentCount(){
-
-    return getTournamentRegistrations()
-        .length;
-}
-
-function calculateTalentScore(){
-
-    const profile =
-        getStoredProfile();
 
     const achievements =
-        getAchievementsForCurrentUser();
-
-    const tournamentsCount =
-        getCurrentUserTournamentCount();
-
-    const coachConnected =
-        Boolean(
-            localStorage.getItem(
-                STORAGE_KEYS.COACH
-            )
+        getStorage(
+            STORAGE_KEYS.ACHIEVEMENTS,
+            []
         );
 
-    if(!profile){
-        return 0;
-    }
 
-    let score = 0;
-
-    if(profile.name){
-        score += 10;
-    }
-
-    if(profile.age){
-        score += 5;
-    }
-
-    if(profile.village){
-        score += 5;
-    }
-
-    if(profile.district){
-        score += 5;
-    }
-
-    if(profile.sport){
-        score += 15;
-    }
-
-    if(profile.skill === "Beginner"){
-        score += 8;
-    }
-
-    if(profile.skill === "Developing"){
-        score += 12;
-    }
-
-    if(profile.skill === "Competitive"){
-        score += 18;
-    }
-
-    if(profile.achievements){
-        score += 8;
-    }
-
-    score += Math.min(
-        15,
-        achievements.length * 5
+    setText(
+        "achievementHeroCount",
+        achievements.length
     );
 
-    score += Math.min(
-        10,
-        tournamentsCount * 5
+
+    if (!achievements.length) {
+
+        grid.innerHTML =
+            createEmptyState(
+                "🏆",
+                "No achievements yet",
+                "Add your first sports achievement."
+            );
+
+        return;
+
+    }
+
+
+    grid.innerHTML =
+        achievements.map(
+            function(item) {
+
+                return `
+
+                    <div class="achievement-card">
+
+                        <div class="achievement-card-icon">
+                            🏆
+                        </div>
+
+                        <h3>
+                            ${escapeHTML(item.title)}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                item.description ||
+                                "Sports achievement"
+                            )}
+                        </p>
+
+                        <div
+                            class="achievement-date"
+                        >
+                            ${escapeHTML(
+                                item.sport ||
+                                "Sports"
+                            )}
+                            •
+                            ${formatDate(
+                                item.date
+                            )}
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+function openAchievementModal() {
+
+    document
+        .getElementById(
+            "achievementModal"
+        )
+        ?.classList.remove("hidden");
+
+    document.body.classList.add(
+        "modal-open"
     );
 
-    if(coachConnected){
-        score += 7;
+
+    const dateInput =
+        document.getElementById(
+            "achievementDate"
+        );
+
+
+    if (
+        dateInput &&
+        !dateInput.value
+    ) {
+
+        dateInput.value =
+            new Date()
+                .toISOString()
+                .split("T")[0];
+
     }
+
+}
+
+
+function closeAchievementModal() {
+
+    document
+        .getElementById(
+            "achievementModal"
+        )
+        ?.classList.add("hidden");
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
+}
+
+
+/* =========================================================
+   AI TALENT INSIGHTS
+   ========================================================= */
+
+function calculateTalentScore() {
+
+    const profile =
+        getStorage(
+            STORAGE_KEYS.PROFILE,
+            {}
+        );
+
+
+    const achievements =
+        getStorage(
+            STORAGE_KEYS.ACHIEVEMENTS,
+            []
+        );
+
+
+    let profileScore = 0;
+
+
+    if (profile.name) {
+        profileScore += 10;
+    }
+
+    if (profile.age) {
+        profileScore += 5;
+    }
+
+    if (profile.village) {
+        profileScore += 5;
+    }
+
+    if (profile.district) {
+        profileScore += 5;
+    }
+
+    if (profile.sport) {
+        profileScore += 10;
+    }
+
+    if (profile.skill) {
+        profileScore += 5;
+    }
+
+
+    const participationScore =
+        Math.min(
+            achievements.length * 5,
+            25
+        );
+
+
+    const achievementScore =
+        Math.min(
+            achievements.length * 8,
+            35
+        );
+
 
     return Math.min(
         100,
-        score
+        profileScore +
+        participationScore +
+        achievementScore
     );
+
 }
 
-function getTalentScoreLabel(score){
 
-    if(score >= 85){
-        return "Strong emerging signal";
-    }
-
-    if(score >= 70){
-        return "Promising signal";
-    }
-
-    if(score >= 50){
-        return "Developing signal";
-    }
-
-    if(score >= 25){
-        return "Early profile signal";
-    }
-
-    return "Build your profile";
-}
-
-function getTalentScoreDescription(score){
-
-    if(score >= 85){
-
-        return "Your demo profile shows strong activity signals. In a real deployment, verified performance data would be reviewed before any selection decision.";
-    }
-
-    if(score >= 70){
-
-        return "Your profile shows promising participation and development signals. Continue competing and recording results.";
-    }
-
-    if(score >= 50){
-
-        return "You have started building a useful sports profile. Add achievements, tournaments and coaching activity to strengthen the signal.";
-    }
-
-    if(score >= 25){
-
-        return "Your profile has some useful information. More verified sporting activity will make the talent signal stronger.";
-    }
-
-    return "Complete your Sports Passport and record real sporting activity to generate a more useful prototype signal.";
-}
-
-function updateInsights(){
-
-    const profile =
-        getStoredProfile();
-
-    const achievements =
-        getAchievementsForCurrentUser();
-
-    const tournamentsCount =
-        getCurrentUserTournamentCount();
-
-    const sport =
-        profile?.sport ||
-        "Not provided";
-
-    const skill =
-        profile?.skill ||
-        "Not provided";
-
-    const location =
-        profile?.village &&
-        profile?.district
-            ? `${profile.village}, ${profile.district}`
-            : "Not provided";
-
-    const experience =
-        profile?.achievements ||
-        "Not provided";
+function updateInsights() {
 
     const score =
         calculateTalentScore();
 
+
+    const profile =
+        getStorage(
+            STORAGE_KEYS.PROFILE,
+            {}
+        );
+
+
+    const achievements =
+        getStorage(
+            STORAGE_KEYS.ACHIEVEMENTS,
+            []
+        );
+
+
+    let level =
+        "Profile Incomplete";
+
+
+    let description =
+        "Add more information to generate a stronger prototype signal.";
+
+
+    let performance =
+        "Developing";
+
+
+    let performanceText =
+        "Complete your sports profile to improve this demo signal.";
+
+
+    let potential =
+        "Emerging";
+
+
+    let potentialText =
+        "Consistent participation can strengthen your talent signal.";
+
+
+    let action =
+        "Build your profile";
+
+
+    let actionText =
+        "Add sport, skill level and achievements.";
+
+
+    if (score >= 80) {
+
+        level =
+            "High Potential Signal";
+
+        description =
+            "Your available profile and achievement data show a strong prototype signal.";
+
+        performance =
+            "Strong";
+
+        performanceText =
+            "Your available data shows good sports engagement.";
+
+        potential =
+            "High";
+
+        potentialText =
+            "Your current data suggests a promising grassroots signal.";
+
+        action =
+            "Connect with a coach";
+
+        actionText =
+            "Use your profile to connect with sport-specific coaching.";
+
+    } else if (score >= 50) {
+
+        level =
+            "Developing Potential";
+
+        description =
+            "Your profile contains useful signals, but more participation data can improve confidence.";
+
+        performance =
+            "Growing";
+
+        performanceText =
+            "Your sports journey is showing positive development.";
+
+        potential =
+            "Promising";
+
+        potentialText =
+            "More competitions and achievements can strengthen your signal.";
+
+        action =
+            "Compete more";
+
+        actionText =
+            "Register for tournaments and record your results.";
+
+    }
+
+
+    if (!profile.sport) {
+
+        level =
+            "Profile Incomplete";
+
+        action =
+            "Select a sport";
+
+        actionText =
+            "Choose your primary sport in Sports Passport.";
+
+    }
+
+
     setText(
-        "signalSport",
-        sport
+        "aiSummary",
+        profile.sport
+            ? "AI prototype analysis for " +
+              profile.sport +
+              " based on your current KheloGram data."
+            : "Complete your sports profile to generate a personalized talent profile."
+    );
+
+
+    setText(
+        "aiInsightDescription",
+        description
+    );
+
+
+    setText(
+        "performanceSignal",
+        performance
     );
 
     setText(
-        "signalSkill",
-        skill
+        "performanceText",
+        performanceText
+    );
+
+
+    setText(
+        "talentPotential",
+        potential
     );
 
     setText(
-        "signalLocation",
-        location
+        "talentPotentialText",
+        potentialText
+    );
+
+
+    setText(
+        "recommendedAction",
+        action
     );
 
     setText(
-        "signalExperience",
-        experience
+        "recommendedActionText",
+        actionText
     );
 
-    setText(
-        "signalAchievements",
-        achievements.length
-    );
-
-    setText(
-        "signalTournaments",
-        tournamentsCount
-    );
 
     setText(
         "talentScore",
         score
     );
 
-    setText(
-        "talentScoreLabel",
-        getTalentScoreLabel(score)
-    );
 
     setText(
-        "talentScoreDescription",
-        getTalentScoreDescription(score)
+        "talentScoreBadge",
+        "Score: " +
+        score
     );
 
-    if(!profile?.sport){
-
-        setText(
-            "insightTitle",
-            "Build your sports passport"
-        );
-
-        setText(
-            "insightDescription",
-            "Add your sport, skill level and experience to create your initial talent profile."
-        );
-
-        setText(
-            "aiOpportunityTitle",
-            "Complete your Sports Passport"
-        );
-
-        setText(
-            "aiOpportunityText",
-            "Add your sport, location and achievements so KheloGram can generate better opportunity suggestions."
-        );
-
-        setText(
-            "aiTrainingTitle",
-            "Start recording activity"
-        );
-
-        setText(
-            "aiTrainingText",
-            "Tournament participation, achievements and coach connections give the prototype more useful signals."
-        );
-
-        setText(
-            "aiPathwayTitle",
-            "Village → Block → District → State"
-        );
-
-        setText(
-            "aiPathwayText",
-            "Your profile can become a continuous record as you train, compete and progress."
-        );
-
-        return;
-    }
 
     setText(
-        "insightTitle",
-        `${profile.sport} Talent Profile`
+        "talentLevel",
+        level
     );
+
 
     setText(
-        "insightDescription",
-        `Prototype insight: your profile lists ${profile.sport} at ${profile.skill || "developing"} level with ${achievements.length} achievement(s) and ${tournamentsCount} tournament registration(s).`
+        "talentLevelText",
+        description
     );
 
-    if(tournamentsCount > 0){
 
-        setText(
-            "aiOpportunityTitle",
-            "Stay active in competition"
+    const circle =
+        document.querySelector(
+            ".talent-score-circle"
         );
 
-        setText(
-            "aiOpportunityText",
-            `You have ${tournamentsCount} tournament registration(s). Keep recording results so future eligibility recommendations can be based on actual competition history.`
-        );
 
-    }else{
+    if (circle) {
 
-        setText(
-            "aiOpportunityTitle",
-            `Explore ${profile.sport} tournaments`
-        );
-
-        setText(
-            "aiOpportunityText",
-            "Your next useful action is to find a relevant tournament and build a verified participation record."
-        );
-    }
-
-    if(achievements.length >= 2){
-
-        setText(
-            "aiTrainingTitle",
-            "Build consistency"
-        );
-
-        setText(
-            "aiTrainingText",
-            "You have several recorded achievements. Keep adding recent results so the system can identify progression over time."
-        );
-
-    }else{
-
-        setText(
-            "aiTrainingTitle",
-            "Record your milestones"
-        );
-
-        setText(
-            "aiTrainingText",
-            "Add achievements, tournament results and training milestones as your sports journey grows."
-        );
-    }
-
-    if(score >= 70){
-
-        setText(
-            "aiPathwayTitle",
-            "Ready for stronger opportunities"
-        );
-
-        setText(
-            "aiPathwayText",
-            "Your current prototype signal is promising. In a real system, verified district-level results could trigger higher-level eligibility checks."
-        );
-
-    }else{
-
-        setText(
-            "aiPathwayTitle",
-            "Keep building the pathway"
-        );
-
-        setText(
-            "aiPathwayText",
-            "Continue from village participation toward block and district competitions while keeping your Sports Passport updated."
-        );
-    }
-}
-
-/* =========================================================
-   STAGE 7 - SPORTS INTELLIGENCE
-   ========================================================= */
-
-function getSportActivityData(){
-
-    const activity = {};
-
-    tournaments.forEach(
-        tournament => {
-
-            activity[tournament.sport] =
-                (
-                    activity[tournament.sport] ||
-                    0
-                ) +
-                tournament.participants;
-        }
-    );
-
-    demoAthletes.forEach(
-        athlete => {
-
-            activity[athlete.sport] =
-                (
-                    activity[athlete.sport] ||
-                    0
-                ) +
-                athlete.participation *
-                3;
-        }
-    );
-
-    return Object.entries(
-        activity
-    ).sort(
-        (a,b) => b[1] - a[1]
-    );
-}
-
-function calculateGroundUtilization(
-    ground
-){
-
-    const tournamentCount =
-        tournaments.filter(
-            tournament =>
-                tournament.venue ===
-                ground.name
-        ).length;
-
-    const matchingAthletes =
-        demoAthletes.filter(
-            athlete =>
-                athlete.sport ===
-                ground.sport
-        ).length;
-
-    let utilization =
-        35 +
-        matchingAthletes * 8 +
-        tournamentCount * 12;
-
-    if(
-        ground.status === "Available"
-    ){
-        utilization += 8;
-    }
-
-    if(
-        ground.status === "Occupied"
-    ){
-        utilization += 12;
-    }
-
-    if(
-        ground.status === "Maintenance"
-    ){
-        utilization -= 15;
-    }
-
-    return Math.max(
-        10,
-        Math.min(
-            96,
-            utilization
-        )
-    );
-}
-
-function getTalentHotspots(){
-
-    const groups = {};
-
-    demoAthletes.forEach(
-        athlete => {
-
-            const key =
-                `${athlete.village}, ${athlete.district}`;
-
-            if(!groups[key]){
-
-                groups[key] = {
-
-                    location:key,
-
-                    athletes:0,
-
-                    scoreTotal:0,
-
-                    sport:athlete.sport
-                };
-            }
-
-            groups[key].athletes += 1;
-
-            groups[key].scoreTotal +=
-                athlete.score;
-        }
-    );
-
-    return Object.values(
-        groups
-    )
-    .map(group => ({
-        ...group,
-
-        averageScore:
-            Math.round(
-                group.scoreTotal /
-                group.athletes
+        circle.style.background =
+            `
+            conic-gradient(
+                var(--blue)
+                0deg
+                ${score * 3.6}deg,
+                #e8edf5
+                ${score * 3.6}deg
+                360deg
             )
-    }))
-    .sort(
-        (a,b) =>
-            b.averageScore -
-            a.averageScore
-    );
-}
+            `;
 
-function renderSportsIntelligence(){
-
-    const athleteCountElement =
-        document.getElementById(
-            "intelAthletes"
-        );
-
-    if(!athleteCountElement){
-        return;
     }
 
-    const activityData =
-        getSportActivityData();
 
-    const groundUtilization =
-        grounds.map(
-            ground => ({
-
-                ground,
-
-                utilization:
-                    calculateGroundUtilization(
-                        ground
-                    )
-            })
-        );
-
-    const averageUtilization =
-        groundUtilization.length
-            ? Math.round(
-                groundUtilization.reduce(
-                    (sum,item) =>
-                        sum +
-                        item.utilization,
-                    0
-                ) /
-                groundUtilization.length
-            )
-            : 0;
-
-    const talentHotspots =
-        getTalentHotspots();
-
-    const talentSignals =
-        demoAthletes.filter(
-            athlete =>
-                athlete.score >= 80
-        ).length;
-
-    setText(
-        "intelAthletes",
-        demoAthletes.length
-    );
-
-    setText(
-        "intelUtilization",
-        `${averageUtilization}%`
-    );
-
-    setText(
-        "intelTournaments",
-        tournaments.length
-    );
-
-    setText(
-        "intelTalentSignals",
-        talentSignals
-    );
-
-    const chart =
+    const profileSignal =
         document.getElementById(
-            "sportActivityChart"
+            "signalProfile"
         );
 
-    if(chart){
 
-        const max =
-            activityData.length
-                ? activityData[0][1]
-                : 1;
-
-        chart.innerHTML =
-            activityData.map(
-                ([sport,value]) => {
-
-                    const width =
-                        Math.max(
-                            8,
-                            Math.round(
-                                value /
-                                max *
-                                100
-                            )
-                        );
-
-                    return `
-
-                        <div class="bar-row">
-
-                            <label>
-                                ${escapeHTML(
-                                    sport
-                                )}
-                            </label>
-
-                            <div class="bar-track">
-
-                                <div
-                                    class="bar-fill"
-                                    style="width:${width}%"
-                                ></div>
-
-                            </div>
-
-                            <strong>
-                                ${value}
-                            </strong>
-
-                        </div>
-
-                    `;
-                }
-            ).join("");
-    }
-
-    const utilizationList =
+    const participationSignal =
         document.getElementById(
-            "groundUtilizationList"
+            "signalParticipation"
         );
 
-    if(utilizationList){
 
-        utilizationList.innerHTML =
-            groundUtilization.map(
-                item => `
-
-                    <div class="utilization-item">
-
-                        <div class="utilization-head">
-
-                            <strong>
-                                ${escapeHTML(
-                                    item.ground.name
-                                )}
-                            </strong>
-
-                            <span>
-                                ${item.utilization}%
-                            </span>
-
-                        </div>
-
-                        <div class="utilization-track">
-
-                            <div
-                                class="utilization-fill"
-                                style="width:${item.utilization}%"
-                            ></div>
-
-                        </div>
-
-                    </div>
-
-                `
-            ).join("");
-    }
-
-    const hotspotList =
+    const achievementSignal =
         document.getElementById(
-            "talentHotspotList"
+            "signalAchievements"
         );
 
-    if(hotspotList){
 
-        hotspotList.innerHTML =
-            talentHotspots
-                .slice(0,4)
-                .map(
-                    hotspot => `
+    if (profileSignal) {
 
-                        <div class="hotspot-item">
+        const profileFields = [
 
-                            <div class="hotspot-icon">
-                                🌟
-                            </div>
-
-                            <div>
-
-                                <strong>
-                                    ${escapeHTML(
-                                        hotspot.location
-                                    )}
-                                </strong>
-
-                                <p>
-                                    ${hotspot.athletes}
-                                    demo athlete(s)
-                                    · average talent
-                                    signal
-                                    ${hotspot.averageScore}/100
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    `
-                )
-                .join("");
-    }
-
-    const recommendationList =
-        document.getElementById(
-            "planningRecommendationList"
-        );
-
-    if(recommendationList){
-
-        const maintenanceGrounds =
-            grounds.filter(
-                ground =>
-                    ground.status ===
-                    "Maintenance"
-            );
-
-        const highestDemandSport =
-            activityData[0]?.[0] ||
-            "sports";
-
-        const highestUtilization =
-            [...groundUtilization]
-                .sort(
-                    (a,b) =>
-                        b.utilization -
-                        a.utilization
-                )[0];
-
-        const recommendations = [
-
-            {
-                icon:"🔧",
-
-                title:
-                    maintenanceGrounds.length
-                        ? `Review ${maintenanceGrounds.length} maintenance ground(s)`
-                        : "Maintain existing grounds",
-
-                text:
-                    maintenanceGrounds.length
-                        ? maintenanceGrounds
-                            .map(
-                                ground =>
-                                    ground.name
-                            )
-                            .join(", ")
-                        : "No maintenance ground is currently flagged in the demo data."
-            },
-
-            {
-                icon:"🏆",
-
-                title:
-                    `Support ${highestDemandSport} activity`,
-
-                text:
-                    `${highestDemandSport} currently has the strongest combined demo activity signal.`
-            },
-
-            {
-                icon:"📍",
-
-                title:
-                    "Prioritize underserved locations",
-
-                text:
-                    "High participation combined with poor venue accessibility should trigger infrastructure review."
-            },
-
-            {
-                icon:"📈",
-
-                title:
-                    "Track utilization over time",
-
-                text:
-                    `The highest estimated ground utilization in this demo is ${
-                        highestUtilization
-                            ? highestUtilization.ground.name
-                            : "not available"
-                    }.`
-            }
+            profile.name,
+            profile.age,
+            profile.village,
+            profile.district,
+            profile.sport,
+            profile.skill
 
         ];
 
-        recommendationList.innerHTML =
-            recommendations.map(
-                item => `
 
-                    <div class="recommendation-item">
+        const completed =
+            profileFields.filter(
+                Boolean
+            ).length;
 
-                        <div class="recommendation-icon">
-                            ${item.icon}
-                        </div>
 
-                        <div>
+        profileSignal.style.width =
+            (
+                completed /
+                profileFields.length *
+                100
+            ) + "%";
 
-                            <strong>
-                                ${escapeHTML(
-                                    item.title
-                                )}
-                            </strong>
-
-                            <p>
-                                ${escapeHTML(
-                                    item.text
-                                )}
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                `
-            ).join("");
     }
-}
 
-/* =========================================================
-   STORAGE HELPERS
-   ========================================================= */
 
-function getStorageItem(
-    key,
-    fallback = null
-){
-
-    try{
+    if (participationSignal) {
 
         const value =
-            localStorage.getItem(
-                key
+            Math.min(
+                achievements.length * 12,
+                100
             );
 
-        if(value === null){
-            return fallback;
-        }
+        participationSignal.style.width =
+            value + "%";
 
-        return JSON.parse(value);
-
-    }catch(error){
-
-        console.warn(
-            "KheloGram storage read error",
-            key,
-            error
-        );
-
-        return fallback;
     }
+
+
+    if (achievementSignal) {
+
+        const value =
+            Math.min(
+                achievements.length * 15,
+                100
+            );
+
+        achievementSignal.style.width =
+            value + "%";
+
+    }
+
 }
 
-function setStorageItem(
-    key,
-    value
-){
-
-    try{
-
-        localStorage.setItem(
-            key,
-            JSON.stringify(value)
-        );
-
-        return true;
-
-    }catch(error){
-
-        console.warn(
-            "KheloGram storage write error",
-            key,
-            error
-        );
-
-        showToast(
-            "Unable to save data on this device."
-        );
-
-        return false;
-    }
-}
 
 /* =========================================================
-   UTILITY FUNCTIONS
+   SPORTS INTELLIGENCE
    ========================================================= */
 
-function getInitials(name){
+function renderSportsIntelligence() {
 
-    if(!name){
-        return "KG";
-    }
+    /*
+        This section intentionally uses demo data.
 
-    const parts =
-        name
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean);
+        In a future backend version,
+        these numbers will come from:
+        athletes
+        grounds
+        tournaments
+        participation
+        results
+    */
 
-    if(parts.length === 1){
-
-        return parts[0]
-            .substring(0,2)
-            .toUpperCase();
-    }
-
-    return (
-        parts[0][0] +
-        parts[parts.length - 1][0]
-    ).toUpperCase();
-}
-
-function setText(
-    id,
-    value
-){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-
-        element.textContent =
-            value ?? "";
-    }
-}
-
-function setValue(
-    id,
-    value
-){
-
-    const element =
-        document.getElementById(id);
-
-    if(element){
-
-        element.value =
-            value ?? "";
-    }
-}
-
-function parseDate(value){
-
-    if(!value){
-        return null;
-    }
-
-    const parts =
-        String(value).split("-");
-
-    if(parts.length === 3){
-
-        return new Date(
-            Number(parts[0]),
-            Number(parts[1]) - 1,
-            Number(parts[2])
-        );
-    }
-
-    const date =
-        new Date(value);
-
-    return isNaN(
-        date.getTime()
-    )
-        ? null
-        : date;
-}
-
-function endOfDay(date){
-
-    const result =
-        new Date(date);
-
-    result.setHours(
-        23,
-        59,
-        59,
-        999
+    console.log(
+        "KheloGram Sports Intelligence loaded."
     );
 
-    return result;
 }
 
-function formatDate(value){
-
-    const date =
-        parseDate(value);
-
-    if(!date){
-
-        return value ||
-            "Not available";
-    }
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-            day:"numeric",
-            month:"short",
-            year:"numeric"
-        }
-    );
-}
-
-function formatRelativeDate(value){
-
-    const date =
-        new Date(value);
-
-    const difference =
-        Math.max(
-            0,
-            Date.now() -
-            date.getTime()
-        );
-
-    const days =
-        Math.floor(
-            difference /
-            86400000
-        );
-
-    if(days === 0){
-        return "Today";
-    }
-
-    if(days === 1){
-        return "Yesterday";
-    }
-
-    if(days < 7){
-        return `${days} days ago`;
-    }
-
-    return formatDate(value);
-}
-
-function escapeHTML(value){
-
-    if(
-        value === null ||
-        value === undefined
-    ){
-
-        return "";
-    }
-
-    return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
 
 /* =========================================================
-   TOAST
+   EMPTY STATE
    ========================================================= */
 
-function showToast(message){
+function createEmptyState(
+    icon,
+    title,
+    message
+) {
 
-    const toast =
-        document.getElementById(
-            "toast"
-        );
+    return `
 
-    if(!toast) return;
+        <div class="empty-state">
 
-    toast.textContent =
-        message;
+            <div class="empty-state-icon">
+                ${icon}
+            </div>
 
-    toast.classList.add(
-        "show"
-    );
+            <h3>
+                ${escapeHTML(title)}
+            </h3>
 
-    clearTimeout(
-        toastTimer
-    );
+            <p>
+                ${escapeHTML(message)}
+            </p>
 
-    toastTimer =
-        setTimeout(
-            () => {
+        </div>
 
-                toast.classList.remove(
-                    "show"
-                );
+    `;
 
-            },
-            3000
-        );
 }
 
+
 /* =========================================================
-   MODAL BEHAVIOUR
+   MODAL KEYBOARD SUPPORT
    ========================================================= */
 
 document.addEventListener(
     "keydown",
-    function(event){
+    function(event) {
 
-        if(
-            event.key !==
-            "Escape"
-        ){
+        if (
+            event.key !== "Escape"
+        ) {
+
             return;
+
         }
 
+
         closeRoleSelector();
+
         closeAuthModal();
+
         closePostModal();
+
         closeAchievementModal();
-        closeGroundDetails();
-        closeTournamentDetails();
+
+        closeTournamentModal();
+
+        closeSidebar();
+
     }
 );
 
+
+/* =========================================================
+   CLICK OUTSIDE SUPPORT
+   ========================================================= */
+
 document.addEventListener(
     "click",
-    function(event){
+    function(event) {
 
-        const modals = [
+        const mobileNav =
+            document.getElementById(
+                "mobileNav"
+            );
 
-            [
-                "roleModal",
-                closeRoleSelector
-            ],
 
-            [
-                "authModal",
-                closeAuthModal
-            ],
+        const menuButton =
+            document.querySelector(
+                ".mobile-menu-btn"
+            );
 
-            [
-                "postModal",
-                closePostModal
-            ],
 
-            [
-                "achievementModal",
-                closeAchievementModal
-            ],
+        if (
+            mobileNav &&
+            mobileNav.classList.contains(
+                "open"
+            ) &&
+            !mobileNav.contains(event.target) &&
+            !menuButton?.contains(event.target)
+        ) {
 
-            [
-                "groundDetailsModal",
-                closeGroundDetails
-            ],
+            closeMobileNav();
 
-            [
-                "tournamentDetailsModal",
-                closeTournamentDetails
-            ]
+        }
 
-        ];
+    }
+);
 
-        modals.forEach(
-            ([id,close]) => {
 
-                const modal =
-                    document.getElementById(
-                        id
-                    );
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
 
-                if(
-                    modal &&
-                    event.target === modal
-                ){
+function setupScrollReveal() {
 
-                    close();
-                }
+    const elements =
+        document.querySelectorAll(
+            ".reveal"
+        );
+
+
+    if (
+        !("IntersectionObserver" in window)
+    ) {
+
+        elements.forEach(
+            function(element) {
+
+                element.style.opacity =
+                    "1";
+
+                element.style.transform =
+                    "translateY(0)";
+
             }
         );
+
+        return;
+
     }
+
+
+    const observer =
+        new IntersectionObserver(
+            function(entries) {
+
+                entries.forEach(
+                    function(entry) {
+
+                        if (
+                            entry.isIntersecting
+                        ) {
+
+                            entry.target.style.opacity =
+                                "1";
+
+                            entry.target.style.transform =
+                                "translateY(0)";
+
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    }
+                );
+
+            },
+            {
+                threshold: 0.12
+            }
+        );
+
+
+    elements.forEach(
+        function(element) {
+
+            observer.observe(
+                element
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FAVICON FALLBACK
+   =========================================================
+
+   This creates a small SVG favicon dynamically.
+
+   This fixes the previous:
+   /favicon.ico 404
+
+   without requiring another file.
+   ========================================================= */
+
+function createFavicon() {
+
+    const existing =
+        document.querySelector(
+            'link[rel="icon"]'
+        );
+
+
+    if (existing) {
+        return;
+    }
+
+
+    const svg =
+        `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 64 64"
+        >
+            <rect
+                width="64"
+                height="64"
+                rx="16"
+                fill="#0b1f3a"
+            />
+
+            <text
+                x="32"
+                y="40"
+                text-anchor="middle"
+                font-family="Arial"
+                font-size="23"
+                font-weight="800"
+                fill="white"
+            >
+                KG
+            </text>
+        </svg>
+        `;
+
+
+    const link =
+        document.createElement(
+            "link"
+        );
+
+
+    link.rel =
+        "icon";
+
+    link.href =
+        "data:image/svg+xml," +
+        encodeURIComponent(svg);
+
+
+    document.head.appendChild(
+        link
+    );
+
+}
+
+
+createFavicon();
+
+
+/* =========================================================
+   FINAL CONSOLE MESSAGE
+   ========================================================= */
+
+console.log(
+    "%cKheloGram Stage 8 loaded successfully.",
+    "font-size:16px;font-weight:bold;color:#1457d9;"
+);
+
+console.log(
+    "Responsive UI + Community + Achievements + AI Talent + Sports Intelligence are active."
 );
