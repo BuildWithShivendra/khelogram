@@ -3441,3 +3441,22 @@ img {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* =========================================================
+   KHELOGRAM BRAND LOGO
+   ========================================================= */
+
+@media (max-width: 768px) {
+    .brand-logo {
+        width: 155px;
+        height: 52px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-logo {
+        width: 135px;
+        height: 48px;
+    }
+}
