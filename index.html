@@ -830,6 +830,165 @@
 
 </div>
 
+    <!-- ================= ADD GROUND MODAL ================= -->
+
+<div id="groundModal" class="modal hidden">
+
+    <div class="modal-card">
+
+        <button
+            class="close-btn"
+            type="button"
+            onclick="closeGroundModal()"
+        >
+            ×
+        </button>
+
+        <div class="logo">KG</div>
+
+        <h2>Add Sports Ground</h2>
+
+        <p>
+            Add a rural sports ground to the KheloGram map.
+        </p>
+
+
+        <form id="groundForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>Ground Name</label>
+
+                    <input
+                        id="groundName"
+                        type="text"
+                        placeholder="e.g. Gram Khel Maidan"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Village</label>
+
+                    <input
+                        id="groundVillage"
+                        type="text"
+                        placeholder="Village name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>District</label>
+
+                    <input
+                        id="groundDistrict"
+                        type="text"
+                        placeholder="District name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Area</label>
+
+                    <input
+                        id="groundArea"
+                        type="text"
+                        placeholder="e.g. 2.5 acres"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Primary Sport</label>
+
+                    <select id="groundSport" required>
+
+                        <option value="">
+                            Select sport
+                        </option>
+
+                        <option>Cricket</option>
+                        <option>Football</option>
+                        <option>Kabaddi</option>
+                        <option>Athletics</option>
+                        <option>Hockey</option>
+                        <option>Volleyball</option>
+                        <option>Multi-Sport</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Status</label>
+
+                    <select id="groundStatus" required>
+
+                        <option value="Available">
+                            Available
+                        </option>
+
+                        <option value="Maintenance">
+                            Maintenance
+                        </option>
+
+                        <option value="Occupied">
+                            Occupied
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Ground Condition</label>
+
+                <select id="groundCondition">
+
+                    <option>Good</option>
+                    <option>Average</option>
+                    <option>Needs Improvement</option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                class="primary-btn full-btn"
+                type="submit"
+            >
+                Add Ground →
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
 
 <!-- ================= AUTH MODAL ================= -->
 
