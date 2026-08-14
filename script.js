@@ -1,7 +1,6 @@
-```javascript
 /* =========================================================
    KHELOGRAM
-   STAGE 4.1 - COMPLETE JAVASCRIPT
+   STAGE 4.1 - CORRECTED COMPLETE JAVASCRIPT
    Rural Sports Ground Discovery
    ========================================================= */
 
@@ -77,7 +76,10 @@ const groundData = [
         district: "Lucknow",
         sport: "Multi-Sport",
         status: "Available",
-        facilities: "Football, Cricket, Athletics"
+        facilities: "Football, Cricket, Athletics",
+        capacity: "250",
+        facility: "Multi-Sport",
+        condition: "Good"
     },
     {
         name: "Gram Sports Ground",
@@ -85,7 +87,10 @@ const groundData = [
         district: "Lucknow",
         sport: "Cricket",
         status: "Available",
-        facilities: "Cricket, Volleyball"
+        facilities: "Cricket, Volleyball",
+        capacity: "180",
+        facility: "Cricket Pitch",
+        condition: "Good"
     },
     {
         name: "Rural Football Ground",
@@ -93,7 +98,10 @@ const groundData = [
         district: "Lucknow",
         sport: "Football",
         status: "Available",
-        facilities: "Football, Athletics"
+        facilities: "Football, Athletics",
+        capacity: "220",
+        facility: "Football Field",
+        condition: "Good"
     },
     {
         name: "Yuva Khel Maidan",
@@ -101,7 +109,10 @@ const groundData = [
         district: "Barabanki",
         sport: "Multi-Sport",
         status: "Available",
-        facilities: "Cricket, Football, Kabaddi"
+        facilities: "Cricket, Football, Kabaddi",
+        capacity: "300",
+        facility: "Multi-Sport Field",
+        condition: "Excellent"
     },
     {
         name: "Gram Panchayat Sports Field",
@@ -109,7 +120,10 @@ const groundData = [
         district: "Barabanki",
         sport: "Kabaddi",
         status: "Maintenance",
-        facilities: "Kabaddi, Volleyball"
+        facilities: "Kabaddi, Volleyball",
+        capacity: "120",
+        facility: "Kabaddi Court",
+        condition: "Maintenance"
     },
     {
         name: "Rural Athletics Ground",
@@ -117,7 +131,10 @@ const groundData = [
         district: "Kanpur Dehat",
         sport: "Athletics",
         status: "Available",
-        facilities: "Athletics, Running Track"
+        facilities: "Athletics, Running Track",
+        capacity: "200",
+        facility: "Running Track",
+        condition: "Good"
     },
     {
         name: "Village Cricket Ground",
@@ -125,7 +142,10 @@ const groundData = [
         district: "Prayagraj",
         sport: "Cricket",
         status: "Available",
-        facilities: "Cricket"
+        facilities: "Cricket",
+        capacity: "150",
+        facility: "Cricket Pitch",
+        condition: "Fair"
     },
     {
         name: "Community Sports Field",
@@ -133,7 +153,10 @@ const groundData = [
         district: "Ayodhya",
         sport: "Multi-Sport",
         status: "Available",
-        facilities: "Football, Cricket, Volleyball"
+        facilities: "Football, Cricket, Volleyball",
+        capacity: "250",
+        facility: "Multi-Sport Field",
+        condition: "Good"
     }
 ];
 
@@ -173,6 +196,7 @@ function saveUser(user) {
         "khelogramUser",
         JSON.stringify(user)
     );
+
 }
 
 
@@ -1456,6 +1480,15 @@ function renderCoaches(coaches) {
         coaches.map(
             function(coach) {
 
+                const connectedUser =
+                    getUser();
+
+                const isConnected =
+                    connectedUser &&
+                    connectedUser.profile &&
+                    connectedUser.profile.coach === coach.name;
+
+
                 return `
                     <div class="coach-card">
 
@@ -1477,12 +1510,25 @@ function renderCoaches(coaches) {
                             ⭐ ${coach.experience}
                         </small>
 
-                        <button
-                            class="secondary-btn"
-                            onclick="connectCoach('${coach.name}')"
-                        >
-                            Connect
-                        </button>
+                        ${
+                            isConnected
+
+                            ? `
+                                <div class="connection-status">
+                                    ✓ Connection Requested
+                                </div>
+                              `
+
+                            : `
+                                <button
+                                    class="secondary-btn"
+                                    type="button"
+                                    onclick="connectCoach('${coach.name}')"
+                                >
+                                    Connect
+                                </button>
+                              `
+                        }
 
                     </div>
                 `;
@@ -1504,12 +1550,29 @@ function connectCoach(name) {
 
 
     if (!user) {
+
+        showToast(
+            "Please login first."
+        );
+
         return;
     }
 
 
     if (!user.profile) {
-        user.profile = {};
+
+        user.profile = {
+
+            age: "",
+            village: "",
+            district: "",
+            sport: "",
+            skill: "",
+            achievements: "",
+            coach: ""
+
+        };
+
     }
 
 
@@ -1526,9 +1589,84 @@ function connectCoach(name) {
     );
 
 
+    renderCoaches(
+        getFilteredCoaches()
+    );
+
+
     showToast(
         "Coach connection request sent to " +
         name
+    );
+
+}
+
+
+/* =========================================================
+   GET FILTERED COACHES
+   ========================================================= */
+
+function getFilteredCoaches() {
+
+    const searchInput =
+        document.getElementById(
+            "coachSearch"
+        );
+
+    const sportFilter =
+        document.getElementById(
+            "coachSportFilter"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const sport =
+        sportFilter
+            ? sportFilter.value
+            : "";
+
+
+    return coachData.filter(
+        function(coach) {
+
+            const matchesSearch =
+
+                coach.name
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                coach.sport
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                coach.location
+                    .toLowerCase()
+                    .includes(search);
+
+
+            const matchesSport =
+
+                !sport ||
+                coach.sport === sport;
+
+
+            return (
+                matchesSearch &&
+                matchesSport
+            );
+
+        }
     );
 
 }
@@ -1551,6 +1689,11 @@ function filterGrounds() {
             "groundDistrictFilter"
         );
 
+    const sportFilter =
+        document.getElementById(
+            "groundSportFilter"
+        );
+
 
     const search =
         searchInput
@@ -1566,33 +1709,35 @@ function filterGrounds() {
             : "";
 
 
+    const sport =
+        sportFilter
+            ? sportFilter.value
+            : "";
+
+
     const filtered =
         groundData.filter(
             function(ground) {
 
+                const searchableText =
+
+                    (
+                        ground.name +
+                        " " +
+                        ground.village +
+                        " " +
+                        ground.district +
+                        " " +
+                        ground.sport +
+                        " " +
+                        ground.facilities
+                    ).toLowerCase();
+
+
                 const matchesSearch =
-
-                    ground.name
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    ground.village
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    ground.district
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    ground.sport
-                        .toLowerCase()
-                        .includes(search);
+                    searchableText.includes(
+                        search
+                    );
 
 
                 const matchesDistrict =
@@ -1601,9 +1746,21 @@ function filterGrounds() {
                     ground.district === district;
 
 
+                const matchesSport =
+
+                    !sport ||
+                    ground.sport === sport ||
+                    ground.facilities
+                        .toLowerCase()
+                        .includes(
+                            sport.toLowerCase()
+                        );
+
+
                 return (
                     matchesSearch &&
-                    matchesDistrict
+                    matchesDistrict &&
+                    matchesSport
                 );
 
             }
@@ -1630,6 +1787,11 @@ function renderGrounds(grounds) {
     if (!grid) {
         return;
     }
+
+
+    updateGroundCount(
+        grounds.length
+    );
 
 
     if (grounds.length === 0) {
@@ -1667,7 +1829,9 @@ function renderGrounds(grounds) {
                                 🏟️
                             </div>
 
-                            <span class="ground-status ${statusClass}">
+                            <span
+                                class="ground-status ${statusClass}"
+                            >
                                 ${ground.status}
                             </span>
 
@@ -1682,37 +1846,65 @@ function renderGrounds(grounds) {
                             ${ground.district}
                         </p>
 
-                        <div class="ground-info">
+                        <div class="ground-details">
 
-                            <div>
-                                <small>SPORT</small>
+                            <div class="ground-detail">
+
+                                <small>
+                                    SPORT
+                                </small>
+
                                 <strong>
                                     ${ground.sport}
                                 </strong>
+
                             </div>
 
-                            <div>
-                                <small>FACILITIES</small>
+                            <div class="ground-detail">
+
+                                <small>
+                                    FACILITIES
+                                </small>
+
                                 <strong>
                                     ${ground.facilities}
                                 </strong>
+
                             </div>
 
                         </div>
 
-                        <button
-                            class="secondary-btn"
-                            type="button"
-                            onclick="viewGround('${ground.name}')"
-                        >
-                            View Ground →
-                        </button>
+                        <div class="ground-card-actions">
+
+                            <button
+                                class="secondary-btn"
+                                type="button"
+                                onclick="viewGround('${escapeAttribute(ground.name)}')"
+                            >
+                                View Ground →
+                            </button>
+
+                        </div>
 
                     </div>
                 `;
 
             }
         ).join("");
+
+}
+
+
+/* =========================================================
+   UPDATE GROUND COUNT
+   ========================================================= */
+
+function updateGroundCount(count) {
+
+    setText(
+        "groundCount",
+        count
+    );
 
 }
 
@@ -1726,37 +1918,186 @@ function viewGround(name) {
     const ground =
         groundData.find(
             function(item) {
-                return item.name === name;
+
+                return (
+                    item.name === name
+                );
+
             }
         );
 
 
     if (!ground) {
+
+        console.error(
+            "Ground not found:",
+            name
+        );
+
         return;
     }
 
 
-    alert(
-        "GROUND DETAILS\n\n" +
-
-        "Name: " +
-        ground.name +
-
-        "\nVillage: " +
-        ground.village +
-
-        "\nDistrict: " +
-        ground.district +
-
-        "\nSport: " +
-        ground.sport +
-
-        "\nStatus: " +
-        ground.status +
-
-        "\nFacilities: " +
-        ground.facilities
+    setText(
+        "groundDetailDistrict",
+        ground.district
+            ? ground.district.toUpperCase()
+            : "DISTRICT"
     );
+
+
+    setText(
+        "groundDetailName",
+        ground.name
+    );
+
+
+    setText(
+        "groundDetailLocation",
+        "📍 " +
+        ground.village +
+        ", " +
+        ground.district
+    );
+
+
+    setText(
+        "groundDetailStatus",
+        ground.status
+    );
+
+
+    setText(
+        "groundDetailSport",
+        ground.sport
+    );
+
+
+    setText(
+        "groundDetailCapacity",
+        ground.capacity || "Not available"
+    );
+
+
+    setText(
+        "groundDetailFacility",
+        ground.facility ||
+        ground.facilities ||
+        "Basic"
+    );
+
+
+    setText(
+        "groundDetailCondition",
+        ground.condition ||
+        "Good"
+    );
+
+
+    const modal =
+        document.getElementById(
+            "groundDetailsModal"
+        );
+
+
+    if (!modal) {
+
+        alert(
+            "GROUND DETAILS\n\n" +
+
+            "Name: " +
+            ground.name +
+
+            "\nVillage: " +
+            ground.village +
+
+            "\nDistrict: " +
+            ground.district +
+
+            "\nSport: " +
+            ground.sport +
+
+            "\nStatus: " +
+            ground.status +
+
+            "\nFacilities: " +
+            ground.facilities
+        );
+
+        return;
+    }
+
+
+    modal.classList.remove(
+        "hidden"
+    );
+
+
+    modal.style.display =
+        "flex";
+
+
+    modal.style.visibility =
+        "visible";
+
+
+    modal.style.opacity =
+        "1";
+
+
+    modal.style.zIndex =
+        "9999";
+
+
+    document.body.classList.add(
+        "modal-open"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE GROUND DETAILS
+   ========================================================= */
+
+function closeGroundDetails() {
+
+    const modal =
+        document.getElementById(
+            "groundDetailsModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    modal.classList.add(
+        "hidden"
+    );
+
+
+    modal.style.display =
+        "none";
+
+
+    document.body.classList.remove(
+        "modal-open"
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML ATTRIBUTE
+   ========================================================= */
+
+function escapeAttribute(value) {
+
+    return String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/'/g, "\\'");
 
 }
 
@@ -1803,6 +2144,13 @@ function logout() {
     }
 
 
+    closeGroundDetails();
+
+    closeAuthModal();
+
+    closeRoleSelector();
+
+
     showToast(
         "You have been logged out."
     );
@@ -1846,6 +2194,9 @@ function scrollToSection(
    TOAST
    ========================================================= */
 
+let toastTimer = null;
+
+
 function showToast(message) {
 
     const toast =
@@ -1874,16 +2225,26 @@ function showToast(message) {
     );
 
 
-    setTimeout(
-        function() {
+    if (toastTimer) {
 
-            toast.classList.remove(
-                "show"
-            );
+        clearTimeout(
+            toastTimer
+        );
 
-        },
-        3000
-    );
+    }
+
+
+    toastTimer =
+        setTimeout(
+            function() {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
 
 }
 
@@ -1912,7 +2273,7 @@ function setText(
 
 
 /* =========================================================
-   CLOSE MODALS
+   CLOSE MODALS BY BACKDROP
    ========================================================= */
 
 document.addEventListener(
@@ -1927,6 +2288,11 @@ document.addEventListener(
         const authModal =
             document.getElementById(
                 "authModal"
+            );
+
+        const groundDetailsModal =
+            document.getElementById(
+                "groundDetailsModal"
             );
 
 
@@ -1949,6 +2315,16 @@ document.addEventListener(
 
         }
 
+
+        if (
+            groundDetailsModal &&
+            event.target === groundDetailsModal
+        ) {
+
+            closeGroundDetails();
+
+        }
+
     }
 );
 
@@ -1961,11 +2337,15 @@ document.addEventListener(
     "keydown",
     function(event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape"
+        ) {
 
             closeRoleSelector();
 
             closeAuthModal();
+
+            closeGroundDetails();
 
         }
 
@@ -1986,7 +2366,9 @@ document.addEventListener(
         );
 
 
-        /* AUTH FORM */
+        /* =================================================
+           AUTH FORM
+           ================================================= */
 
         const authForm =
             document.getElementById(
@@ -2004,7 +2386,9 @@ document.addEventListener(
         }
 
 
-        /* PROFILE FORM */
+        /* =================================================
+           PROFILE FORM
+           ================================================= */
 
         const profileForm =
             document.getElementById(
@@ -2022,7 +2406,9 @@ document.addEventListener(
         }
 
 
-        /* RESTORE USER */
+        /* =================================================
+           RESTORE USER
+           ================================================= */
 
         const user =
             getUser();
@@ -2038,7 +2424,18 @@ document.addEventListener(
         }
 
 
-        /* INITIAL GROUND RENDER */
+        /* =================================================
+           INITIAL COACH RENDER
+           ================================================= */
+
+        renderCoaches(
+            coachData
+        );
+
+
+        /* =================================================
+           INITIAL GROUND RENDER
+           ================================================= */
 
         renderGrounds(
             groundData
@@ -2055,7 +2452,7 @@ document.addEventListener(
 
 /* =========================================================
    MAKE FUNCTIONS AVAILABLE TO HTML
-   ========================================================= */
+   ================================================= */
 
 window.openRoleSelector =
     openRoleSelector;
@@ -2105,6 +2502,9 @@ window.filterGrounds =
 window.viewGround =
     viewGround;
 
+window.closeGroundDetails =
+    closeGroundDetails;
+
 
 /* =========================================================
    FINAL MESSAGE
@@ -2117,4 +2517,3 @@ console.log(
 console.log(
     "Stage 4.1 JavaScript ready."
 );
-```
