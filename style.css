@@ -3460,3 +3460,529 @@ img {
         height: 48px;
     }
 }
+/* =========================================================
+   KHELOGRAM — ROLE DASHBOARD LAYOUT FIX
+   Paste this at the VERY BOTTOM of style.css
+   ========================================================= */
+
+/* Main role dashboard */
+.role-dashboard {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 48px 6vw 80px;
+  background: #f5f7f6;
+}
+
+/* Make the dashboard use the complete available width */
+.role-dashboard *,
+.role-dashboard *::before,
+.role-dashboard *::after {
+  box-sizing: border-box;
+}
+
+/* Dashboard header */
+.role-dashboard-header {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+/* Left side of header */
+.role-dashboard-header > div:first-child {
+  flex: 1;
+}
+
+.role-dashboard-eyebrow {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #087f5b;
+}
+
+.role-dashboard-title {
+  margin: 0;
+  font-size: clamp(42px, 5vw, 68px);
+  line-height: 0.98;
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: #18233a;
+}
+
+.role-dashboard-subtitle {
+  max-width: 620px;
+  margin: 20px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: #65717d;
+}
+
+/* Profile card */
+.role-dashboard-profile {
+  min-width: 230px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #dce4df;
+  border-radius: 22px;
+  box-shadow: 0 8px 30px rgba(20, 50, 40, 0.06);
+}
+
+.role-dashboard-profile .avatar,
+.role-dashboard-profile [class*="avatar"] {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f4ec;
+  color: #087f5b;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.role-dashboard-profile strong {
+  display: block;
+  color: #18233a;
+  font-size: 17px;
+}
+
+.role-dashboard-profile span {
+  display: block;
+  margin-top: 4px;
+  color: #78848d;
+  font-size: 14px;
+}
+
+/* Change role */
+.role-dashboard .change-role,
+.role-dashboard [class*="change-role"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto 30px;
+  color: #087f5b;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.role-dashboard-stats {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 28px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.role-dashboard-stat {
+  min-height: 130px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #dce4df;
+  border-radius: 22px;
+  box-shadow: 0 8px 30px rgba(20, 50, 40, 0.05);
+}
+
+.role-dashboard-stat .stat-label {
+  color: #78848d;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.role-dashboard-stat .stat-value {
+  margin-top: 10px;
+  color: #18233a;
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+/* =========================================================
+   MAIN DASHBOARD GRID
+   ========================================================= */
+
+.role-dashboard-grid {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+  gap: 24px;
+  align-items: start;
+}
+
+/* Generic dashboard card */
+.role-dashboard-card {
+  width: 100%;
+  min-width: 0;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #dce4df;
+  border-radius: 26px;
+  box-shadow: 0 10px 35px rgba(20, 50, 40, 0.06);
+}
+
+.role-dashboard-card + .role-dashboard-card {
+  margin-top: 24px;
+}
+
+.role-dashboard-card h2,
+.role-dashboard-card h3 {
+  margin: 0;
+  color: #18233a;
+  font-weight: 800;
+}
+
+.role-dashboard-card h2 {
+  font-size: 24px;
+}
+
+.role-dashboard-card h3 {
+  font-size: 19px;
+}
+
+.role-dashboard-card p {
+  color: #68757e;
+  line-height: 1.6;
+}
+
+/* Card header */
+.role-dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+/* =========================================================
+   ATHLETE LIST
+   ========================================================= */
+
+.role-dashboard-athletes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-dashboard-athlete {
+  width: 100%;
+  min-height: 76px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid #e3e9e5;
+  border-radius: 16px;
+  background: #fbfcfb;
+}
+
+.role-dashboard-athlete .athlete-avatar {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f4ec;
+  color: #087f5b;
+  font-weight: 800;
+}
+
+.role-dashboard-athlete-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.role-dashboard-athlete-info strong {
+  display: block;
+  color: #18233a;
+  font-size: 15px;
+}
+
+.role-dashboard-athlete-info span {
+  display: block;
+  margin-top: 3px;
+  color: #7b858c;
+  font-size: 13px;
+}
+
+.role-dashboard-progress {
+  width: 120px;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #e5ebe7;
+}
+
+.role-dashboard-progress > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #087f5b;
+}
+
+/* =========================================================
+   TRAINING GROUND
+   ========================================================= */
+
+.role-dashboard-ground {
+  padding: 20px;
+  border-radius: 20px;
+  background: #f3f8f5;
+  border: 1px solid #dcebe3;
+}
+
+.role-dashboard-ground .ground-icon {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 16px;
+  border-radius: 15px;
+  background: #087f5b;
+  color: #ffffff;
+  font-size: 24px;
+}
+
+.role-dashboard-ground h3 {
+  margin-bottom: 8px;
+}
+
+.role-dashboard-ground p {
+  margin: 6px 0;
+}
+
+/* =========================================================
+   COMMUNITY FEED
+   ========================================================= */
+
+.role-dashboard-feed {
+  width: 100%;
+  max-width: 1400px;
+  margin: 24px auto 0;
+}
+
+.role-dashboard-post {
+  padding: 20px 0;
+  border-top: 1px solid #e4e9e6;
+}
+
+.role-dashboard-post:first-child {
+  border-top: 0;
+}
+
+.role-dashboard-post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.role-dashboard-post-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #e3f4ec;
+  color: #087f5b;
+  font-weight: 800;
+}
+
+.role-dashboard-post-header strong {
+  color: #18233a;
+}
+
+.role-dashboard-post-header span {
+  display: block;
+  margin-top: 2px;
+  color: #8a9398;
+  font-size: 12px;
+}
+
+.role-dashboard-post p {
+  margin: 14px 0 0;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.role-dashboard button,
+.role-dashboard .btn,
+.role-dashboard [class*="button"] {
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.role-dashboard-primary {
+  padding: 12px 18px;
+  border: 0;
+  background: #087f5b;
+  color: #ffffff;
+  font-weight: 750;
+}
+
+.role-dashboard-primary:hover {
+  background: #066b4d;
+}
+
+/* =========================================================
+   COACH DASHBOARD SPECIFIC
+   ========================================================= */
+
+.coach-dashboard {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.coach-dashboard .role-dashboard-grid {
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.7fr);
+}
+
+/* =========================================================
+   PANCHAYAT DASHBOARD
+   ========================================================= */
+
+.panchayat-dashboard {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.panchayat-dashboard .role-dashboard-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* =========================================================
+   ORGANIZER DASHBOARD
+   ========================================================= */
+
+.organizer-dashboard {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.organizer-dashboard .role-dashboard-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr);
+}
+
+/* Tournament form */
+.role-dashboard-form {
+  display: grid;
+  gap: 16px;
+}
+
+.role-dashboard-form label {
+  display: grid;
+  gap: 7px;
+  color: #35424a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.role-dashboard-form input,
+.role-dashboard-form select,
+.role-dashboard-form textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #d7e0db;
+  border-radius: 12px;
+  outline: none;
+  background: #ffffff;
+  color: #18233a;
+  font: inherit;
+}
+
+.role-dashboard-form input:focus,
+.role-dashboard-form select:focus,
+.role-dashboard-form textarea:focus {
+  border-color: #087f5b;
+  box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.1);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .role-dashboard {
+    padding: 36px 28px 60px;
+  }
+
+  .role-dashboard-header {
+    flex-direction: column;
+  }
+
+  .role-dashboard-profile {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .role-dashboard-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .role-dashboard-grid,
+  .coach-dashboard .role-dashboard-grid,
+  .panchayat-dashboard .role-dashboard-grid,
+  .organizer-dashboard .role-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .role-dashboard {
+    padding: 28px 18px 50px;
+  }
+
+  .role-dashboard-title {
+    font-size: 42px;
+  }
+
+  .role-dashboard-subtitle {
+    font-size: 16px;
+  }
+
+  .role-dashboard-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .role-dashboard-stat {
+    min-height: 105px;
+    padding: 18px;
+  }
+
+  .role-dashboard-stat .stat-value {
+    font-size: 28px;
+  }
+
+  .role-dashboard-card {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .role-dashboard-athlete {
+    align-items: flex-start;
+  }
+
+  .role-dashboard-progress {
+    width: 70px;
+    margin-top: 8px;
+  }
+}
