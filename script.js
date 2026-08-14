@@ -1,22 +1,23 @@
 /* =========================================================
    KHELOGRAM
-   STAGE 4.1 - CORRECTED COMPLETE JAVASCRIPT
-   Rural Sports Ground Discovery
+   STAGE 5 - TOURNAMENT MANAGEMENT
+   Compatible with existing index.html
    ========================================================= */
 
 
 /* =========================================================
-   GLOBAL DATA
+   GLOBAL STATE
    ========================================================= */
 
-let selectedRole = "";
+let selectedRole = "Athlete";
+let authMode = "register";
+let currentTournamentId = null;
 
-const roleNames = {
-    athlete: "Athlete",
-    coach: "Coach",
-    "gram-panchayat": "Gram Panchayat",
-    organizer: "Organizer",
-    authority: "Authority"
+const STORAGE_KEYS = {
+    USER: "khelogramUser",
+    PROFILE: "khelogramProfile",
+    COACH: "khelogramCoach",
+    TOURNAMENTS: "khelogramTournamentRegistrations"
 };
 
 
@@ -24,179 +25,365 @@ const roleNames = {
    DEMO COACH DATA
    ========================================================= */
 
-const coachData = [
+const coaches = [
     {
-        name: "Amit Kumar",
+        id: 1,
+        name: "Ravi Kumar",
         sport: "Cricket",
         location: "Lucknow",
-        experience: "8 years"
+        experience: "8 years",
+        initials: "RK"
     },
     {
-        name: "Rahul Singh",
+        id: 2,
+        name: "Amit Singh",
         sport: "Football",
-        location: "Lucknow",
-        experience: "6 years"
-    },
-    {
-        name: "Vivek Yadav",
-        sport: "Kabaddi",
         location: "Barabanki",
-        experience: "7 years"
+        experience: "6 years",
+        initials: "AS"
     },
     {
+        id: 3,
         name: "Priya Sharma",
         sport: "Athletics",
-        location: "Lucknow",
-        experience: "5 years"
-    },
-    {
-        name: "Arjun Verma",
-        sport: "Hockey",
         location: "Kanpur",
-        experience: "9 years"
+        experience: "9 years",
+        initials: "PS"
     },
     {
-        name: "Neha Singh",
-        sport: "Volleyball",
-        location: "Ayodhya",
-        experience: "6 years"
-    }
-];
-
-
-/* =========================================================
-   STAGE 4.1
-   DEMO SPORTS GROUND DATA
-   ========================================================= */
-
-const groundData = [
-    {
-        name: "KheloGram Community Ground",
-        village: "Chinhat",
-        district: "Lucknow",
-        sport: "Multi-Sport",
-        status: "Available",
-        facilities: "Football, Cricket, Athletics",
-        capacity: "250",
-        facility: "Multi-Sport",
-        condition: "Good"
-    },
-    {
-        name: "Gram Sports Ground",
-        village: "Malihabad",
-        district: "Lucknow",
-        sport: "Cricket",
-        status: "Available",
-        facilities: "Cricket, Volleyball",
-        capacity: "180",
-        facility: "Cricket Pitch",
-        condition: "Good"
-    },
-    {
-        name: "Rural Football Ground",
-        village: "Bakshi Ka Talab",
-        district: "Lucknow",
-        sport: "Football",
-        status: "Available",
-        facilities: "Football, Athletics",
-        capacity: "220",
-        facility: "Football Field",
-        condition: "Good"
-    },
-    {
-        name: "Yuva Khel Maidan",
-        village: "Nawabganj",
-        district: "Barabanki",
-        sport: "Multi-Sport",
-        status: "Available",
-        facilities: "Cricket, Football, Kabaddi",
-        capacity: "300",
-        facility: "Multi-Sport Field",
-        condition: "Excellent"
-    },
-    {
-        name: "Gram Panchayat Sports Field",
-        village: "Haidergarh",
-        district: "Barabanki",
+        id: 4,
+        name: "Suresh Yadav",
         sport: "Kabaddi",
-        status: "Maintenance",
-        facilities: "Kabaddi, Volleyball",
-        capacity: "120",
-        facility: "Kabaddi Court",
-        condition: "Maintenance"
+        location: "Ayodhya",
+        experience: "7 years",
+        initials: "SY"
     },
     {
-        name: "Rural Athletics Ground",
-        village: "Akbarpur",
-        district: "Kanpur Dehat",
-        sport: "Athletics",
-        status: "Available",
-        facilities: "Athletics, Running Track",
-        capacity: "200",
-        facility: "Running Track",
-        condition: "Good"
+        id: 5,
+        name: "Neha Verma",
+        sport: "Hockey",
+        location: "Lucknow",
+        experience: "5 years",
+        initials: "NV"
     },
     {
-        name: "Village Cricket Ground",
-        village: "Soraon",
-        district: "Prayagraj",
-        sport: "Cricket",
-        status: "Available",
-        facilities: "Cricket",
-        capacity: "150",
-        facility: "Cricket Pitch",
-        condition: "Fair"
-    },
-    {
-        name: "Community Sports Field",
-        village: "Milkipur",
-        district: "Ayodhya",
-        sport: "Multi-Sport",
-        status: "Available",
-        facilities: "Football, Cricket, Volleyball",
-        capacity: "250",
-        facility: "Multi-Sport Field",
-        condition: "Good"
+        id: 6,
+        name: "Vikas Mishra",
+        sport: "Volleyball",
+        location: "Unnao",
+        experience: "10 years",
+        initials: "VM"
     }
 ];
 
 
 /* =========================================================
-   LOCAL STORAGE
+   STAGE 4.1 - DEMO GROUND DATA
    ========================================================= */
 
-function getUser() {
-
-    const savedUser =
-        localStorage.getItem("khelogramUser");
-
-    if (!savedUser) {
-        return null;
+const grounds = [
+    {
+        id: 1,
+        name: "Lucknow Rural Sports Ground",
+        district: "Lucknow",
+        village: "Mohanlalganj",
+        sport: "Cricket",
+        capacity: 500,
+        facility: "Changing Room",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
+    },
+    {
+        id: 2,
+        name: "Barabanki Community Ground",
+        district: "Barabanki",
+        village: "Nawabganj",
+        sport: "Football",
+        capacity: 350,
+        facility: "Flood Lights",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
+    },
+    {
+        id: 3,
+        name: "Ayodhya Rural Sports Field",
+        district: "Ayodhya",
+        village: "Sohawal",
+        sport: "Kabaddi",
+        capacity: 250,
+        facility: "Open Field",
+        condition: "Fair",
+        status: "Maintenance",
+        icon: "🏟️"
+    },
+    {
+        id: 4,
+        name: "Kanpur Village Athletics Ground",
+        district: "Kanpur",
+        village: "Bilhaur",
+        sport: "Athletics",
+        capacity: 400,
+        facility: "Running Track",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
+    },
+    {
+        id: 5,
+        name: "Unnao Community Sports Ground",
+        district: "Unnao",
+        village: "Safipur",
+        sport: "Hockey",
+        capacity: 300,
+        facility: "Flood Lights",
+        condition: "Good",
+        status: "Occupied",
+        icon: "🏟️"
+    },
+    {
+        id: 6,
+        name: "Barabanki Volleyball Arena",
+        district: "Barabanki",
+        village: "Fatehpur",
+        sport: "Volleyball",
+        capacity: 180,
+        facility: "Volleyball Court",
+        condition: "Good",
+        status: "Available",
+        icon: "🏟️"
     }
+];
 
-    try {
 
-        return JSON.parse(savedUser);
+/* =========================================================
+   STAGE 5 - TOURNAMENT DATA
+   ========================================================= */
 
-    } catch (error) {
+const tournaments = [
+    {
+        id: "T001",
+        name: "KheloGram Rural Cricket Cup",
+        sport: "Cricket",
+        district: "Lucknow",
+        village: "Mohanlalganj",
+        venue: "Lucknow Rural Sports Ground",
+        startDate: "2026-09-05",
+        endDate: "2026-09-07",
+        registrationDeadline: "2026-08-30",
+        participants: 64,
+        capacity: 80,
+        entryFee: "Free",
+        organizer: "Mohanlalganj Sports Committee",
+        category: "U-19",
+        icon: "🏏",
+        description:
+            "A village-level cricket competition connecting young rural players with local sporting opportunities.",
+        prize: "Trophy + Certificates",
+        contact: "KheloGram Sports Desk"
+    },
 
-        console.error(
-            "Error reading KheloGram user:",
-            error
-        );
+    {
+        id: "T002",
+        name: "Awadh Grassroots Football League",
+        sport: "Football",
+        district: "Barabanki",
+        village: "Nawabganj",
+        venue: "Barabanki Community Ground",
+        startDate: "2026-09-12",
+        endDate: "2026-09-14",
+        registrationDeadline: "2026-09-05",
+        participants: 48,
+        capacity: 64,
+        entryFee: "Free",
+        organizer: "Barabanki District Sports Club",
+        category: "Open",
+        icon: "⚽",
+        description:
+            "A grassroots football tournament designed to give village teams structured competitive experience.",
+        prize: "Trophy + Sports Kits",
+        contact: "District Sports Coordinator"
+    },
 
-        return null;
+    {
+        id: "T003",
+        name: "Ayodhya Rural Kabaddi Championship",
+        sport: "Kabaddi",
+        district: "Ayodhya",
+        village: "Sohawal",
+        venue: "Ayodhya Rural Sports Field",
+        startDate: "2026-09-20",
+        endDate: "2026-09-21",
+        registrationDeadline: "2026-09-14",
+        participants: 40,
+        capacity: 48,
+        entryFee: "₹100",
+        organizer: "Ayodhya Rural Kabaddi Association",
+        category: "Open",
+        icon: "🤼",
+        description:
+            "Competitive kabaddi for village athletes with an opportunity to be noticed by district-level coaches.",
+        prize: "₹10,000 + Trophy",
+        contact: "Kabaddi Association Desk"
+    },
+
+    {
+        id: "T004",
+        name: "KheloGram Athletics Talent Meet",
+        sport: "Athletics",
+        district: "Kanpur",
+        village: "Bilhaur",
+        venue: "Kanpur Village Athletics Ground",
+        startDate: "2026-09-27",
+        endDate: "2026-09-28",
+        registrationDeadline: "2026-09-20",
+        participants: 55,
+        capacity: 100,
+        entryFee: "Free",
+        organizer: "Kanpur Rural Athletics Council",
+        category: "U-17",
+        icon: "🏃",
+        description:
+            "Track and field events designed to identify promising young athletes from rural communities.",
+        prize: "Medals + Certificates",
+        contact: "Athletics Event Coordinator"
+    },
+
+    {
+        id: "T005",
+        name: "Unnao Rural Hockey Challenge",
+        sport: "Hockey",
+        district: "Unnao",
+        village: "Safipur",
+        venue: "Unnao Community Sports Ground",
+        startDate: "2026-10-03",
+        endDate: "2026-10-05",
+        registrationDeadline: "2026-09-25",
+        participants: 70,
+        capacity: 80,
+        entryFee: "₹150",
+        organizer: "Unnao Hockey Development Group",
+        category: "Open",
+        icon: "🏑",
+        description:
+            "A competitive rural hockey event focused on team development and district-level talent discovery.",
+        prize: "₹15,000 + Trophy",
+        contact: "Hockey Development Desk"
+    },
+
+    {
+        id: "T006",
+        name: "Barabanki Village Volleyball Open",
+        sport: "Volleyball",
+        district: "Barabanki",
+        village: "Fatehpur",
+        venue: "Barabanki Volleyball Arena",
+        startDate: "2026-10-10",
+        endDate: "2026-10-11",
+        registrationDeadline: "2026-10-03",
+        participants: 30,
+        capacity: 48,
+        entryFee: "Free",
+        organizer: "Fatehpur Village Sports Committee",
+        category: "Open",
+        icon: "🏐",
+        description:
+            "An open volleyball competition bringing village teams together for organized competition.",
+        prize: "Trophy + Certificates",
+        contact: "Tournament Coordinator"
+    },
+
+    {
+        id: "T007",
+        name: "Lucknow Rural Badminton Open",
+        sport: "Badminton",
+        district: "Lucknow",
+        village: "Malihabad",
+        venue: "Malihabad Community Sports Hall",
+        startDate: "2026-10-17",
+        endDate: "2026-10-18",
+        registrationDeadline: "2026-10-10",
+        participants: 22,
+        capacity: 40,
+        entryFee: "₹100",
+        organizer: "Malihabad Sports Collective",
+        category: "Open",
+        icon: "🏸",
+        description:
+            "A local badminton competition for emerging rural players.",
+        prize: "Medals + Certificates",
+        contact: "Badminton Event Desk"
+    },
+
+    {
+        id: "T008",
+        name: "Awadh Wrestling Talent Search",
+        sport: "Wrestling",
+        district: "Ayodhya",
+        village: "Rudauli",
+        venue: "Rudauli Rural Akhara",
+        startDate: "2026-10-24",
+        endDate: "2026-10-25",
+        registrationDeadline: "2026-10-17",
+        participants: 36,
+        capacity: 50,
+        entryFee: "Free",
+        organizer: "Awadh Rural Wrestling Council",
+        category: "U-19",
+        icon: "🤼",
+        description:
+            "A grassroots wrestling meet focused on discovering promising rural athletes.",
+        prize: "Trophy + Sports Scholarship Recommendation",
+        contact: "Wrestling Council Desk"
     }
+];
+
+
+/* =========================================================
+   DOM READY
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    initializeApplication();
+
+});
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+function initializeApplication() {
+
+    setupAuthForm();
+    setupProfileForm();
+
+    renderCoaches();
+    renderGrounds();
+    initializeTournamentSection();
+
+    loadStoredUser();
+
 }
 
 
-function saveUser(user) {
+/* =========================================================
+   LANDING PAGE
+   ========================================================= */
 
-    localStorage.setItem(
-        "khelogramUser",
-        JSON.stringify(user)
-    );
+function scrollToSection(id) {
 
+    const element = document.getElementById(id);
+
+    if (!element) {
+        return;
+    }
+
+    element.scrollIntoView({
+        behavior: "smooth"
+    });
 }
 
 
@@ -206,63 +393,31 @@ function saveUser(user) {
 
 function openRoleSelector() {
 
-    const roleModal =
-        document.getElementById("roleModal");
+    const modal = document.getElementById("roleModal");
 
-    if (!roleModal) {
-
-        console.error(
-            "roleModal not found in index.html"
-        );
-
+    if (!modal) {
         return;
     }
 
-    roleModal.classList.remove("hidden");
-
-    roleModal.style.display = "flex";
-    roleModal.style.visibility = "visible";
-    roleModal.style.opacity = "1";
-    roleModal.style.zIndex = "9999";
-
-    document.body.classList.add("modal-open");
+    modal.classList.remove("hidden");
 
 }
 
 
 function closeRoleSelector() {
 
-    const roleModal =
-        document.getElementById("roleModal");
+    const modal = document.getElementById("roleModal");
 
-    if (!roleModal) {
-        return;
+    if (modal) {
+        modal.classList.add("hidden");
     }
-
-    roleModal.classList.add("hidden");
-
-    roleModal.style.display = "none";
-
-    document.body.classList.remove("modal-open");
 
 }
 
 
-/* =========================================================
-   SELECT ROLE
-   ========================================================= */
-
 function selectRole(role) {
 
-    selectedRole =
-        role
-            .toLowerCase()
-            .replace(/\s+/g, "-");
-
-    console.log(
-        "Selected role:",
-        roleNames[selectedRole] || role
-    );
+    selectedRole = role;
 
     closeRoleSelector();
 
@@ -272,31 +427,18 @@ function selectRole(role) {
 
 
 /* =========================================================
-   AUTH MODAL
+   AUTH
    ========================================================= */
 
 function openAuthModal() {
 
-    const authModal =
-        document.getElementById("authModal");
+    const modal = document.getElementById("authModal");
 
-    if (!authModal) {
-
-        console.error(
-            "authModal not found in index.html"
-        );
-
+    if (!modal) {
         return;
     }
 
-    authModal.classList.remove("hidden");
-
-    authModal.style.display = "flex";
-    authModal.style.visibility = "visible";
-    authModal.style.opacity = "1";
-    authModal.style.zIndex = "9999";
-
-    document.body.classList.add("modal-open");
+    modal.classList.remove("hidden");
 
     switchAuth("register");
 
@@ -305,27 +447,24 @@ function openAuthModal() {
 
 function closeAuthModal() {
 
-    const authModal =
-        document.getElementById("authModal");
+    const modal = document.getElementById("authModal");
 
-    if (!authModal) {
-        return;
+    if (modal) {
+        modal.classList.add("hidden");
     }
-
-    authModal.classList.add("hidden");
-
-    authModal.style.display = "none";
-
-    document.body.classList.remove("modal-open");
 
 }
 
 
-/* =========================================================
-   AUTH TABS
-   ========================================================= */
+function switchAuth(mode) {
 
-function switchAuth(type) {
+    authMode = mode;
+
+    const registerTab =
+        document.getElementById("registerTab");
+
+    const loginTab =
+        document.getElementById("loginTab");
 
     const nameField =
         document.getElementById("nameField");
@@ -339,50 +478,24 @@ function switchAuth(type) {
     const authButtonText =
         document.getElementById("authButtonText");
 
-    const registerTab =
-        document.getElementById("registerTab");
+    const authPassword =
+        document.getElementById("authPassword");
 
-    const loginTab =
-        document.getElementById("loginTab");
+    if (!registerTab || !loginTab) {
+        return;
+    }
 
-    const authName =
-        document.getElementById("authName");
+    registerTab.classList.toggle(
+        "active",
+        mode === "register"
+    );
 
+    loginTab.classList.toggle(
+        "active",
+        mode === "login"
+    );
 
-    if (type === "login") {
-
-        if (nameField) {
-            nameField.style.display = "none";
-        }
-
-        if (authTitle) {
-            authTitle.textContent =
-                "Welcome back";
-        }
-
-        if (authSubtitle) {
-            authSubtitle.textContent =
-                "Login to your KheloGram account.";
-        }
-
-        if (authButtonText) {
-            authButtonText.textContent =
-                "Login";
-        }
-
-        if (registerTab) {
-            registerTab.classList.remove("active");
-        }
-
-        if (loginTab) {
-            loginTab.classList.add("active");
-        }
-
-        if (authName) {
-            authName.required = false;
-        }
-
-    } else {
+    if (mode === "register") {
 
         if (nameField) {
             nameField.style.display = "block";
@@ -403,16 +516,35 @@ function switchAuth(type) {
                 "Create Account";
         }
 
-        if (registerTab) {
-            registerTab.classList.add("active");
+        if (authPassword) {
+            authPassword.placeholder =
+                "Create a password";
         }
 
-        if (loginTab) {
-            loginTab.classList.remove("active");
+    } else {
+
+        if (nameField) {
+            nameField.style.display = "none";
         }
 
-        if (authName) {
-            authName.required = true;
+        if (authTitle) {
+            authTitle.textContent =
+                "Welcome back";
+        }
+
+        if (authSubtitle) {
+            authSubtitle.textContent =
+                "Login to your KheloGram dashboard.";
+        }
+
+        if (authButtonText) {
+            authButtonText.textContent =
+                "Login";
+        }
+
+        if (authPassword) {
+            authPassword.placeholder =
+                "Enter your password";
         }
 
     }
@@ -424,214 +556,114 @@ function switchAuth(type) {
    AUTH FORM
    ========================================================= */
 
-function handleAuthSubmit(event) {
+function setupAuthForm() {
 
-    event.preventDefault();
+    const form =
+        document.getElementById("authForm");
 
-    const authTitle =
-        document.getElementById("authTitle");
-
-    const isLogin =
-        authTitle &&
-        authTitle.textContent
-            .toLowerCase()
-            .includes("welcome back");
-
-
-    if (isLogin) {
-
-        loginUser();
-
-    } else {
-
-        registerUser();
-
-    }
-
-}
-
-
-/* =========================================================
-   REGISTER
-   ========================================================= */
-
-function registerUser() {
-
-    const nameElement =
-        document.getElementById("authName");
-
-    const emailElement =
-        document.getElementById("authEmail");
-
-    const passwordElement =
-        document.getElementById("authPassword");
-
-
-    const name =
-        nameElement
-            ? nameElement.value.trim()
-            : "";
-
-    const email =
-        emailElement
-            ? emailElement.value.trim()
-            : "";
-
-    const password =
-        passwordElement
-            ? passwordElement.value.trim()
-            : "";
-
-
-    if (!name) {
-
-        alert(
-            "Please enter your full name."
-        );
-
+    if (!form) {
         return;
     }
 
+    form.addEventListener("submit", function (event) {
 
-    if (!email) {
+        event.preventDefault();
 
-        alert(
-            "Please enter your email."
-        );
+        const name =
+            document.getElementById("authName")?.value.trim();
 
-        return;
-    }
+        const email =
+            document.getElementById("authEmail")?.value.trim();
 
+        const password =
+            document.getElementById("authPassword")?.value;
 
-    if (password.length < 6) {
+        if (!email || !password) {
 
-        alert(
-            "Password must contain at least 6 characters."
-        );
+            showToast(
+                "Please enter your email and password."
+            );
 
-        return;
-    }
+            return;
+        }
 
+        let user;
 
-    if (!selectedRole) {
+        if (authMode === "register") {
 
-        alert(
-            "Please select your role first."
-        );
+            user = {
+                name: name || "KheloGram Athlete",
+                email: email,
+                role: selectedRole,
+                createdAt: new Date().toISOString()
+            };
 
-        return;
-    }
+        } else {
 
+            const existingUser =
+                getStoredUser();
 
-    const user = {
+            user = existingUser || {
+                name: name || "KheloGram User",
+                email: email,
+                role: selectedRole
+            };
 
-        name: name,
-
-        email: email,
-
-        password: password,
-
-        role: selectedRole,
-
-        profile: {
-
-            age: "",
-
-            village: "",
-
-            district: "",
-
-            sport: "",
-
-            skill: "",
-
-            achievements: "",
-
-            coach: ""
+            user.email = email;
 
         }
 
-    };
-
-
-    saveUser(user);
-
-    closeAuthModal();
-
-    showDashboard();
-
-    showToast(
-        "Welcome to KheloGram, " +
-        name +
-        "!"
-    );
-
-}
-
-
-/* =========================================================
-   LOGIN
-   ========================================================= */
-
-function loginUser() {
-
-    const emailElement =
-        document.getElementById("authEmail");
-
-    const passwordElement =
-        document.getElementById("authPassword");
-
-
-    const email =
-        emailElement
-            ? emailElement.value.trim()
-            : "";
-
-    const password =
-        passwordElement
-            ? passwordElement.value.trim()
-            : "";
-
-
-    const user =
-        getUser();
-
-
-    if (!user) {
-
-        alert(
-            "No KheloGram account found.\n\nPlease register first."
+        localStorage.setItem(
+            STORAGE_KEYS.USER,
+            JSON.stringify(user)
         );
-
-        return;
-    }
-
-
-    if (
-        email === user.email &&
-        password === user.password
-    ) {
-
-        selectedRole =
-            user.role;
 
         closeAuthModal();
 
         showDashboard();
 
         showToast(
-            "Welcome back, " +
-            user.name +
-            "!"
+            authMode === "register"
+                ? "Account created successfully."
+                : "Welcome back to KheloGram."
         );
 
-    } else {
+    });
 
-        alert(
-            "Incorrect email or password."
-        );
+}
+
+
+/* =========================================================
+   USER STORAGE
+   ========================================================= */
+
+function getStoredUser() {
+
+    try {
+
+        const data =
+            localStorage.getItem(STORAGE_KEYS.USER);
+
+        return data ? JSON.parse(data) : null;
+
+    } catch (error) {
+
+        return null;
 
     }
+
+}
+
+
+function loadStoredUser() {
+
+    const user = getStoredUser();
+
+    if (!user) {
+        return;
+    }
+
+    updateUserUI(user);
 
 }
 
@@ -642,192 +674,178 @@ function loginUser() {
 
 function showDashboard() {
 
-    const user =
-        getUser();
-
-    if (!user) {
-
-        console.log(
-            "No saved user."
-        );
-
-        return;
-    }
-
-
     const landingPage =
-        document.getElementById(
-            "landingPage"
-        );
+        document.getElementById("landingPage");
 
     const dashboardPage =
-        document.getElementById(
-            "dashboardPage"
-        );
-
+        document.getElementById("dashboardPage");
 
     if (landingPage) {
-
-        landingPage.classList.add(
-            "hidden"
-        );
-
+        landingPage.classList.add("hidden");
     }
-
 
     if (dashboardPage) {
-
-        dashboardPage.classList.remove(
-            "hidden"
-        );
-
+        dashboardPage.classList.remove("hidden");
     }
 
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
-    updateDashboardUser(user);
+    const user = getStoredUser();
 
-    loadProfile(user);
+    if (user) {
+        updateUserUI(user);
+    }
 
-    showDashboardSection(
-        "overview"
-    );
+    updateDashboardData();
 
 }
 
 
-/* =========================================================
-   DASHBOARD USER INFORMATION
-   ========================================================= */
+function updateUserUI(user) {
 
-function updateDashboardUser(user) {
-
-    const name =
+    const displayName =
         user.name || "User";
 
-    const role =
-        roleNames[user.role] ||
-        user.role ||
-        "Athlete";
-
-
-    setText(
-        "dashboardName",
-        name
-    );
-
-    setText(
-        "userDisplayName",
-        name
-    );
-
-    setText(
-        "userRole",
-        role
-    );
-
+    const firstName =
+        displayName.split(" ")[0];
 
     const initials =
-        getInitials(name);
+        getInitials(displayName);
+
+    const dashboardName =
+        document.getElementById("dashboardName");
+
+    const userDisplayName =
+        document.getElementById("userDisplayName");
+
+    const userRole =
+        document.getElementById("userRole");
+
+    const userInitials =
+        document.getElementById("userInitials");
+
+    const passportInitials =
+        document.getElementById("passportInitials");
+
+    const passportName =
+        document.getElementById("passportName");
+
+    const profileAvatar =
+        document.getElementById("profileAvatar");
+
+    const profileCardName =
+        document.getElementById("profileCardName");
+
+    if (dashboardName) {
+        dashboardName.textContent = firstName;
+    }
+
+    if (userDisplayName) {
+        userDisplayName.textContent =
+            displayName;
+    }
+
+    if (userRole) {
+        userRole.textContent =
+            user.role || "Athlete";
+    }
+
+    if (userInitials) {
+        userInitials.textContent =
+            initials;
+    }
+
+    if (passportInitials) {
+        passportInitials.textContent =
+            initials;
+    }
+
+    if (profileAvatar) {
+        profileAvatar.textContent =
+            initials;
+    }
+
+    if (
+        profileCardName &&
+        !getStoredProfile()?.name
+    ) {
+        profileCardName.textContent =
+            displayName;
+    }
+
+    if (
+        document.getElementById("dashboardSubtitle")
+    ) {
+
+        document.getElementById(
+            "dashboardSubtitle"
+        ).textContent =
+            `${user.role || "Athlete"} sports ecosystem.`;
+
+    }
+
+}
 
 
-    setText(
-        "userInitials",
-        initials
+function logout() {
+
+    localStorage.removeItem(
+        STORAGE_KEYS.USER
     );
 
-    setText(
-        "passportInitials",
-        initials
-    );
+    const dashboardPage =
+        document.getElementById("dashboardPage");
 
-    setText(
-        "profileAvatar",
-        initials
-    );
+    const landingPage =
+        document.getElementById("landingPage");
 
-    setText(
-        "passportName",
-        name
-    );
+    if (dashboardPage) {
+        dashboardPage.classList.add("hidden");
+    }
 
-    setText(
-        "profileCardName",
-        name
-    );
+    if (landingPage) {
+        landingPage.classList.remove("hidden");
+    }
+
+    showToast("You have been logged out.");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 }
 
 
 /* =========================================================
-   INITIALS
+   DASHBOARD NAVIGATION
    ========================================================= */
 
-function getInitials(name) {
-
-    if (!name) {
-        return "KG";
-    }
-
-    const words =
-        name
-            .trim()
-            .split(/\s+/);
-
-
-    if (words.length === 1) {
-
-        return words[0]
-            .substring(0, 2)
-            .toUpperCase();
-
-    }
-
-
-    return (
-        words[0][0] +
-        words[words.length - 1][0]
-    ).toUpperCase();
-
-}
-
-
-/* =========================================================
-   DASHBOARD SECTIONS
-   ========================================================= */
-
-function showDashboardSection(
-    sectionName,
-    clickedButton
-) {
+function showDashboardSection(sectionName, button) {
 
     const sections =
         document.querySelectorAll(
             ".dashboard-section"
         );
 
+    sections.forEach(function (section) {
 
-    sections.forEach(
-        function(section) {
+        section.classList.add("hidden");
 
-            section.classList.add(
-                "hidden"
-            );
-
-        }
-    );
+    });
 
 
-    const targetSection =
+    const target =
         document.getElementById(
-            "section-" + sectionName
+            `section-${sectionName}`
         );
 
+    if (target) {
 
-    if (targetSection) {
-
-        targetSection.classList.remove(
-            "hidden"
-        );
+        target.classList.remove("hidden");
 
     }
 
@@ -837,70 +855,51 @@ function showDashboardSection(
             ".menu-item"
         );
 
+    menuItems.forEach(function (item) {
 
-    menuItems.forEach(
-        function(item) {
+        item.classList.remove("active");
 
-            item.classList.remove(
-                "active"
-            );
-
-        }
-    );
+    });
 
 
-    if (clickedButton) {
+    if (button) {
 
-        clickedButton.classList.add(
-            "active"
-        );
+        button.classList.add("active");
 
     }
 
 
-    if (!clickedButton) {
+    if (sectionName === "coaches") {
 
-        menuItems.forEach(
-            function(item) {
-
-                const text =
-                    item.textContent
-                        .trim()
-                        .toLowerCase();
-
-
-                if (
-                    text.includes(
-                        sectionName
-                    )
-                ) {
-
-                    item.classList.add(
-                        "active"
-                    );
-
-                }
-
-            }
-        );
+        renderCoaches();
 
     }
 
 
-    if (
-        sectionName === "coaches"
-    ) {
+    if (sectionName === "grounds") {
 
-        filterCoaches();
+        renderGrounds();
 
     }
 
 
-    if (
-        sectionName === "grounds"
-    ) {
+    if (sectionName === "tournaments") {
 
-        filterGrounds();
+        initializeTournamentSection();
+
+    }
+
+
+    if (sectionName === "insights") {
+
+        updateInsights();
+
+    }
+
+
+    if (sectionName === "overview") {
+
+        updateDashboardData();
 
     }
 
@@ -911,461 +910,340 @@ function showDashboardSection(
    PROFILE
    ========================================================= */
 
-function loadProfile(user) {
+function setupProfileForm() {
 
-    if (!user.profile) {
+    const form =
+        document.getElementById("profileForm");
 
-        user.profile = {
-
-            age: "",
-            village: "",
-            district: "",
-            sport: "",
-            skill: "",
-            achievements: "",
-            coach: ""
-
-        };
-
-        saveUser(user);
-
-    }
-
-
-    const profile =
-        user.profile;
-
-
-    setInputValue(
-        "profileName",
-        user.name
-    );
-
-    setInputValue(
-        "profileAge",
-        profile.age
-    );
-
-    setInputValue(
-        "profileVillage",
-        profile.village
-    );
-
-    setInputValue(
-        "profileDistrict",
-        profile.district
-    );
-
-    setInputValue(
-        "profileSport",
-        profile.sport
-    );
-
-    setInputValue(
-        "profileSkill",
-        profile.skill
-    );
-
-    setInputValue(
-        "profileAchievements",
-        profile.achievements
-    );
-
-
-    updateProfileDisplay(user);
-
-}
-
-
-/* =========================================================
-   SET INPUT VALUE
-   ========================================================= */
-
-function setInputValue(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(id);
-
-    if (element) {
-
-        element.value =
-            value || "";
-
-    }
-
-}
-
-
-/* =========================================================
-   SAVE PROFILE
-   ========================================================= */
-
-function saveProfile(event) {
-
-    event.preventDefault();
-
-
-    const user =
-        getUser();
-
-
-    if (!user) {
+    if (!form) {
         return;
     }
 
+    loadProfileIntoForm();
 
-    const nameElement =
-        document.getElementById(
-            "profileName"
-        );
+    form.addEventListener(
+        "submit",
+        function (event) {
 
-    const ageElement =
-        document.getElementById(
-            "profileAge"
-        );
+            event.preventDefault();
 
-    const villageElement =
-        document.getElementById(
-            "profileVillage"
-        );
+            const profile = {
 
-    const districtElement =
-        document.getElementById(
-            "profileDistrict"
-        );
+                name:
+                    document.getElementById(
+                        "profileName"
+                    )?.value.trim() || "",
 
-    const sportElement =
-        document.getElementById(
-            "profileSport"
-        );
+                age:
+                    document.getElementById(
+                        "profileAge"
+                    )?.value || "",
 
-    const skillElement =
-        document.getElementById(
-            "profileSkill"
-        );
+                village:
+                    document.getElementById(
+                        "profileVillage"
+                    )?.value.trim() || "",
 
-    const achievementsElement =
-        document.getElementById(
-            "profileAchievements"
-        );
+                district:
+                    document.getElementById(
+                        "profileDistrict"
+                    )?.value.trim() || "",
 
+                sport:
+                    document.getElementById(
+                        "profileSport"
+                    )?.value || "",
 
-    user.name =
-        nameElement
-            ? nameElement.value.trim()
-            : user.name;
+                skill:
+                    document.getElementById(
+                        "profileSkill"
+                    )?.value || "",
 
+                achievements:
+                    document.getElementById(
+                        "profileAchievements"
+                    )?.value.trim() || ""
 
-    user.profile = {
-
-        age:
-            ageElement
-                ? ageElement.value
-                : "",
-
-        village:
-            villageElement
-                ? villageElement.value.trim()
-                : "",
-
-        district:
-            districtElement
-                ? districtElement.value.trim()
-                : "",
-
-        sport:
-            sportElement
-                ? sportElement.value
-                : "",
-
-        skill:
-            skillElement
-                ? skillElement.value
-                : "",
-
-        achievements:
-            achievementsElement
-                ? achievementsElement.value.trim()
-                : "",
-
-        coach:
-            user.profile
-                ? user.profile.coach || ""
-                : ""
-
-    };
+            };
 
 
-    saveUser(user);
-
-    updateDashboardUser(user);
-
-    updateProfileDisplay(user);
-
-    updateInsights(user);
-
-    showToast(
-        "Sports Passport saved successfully!"
-    );
-
-}
+            localStorage.setItem(
+                STORAGE_KEYS.PROFILE,
+                JSON.stringify(profile)
+            );
 
 
-/* =========================================================
-   UPDATE PROFILE DISPLAY
-   ========================================================= */
+            const user =
+                getStoredUser();
 
-function updateProfileDisplay(user) {
+            if (user && profile.name) {
 
-    const profile =
-        user.profile || {};
+                user.name =
+                    profile.name;
 
+                localStorage.setItem(
+                    STORAGE_KEYS.USER,
+                    JSON.stringify(user)
+                );
 
-    setText(
-        "passportSport",
-        profile.sport ||
-        "Sport not selected"
-    );
-
-
-    setText(
-        "profileCardSport",
-        profile.sport ||
-        "Sport not selected"
-    );
-
-
-    const location =
-        buildLocation(
-            profile.village,
-            profile.district
-        );
-
-
-    setText(
-        "passportLocation",
-        location ||
-        "Add your village and district"
-    );
-
-
-    let completed = 0;
-
-
-    const fields = [
-
-        user.name,
-
-        profile.age,
-
-        profile.village,
-
-        profile.district,
-
-        profile.sport,
-
-        profile.skill,
-
-        profile.achievements
-
-    ];
-
-
-    fields.forEach(
-        function(value) {
-
-            if (
-                value &&
-                String(value).trim() !== ""
-            ) {
-
-                completed++;
+                updateUserUI(user);
 
             }
+
+
+            updateDashboardData();
+            updateInsights();
+
+            showToast(
+                "Sports Passport saved successfully."
+            );
 
         }
     );
 
-
-    const completion =
-        Math.round(
-            (
-                completed /
-                fields.length
-            ) * 100
-        );
+}
 
 
-    setText(
-        "profileCompletion",
-        completion + "%"
-    );
+function getStoredProfile() {
 
+    try {
 
-    setText(
-        "primarySport",
-        profile.sport ||
-        "Not set"
-    );
+        const data =
+            localStorage.getItem(
+                STORAGE_KEYS.PROFILE
+            );
 
+        return data ? JSON.parse(data) : null;
 
-    setText(
-        "talentStatus",
-        completion >= 70
-            ? "Ready"
-            : "Building"
-    );
+    } catch (error) {
 
+        return null;
 
-    setText(
-        "coachStatus",
-        profile.coach ||
-        "Not connected"
-    );
-
-
-    updateInsights(user);
+    }
 
 }
 
 
-/* =========================================================
-   LOCATION
-   ========================================================= */
+function loadProfileIntoForm() {
 
-function buildLocation(
-    village,
-    district
-) {
+    const profile =
+        getStoredProfile();
 
-    if (
-        village &&
-        district
-    ) {
-
-        return (
-            village +
-            ", " +
-            district
-        );
-
-    }
-
-
-    if (village) {
-        return village;
-    }
-
-
-    if (district) {
-        return district;
-    }
-
-
-    return "";
-
-}
-
-
-/* =========================================================
-   AI INSIGHTS
-   ========================================================= */
-
-function updateInsights(user) {
-
-    if (!user) {
+    if (!profile) {
         return;
     }
 
+    setValue(
+        "profileName",
+        profile.name
+    );
+
+    setValue(
+        "profileAge",
+        profile.age
+    );
+
+    setValue(
+        "profileVillage",
+        profile.village
+    );
+
+    setValue(
+        "profileDistrict",
+        profile.district
+    );
+
+    setValue(
+        "profileSport",
+        profile.sport
+    );
+
+    setValue(
+        "profileSkill",
+        profile.skill
+    );
+
+    setValue(
+        "profileAchievements",
+        profile.achievements
+    );
+
+}
+
+
+function updateDashboardData() {
 
     const profile =
-        user.profile || {};
+        getStoredProfile();
 
+    const user =
+        getStoredUser();
 
-    if (
-        profile.sport &&
-        profile.skill
-    ) {
+    const completion =
+        calculateProfileCompletion(profile);
 
-        const message =
-            "Your profile shows " +
-            profile.skill.toLowerCase() +
-            " level experience in " +
-            profile.sport +
-            ". Keep building your performance record to strengthen your KheloGram talent profile.";
-
-
-        setText(
-            "aiSummary",
-            message
+    const profileCompletion =
+        document.getElementById(
+            "profileCompletion"
         );
 
-
-        setText(
-            "insightTitle",
-            profile.sport +
-            " Talent Profile"
+    const primarySport =
+        document.getElementById(
+            "primarySport"
         );
 
-
-        setText(
-            "insightDescription",
-            message
+    const passportName =
+        document.getElementById(
+            "passportName"
         );
 
-    } else {
-
-        setText(
-            "aiSummary",
-            "Complete your sports profile to generate a personalized talent profile."
+    const passportLocation =
+        document.getElementById(
+            "passportLocation"
         );
 
-
-        setText(
-            "insightTitle",
-            "Build your sports passport"
+    const passportSport =
+        document.getElementById(
+            "passportSport"
         );
 
-
-        setText(
-            "insightDescription",
-            "Add your sport, skill level and experience to create your initial talent profile."
+    const coachStatus =
+        document.getElementById(
+            "coachStatus"
         );
+
+    const talentStatus =
+        document.getElementById(
+            "talentStatus"
+        );
+
+    if (profileCompletion) {
+
+        profileCompletion.textContent =
+            `${completion}%`;
+
+    }
+
+    if (primarySport) {
+
+        primarySport.textContent =
+            profile?.sport || "Not set";
+
+    }
+
+    if (passportName) {
+
+        passportName.textContent =
+            profile?.name ||
+            user?.name ||
+            "Complete your profile";
+
+    }
+
+    if (passportLocation) {
+
+        if (
+            profile?.village &&
+            profile?.district
+        ) {
+
+            passportLocation.textContent =
+                `${profile.village}, ${profile.district}`;
+
+        } else {
+
+            passportLocation.textContent =
+                "Add your village and district";
+
+        }
+
+    }
+
+    if (passportSport) {
+
+        passportSport.textContent =
+            profile?.sport ||
+            "Sport not selected";
+
+    }
+
+    const connectedCoach =
+        localStorage.getItem(
+            STORAGE_KEYS.COACH
+        );
+
+    if (coachStatus) {
+
+        coachStatus.textContent =
+            connectedCoach
+                ? "Connected"
+                : "Not connected";
+
+    }
+
+    if (talentStatus) {
+
+        talentStatus.textContent =
+            completion >= 80
+                ? "Ready"
+                : completion >= 50
+                    ? "Developing"
+                    : "Building";
 
     }
 
 
-    setText(
-        "signalSport",
-        profile.sport ||
-        "Not provided"
-    );
+    const aiSummary =
+        document.getElementById(
+            "aiSummary"
+        );
+
+    if (aiSummary) {
+
+        if (!profile?.sport) {
+
+            aiSummary.textContent =
+                "Complete your sports profile to generate a personalized talent profile.";
+
+        } else {
+
+            aiSummary.textContent =
+                `Your profile currently shows ${profile.sport} as your primary sport at ${profile.skill || "developing"} level. Continue adding experience and achievements to strengthen your talent profile.`;
+
+        }
+
+    }
+
+}
 
 
-    setText(
-        "signalSkill",
-        profile.skill ||
-        "Not provided"
-    );
+function calculateProfileCompletion(profile) {
 
+    if (!profile) {
+        return 0;
+    }
 
-    setText(
-        "signalLocation",
-        buildLocation(
-            profile.village,
-            profile.district
-        ) ||
-        "Not provided"
-    );
+    const fields = [
+        profile.name,
+        profile.age,
+        profile.village,
+        profile.district,
+        profile.sport,
+        profile.skill,
+        profile.achievements
+    ];
 
+    const completed =
+        fields.filter(function (value) {
 
-    setText(
-        "signalExperience",
-        profile.achievements ||
-        "Not provided"
+            return value !== undefined &&
+                value !== null &&
+                String(value).trim() !== "";
+
+        }).length;
+
+    return Math.round(
+        (completed / fields.length) * 100
     );
 
 }
@@ -1375,69 +1253,125 @@ function updateInsights(user) {
    COACHES
    ========================================================= */
 
+function renderCoaches(list = coaches) {
+
+    const grid =
+        document.getElementById(
+            "coachGrid"
+        );
+
+    if (!grid) {
+        return;
+    }
+
+    if (!list.length) {
+
+        grid.innerHTML = `
+            <div class="empty-panel">
+                <div>🔎</div>
+                <h3>No coaches found</h3>
+                <p>
+                    Try another sport or location.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+    grid.innerHTML =
+        list.map(function (coach) {
+
+            const connected =
+                localStorage.getItem(
+                    STORAGE_KEYS.COACH
+                ) === String(coach.id);
+
+            return `
+                <div class="coach-card">
+
+                    <div class="coach-avatar">
+                        ${escapeHTML(coach.initials)}
+                    </div>
+
+                    <h3>
+                        ${escapeHTML(coach.name)}
+                    </h3>
+
+                    <p>
+                        ${escapeHTML(coach.sport)}
+                    </p>
+
+                    <small>
+                        📍 ${escapeHTML(coach.location)}
+                    </small>
+
+                    <small>
+                        Experience: ${escapeHTML(coach.experience)}
+                    </small>
+
+                    ${
+                        connected
+                            ? `
+                                <div class="connection-status">
+                                    ✓ Connected
+                                </div>
+                              `
+                            : `
+                                <button
+                                    class="primary-btn"
+                                    type="button"
+                                    onclick="connectCoach(${coach.id})"
+                                >
+                                    Connect Coach →
+                                </button>
+                              `
+                    }
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
 function filterCoaches() {
 
-    const searchInput =
+    const search =
         document.getElementById(
             "coachSearch"
-        );
-
-    const sportFilter =
-        document.getElementById(
-            "coachSportFilter"
-        );
-
-
-    const search =
-        searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
-            : "";
-
+        )?.value
+            .toLowerCase()
+            .trim() || "";
 
     const sport =
-        sportFilter
-            ? sportFilter.value
-            : "";
+        document.getElementById(
+            "coachSportFilter"
+        )?.value || "";
 
 
     const filtered =
-        coachData.filter(
-            function(coach) {
+        coaches.filter(function (coach) {
 
-                const matchesSearch =
+            const text =
+                `${coach.name} ${coach.sport} ${coach.location}`
+                    .toLowerCase();
 
-                    coach.name
-                        .toLowerCase()
-                        .includes(search)
+            const matchesSearch =
+                !search ||
+                text.includes(search);
 
-                    ||
+            const matchesSport =
+                !sport ||
+                coach.sport === sport;
 
-                    coach.sport
-                        .toLowerCase()
-                        .includes(search)
+            return (
+                matchesSearch &&
+                matchesSport
+            );
 
-                    ||
-
-                    coach.location
-                        .toLowerCase()
-                        .includes(search);
-
-
-                const matchesSport =
-
-                    !sport ||
-                    coach.sport === sport;
-
-
-                return (
-                    matchesSearch &&
-                    matchesSport
-                );
-
-            }
-        );
+        });
 
 
     renderCoaches(filtered);
@@ -1445,363 +1379,74 @@ function filterCoaches() {
 }
 
 
-/* =========================================================
-   RENDER COACHES
-   ========================================================= */
+function connectCoach(id) {
 
-function renderCoaches(coaches) {
+    const coach =
+        coaches.find(function (item) {
 
-    const grid =
-        document.getElementById(
-            "coachGrid"
-        );
+            return item.id === id;
 
+        });
 
-    if (!grid) {
+    if (!coach) {
         return;
     }
 
-
-    if (coaches.length === 0) {
-
-        grid.innerHTML = `
-            <div class="empty-panel">
-                <div>🔎</div>
-                <h3>No coaches found</h3>
-                <p>Try another sport or location.</p>
-            </div>
-        `;
-
-        return;
-    }
-
-
-    grid.innerHTML =
-        coaches.map(
-            function(coach) {
-
-                const connectedUser =
-                    getUser();
-
-                const isConnected =
-                    connectedUser &&
-                    connectedUser.profile &&
-                    connectedUser.profile.coach === coach.name;
-
-
-                return `
-                    <div class="coach-card">
-
-                        <div class="coach-avatar">
-                            ${getInitials(coach.name)}
-                        </div>
-
-                        <h3>${coach.name}</h3>
-
-                        <p>
-                            ${coach.sport}
-                        </p>
-
-                        <small>
-                            📍 ${coach.location}
-                        </small>
-
-                        <small>
-                            ⭐ ${coach.experience}
-                        </small>
-
-                        ${
-                            isConnected
-
-                            ? `
-                                <div class="connection-status">
-                                    ✓ Connection Requested
-                                </div>
-                              `
-
-                            : `
-                                <button
-                                    class="secondary-btn"
-                                    type="button"
-                                    onclick="connectCoach('${coach.name}')"
-                                >
-                                    Connect
-                                </button>
-                              `
-                        }
-
-                    </div>
-                `;
-
-            }
-        ).join("");
-
-}
-
-
-/* =========================================================
-   CONNECT COACH
-   ========================================================= */
-
-function connectCoach(name) {
-
-    const user =
-        getUser();
-
-
-    if (!user) {
-
-        showToast(
-            "Please login first."
-        );
-
-        return;
-    }
-
-
-    if (!user.profile) {
-
-        user.profile = {
-
-            age: "",
-            village: "",
-            district: "",
-            sport: "",
-            skill: "",
-            achievements: "",
-            coach: ""
-
-        };
-
-    }
-
-
-    user.profile.coach =
-        name;
-
-
-    saveUser(user);
-
-
-    setText(
-        "coachStatus",
-        name
+    localStorage.setItem(
+        STORAGE_KEYS.COACH,
+        String(id)
     );
 
+    updateDashboardData();
 
-    renderCoaches(
-        getFilteredCoaches()
-    );
-
+    renderCoaches();
 
     showToast(
-        "Coach connection request sent to " +
-        name
+        `Connected with ${coach.name}.`
     );
 
 }
 
 
 /* =========================================================
-   GET FILTERED COACHES
+   GROUNDS
    ========================================================= */
 
-function getFilteredCoaches() {
-
-    const searchInput =
-        document.getElementById(
-            "coachSearch"
-        );
-
-    const sportFilter =
-        document.getElementById(
-            "coachSportFilter"
-        );
-
-
-    const search =
-        searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const sport =
-        sportFilter
-            ? sportFilter.value
-            : "";
-
-
-    return coachData.filter(
-        function(coach) {
-
-            const matchesSearch =
-
-                coach.name
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                coach.sport
-                    .toLowerCase()
-                    .includes(search)
-
-                ||
-
-                coach.location
-                    .toLowerCase()
-                    .includes(search);
-
-
-            const matchesSport =
-
-                !sport ||
-                coach.sport === sport;
-
-
-            return (
-                matchesSearch &&
-                matchesSport
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   STAGE 4.1
-   GROUND SEARCH
-   ========================================================= */
-
-function filterGrounds() {
-
-    const searchInput =
-        document.getElementById(
-            "groundSearch"
-        );
-
-    const districtFilter =
-        document.getElementById(
-            "groundDistrictFilter"
-        );
-
-    const sportFilter =
-        document.getElementById(
-            "groundSportFilter"
-        );
-
-
-    const search =
-        searchInput
-            ? searchInput.value
-                .trim()
-                .toLowerCase()
-            : "";
-
-
-    const district =
-        districtFilter
-            ? districtFilter.value
-            : "";
-
-
-    const sport =
-        sportFilter
-            ? sportFilter.value
-            : "";
-
-
-    const filtered =
-        groundData.filter(
-            function(ground) {
-
-                const searchableText =
-
-                    (
-                        ground.name +
-                        " " +
-                        ground.village +
-                        " " +
-                        ground.district +
-                        " " +
-                        ground.sport +
-                        " " +
-                        ground.facilities
-                    ).toLowerCase();
-
-
-                const matchesSearch =
-                    searchableText.includes(
-                        search
-                    );
-
-
-                const matchesDistrict =
-
-                    !district ||
-                    ground.district === district;
-
-
-                const matchesSport =
-
-                    !sport ||
-                    ground.sport === sport ||
-                    ground.facilities
-                        .toLowerCase()
-                        .includes(
-                            sport.toLowerCase()
-                        );
-
-
-                return (
-                    matchesSearch &&
-                    matchesDistrict &&
-                    matchesSport
-                );
-
-            }
-        );
-
-
-    renderGrounds(filtered);
-
-}
-
-
-/* =========================================================
-   RENDER GROUNDS
-   ========================================================= */
-
-function renderGrounds(grounds) {
+function renderGrounds(list = grounds) {
 
     const grid =
         document.getElementById(
             "groundGrid"
         );
 
+    const count =
+        document.getElementById(
+            "groundCount"
+        );
 
     if (!grid) {
         return;
     }
 
+    if (count) {
 
-    updateGroundCount(
-        grounds.length
-    );
+        count.textContent =
+            list.length;
 
+    }
 
-    if (grounds.length === 0) {
+    if (!list.length) {
 
         grid.innerHTML = `
-            <div class="empty-panel">
-                <div>🔎</div>
-                <h3>No sports grounds found</h3>
+            <div class="tournament-empty">
+                <div class="tournament-empty-icon">
+                    🏟️
+                </div>
+                <h3>
+                    No grounds found
+                </h3>
                 <p>
-                    Try another village, district or sport.
+                    Try another search or filter.
                 </p>
             </div>
         `;
@@ -1811,186 +1456,203 @@ function renderGrounds(grounds) {
 
 
     grid.innerHTML =
-        grounds.map(
-            function(ground) {
+        list.map(function (ground) {
 
-                const statusClass =
-                    ground.status
-                        .toLowerCase()
-                        .replace(/\s+/g, "-");
+            const statusClass =
+                ground.status
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
 
+            return `
+                <div class="ground-card">
 
-                return `
-                    <div class="ground-card">
+                    <div class="ground-card-top">
 
-                        <div class="ground-card-top">
+                        <div class="ground-icon">
+                            ${ground.icon}
+                        </div>
 
-                            <div class="ground-icon">
-                                🏟️
-                            </div>
+                        <span
+                            class="ground-status ${statusClass}"
+                        >
+                            ${escapeHTML(ground.status)}
+                        </span>
 
-                            <span
-                                class="ground-status ${statusClass}"
-                            >
-                                ${ground.status}
-                            </span>
+                    </div>
+
+                    <h3>
+                        ${escapeHTML(ground.name)}
+                    </h3>
+
+                    <div class="ground-location">
+                        📍 ${escapeHTML(ground.village)},
+                        ${escapeHTML(ground.district)}
+                    </div>
+
+                    <div class="ground-details">
+
+                        <div class="ground-detail">
+
+                            <small>
+                                SPORT
+                            </small>
+
+                            <strong>
+                                ${escapeHTML(ground.sport)}
+                            </strong>
 
                         </div>
 
-                        <h3>
-                            ${ground.name}
-                        </h3>
+                        <div class="ground-detail">
 
-                        <p class="ground-location">
-                            📍 ${ground.village},
-                            ${ground.district}
-                        </p>
+                            <small>
+                                CAPACITY
+                            </small>
 
-                        <div class="ground-details">
-
-                            <div class="ground-detail">
-
-                                <small>
-                                    SPORT
-                                </small>
-
-                                <strong>
-                                    ${ground.sport}
-                                </strong>
-
-                            </div>
-
-                            <div class="ground-detail">
-
-                                <small>
-                                    FACILITIES
-                                </small>
-
-                                <strong>
-                                    ${ground.facilities}
-                                </strong>
-
-                            </div>
+                            <strong>
+                                ${ground.capacity}
+                            </strong>
 
                         </div>
 
-                        <div class="ground-card-actions">
+                        <div class="ground-detail">
 
-                            <button
-                                class="secondary-btn"
-                                type="button"
-                                onclick="viewGround('${escapeAttribute(ground.name)}')"
-                            >
-                                View Ground →
-                            </button>
+                            <small>
+                                FACILITY
+                            </small>
+
+                            <strong>
+                                ${escapeHTML(ground.facility)}
+                            </strong>
+
+                        </div>
+
+                        <div class="ground-detail">
+
+                            <small>
+                                CONDITION
+                            </small>
+
+                            <strong>
+                                ${escapeHTML(ground.condition)}
+                            </strong>
 
                         </div>
 
                     </div>
-                `;
 
-            }
-        ).join("");
+                    <div class="ground-card-actions">
+
+                        <button
+                            class="secondary-btn"
+                            type="button"
+                            onclick="showGroundDetails(${ground.id})"
+                        >
+                            View Details
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
 
 }
 
 
-/* =========================================================
-   UPDATE GROUND COUNT
-   ========================================================= */
+function filterGrounds() {
 
-function updateGroundCount(count) {
+    const search =
+        document.getElementById(
+            "groundSearch"
+        )?.value
+            .toLowerCase()
+            .trim() || "";
 
-    setText(
-        "groundCount",
-        count
-    );
+    const district =
+        document.getElementById(
+            "groundDistrictFilter"
+        )?.value || "";
+
+    const sport =
+        document.getElementById(
+            "groundSportFilter"
+        )?.value || "";
+
+
+    const filtered =
+        grounds.filter(function (ground) {
+
+            const text =
+                `${ground.name} ${ground.village} ${ground.district} ${ground.sport}`
+                    .toLowerCase();
+
+            return (
+                (!search || text.includes(search)) &&
+                (!district || ground.district === district) &&
+                (!sport || ground.sport === sport)
+            );
+
+        });
+
+
+    renderGrounds(filtered);
 
 }
 
 
-/* =========================================================
-   VIEW GROUND
-   ========================================================= */
-
-function viewGround(name) {
+function showGroundDetails(id) {
 
     const ground =
-        groundData.find(
-            function(item) {
+        grounds.find(function (item) {
 
-                return (
-                    item.name === name
-                );
+            return item.id === id;
 
-            }
-        );
-
+        });
 
     if (!ground) {
-
-        console.error(
-            "Ground not found:",
-            name
-        );
-
         return;
     }
 
-
     setText(
         "groundDetailDistrict",
-        ground.district
-            ? ground.district.toUpperCase()
-            : "DISTRICT"
+        ground.district.toUpperCase()
     );
-
 
     setText(
         "groundDetailName",
         ground.name
     );
 
-
     setText(
         "groundDetailLocation",
-        "📍 " +
-        ground.village +
-        ", " +
-        ground.district
+        `${ground.village}, ${ground.district}`
     );
-
 
     setText(
         "groundDetailStatus",
         ground.status
     );
 
-
     setText(
         "groundDetailSport",
         ground.sport
     );
 
-
     setText(
         "groundDetailCapacity",
-        ground.capacity || "Not available"
+        ground.capacity
     );
-
 
     setText(
         "groundDetailFacility",
-        ground.facility ||
-        ground.facilities ||
-        "Basic"
+        ground.facility
     );
-
 
     setText(
         "groundDetailCondition",
-        ground.condition ||
-        "Good"
+        ground.condition
     );
 
 
@@ -1999,66 +1661,16 @@ function viewGround(name) {
             "groundDetailsModal"
         );
 
+    if (modal) {
 
-    if (!modal) {
-
-        alert(
-            "GROUND DETAILS\n\n" +
-
-            "Name: " +
-            ground.name +
-
-            "\nVillage: " +
-            ground.village +
-
-            "\nDistrict: " +
-            ground.district +
-
-            "\nSport: " +
-            ground.sport +
-
-            "\nStatus: " +
-            ground.status +
-
-            "\nFacilities: " +
-            ground.facilities
+        modal.classList.remove(
+            "hidden"
         );
 
-        return;
     }
-
-
-    modal.classList.remove(
-        "hidden"
-    );
-
-
-    modal.style.display =
-        "flex";
-
-
-    modal.style.visibility =
-        "visible";
-
-
-    modal.style.opacity =
-        "1";
-
-
-    modal.style.zIndex =
-        "9999";
-
-
-    document.body.classList.add(
-        "modal-open"
-    );
 
 }
 
-
-/* =========================================================
-   CLOSE GROUND DETAILS
-   ========================================================= */
 
 function closeGroundDetails() {
 
@@ -2067,125 +1679,1872 @@ function closeGroundDetails() {
             "groundDetailsModal"
         );
 
+    if (modal) {
 
-    if (!modal) {
-        return;
-    }
-
-
-    modal.classList.add(
-        "hidden"
-    );
-
-
-    modal.style.display =
-        "none";
-
-
-    document.body.classList.remove(
-        "modal-open"
-    );
-
-}
-
-
-/* =========================================================
-   ESCAPE HTML ATTRIBUTE
-   ========================================================= */
-
-function escapeAttribute(value) {
-
-    return String(value)
-        .replace(/\\/g, "\\\\")
-        .replace(/'/g, "\\'");
-
-}
-
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-function logout() {
-
-    localStorage.removeItem(
-        "khelogramUser"
-    );
-
-    selectedRole = "";
-
-
-    const dashboardPage =
-        document.getElementById(
-            "dashboardPage"
-        );
-
-    const landingPage =
-        document.getElementById(
-            "landingPage"
-        );
-
-
-    if (dashboardPage) {
-
-        dashboardPage.classList.add(
+        modal.classList.add(
             "hidden"
         );
 
     }
 
-
-    if (landingPage) {
-
-        landingPage.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    closeGroundDetails();
-
-    closeAuthModal();
-
-    closeRoleSelector();
-
-
-    showToast(
-        "You have been logged out."
-    );
-
 }
 
 
 /* =========================================================
-   SCROLL
+   STAGE 5 INITIALIZATION
    ========================================================= */
 
-function scrollToSection(
-    sectionId
-) {
+function initializeTournamentSection() {
 
     const section =
         document.getElementById(
-            sectionId
+            "section-tournaments"
+        );
+
+    if (!section) {
+        return;
+    }
+
+    /*
+     * The original HTML contains a Stage 4 placeholder.
+     * We replace it only once.
+     */
+
+    if (
+        !section.dataset.stage5Ready
+    ) {
+
+        section.innerHTML =
+            getTournamentSectionHTML();
+
+        section.dataset.stage5Ready =
+            "true";
+
+        setupTournamentControls();
+
+    }
+
+    renderTournamentPage();
+
+}
+
+
+/* =========================================================
+   TOURNAMENT SECTION HTML
+   ========================================================= */
+
+function getTournamentSectionHTML() {
+
+    return `
+
+        <div class="tournament-page">
+
+            <div class="section-label">
+                OPPORTUNITIES
+            </div>
+
+
+            <div class="tournament-hero">
+
+                <div class="tournament-hero-top">
+
+                    <div class="tournament-hero-copy">
+
+                        <small
+                            class="section-label"
+                        >
+                            KHELOGRAM COMPETITION NETWORK
+                        </small>
+
+                        <h2>
+                            Discover your next
+                            sporting opportunity.
+                        </h2>
+
+                        <p>
+                            Find rural tournaments, register
+                            for competitions and take your
+                            sports journey from village
+                            participation to higher-level
+                            opportunities.
+                        </p>
+
+                    </div>
+
+
+                    <div class="tournament-hero-icon">
+                        🏆
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="tournamentStats"
+                    class="tournament-stat-strip"
+                ></div>
+
+            </div>
+
+
+            <div class="tournament-controls">
+
+                <div class="tournament-control">
+
+                    <label>
+                        SEARCH TOURNAMENTS
+                    </label>
+
+                    <input
+                        id="tournamentSearch"
+                        type="text"
+                        placeholder="Search by tournament, sport or location..."
+                    >
+
+                </div>
+
+
+                <div class="tournament-control">
+
+                    <label>
+                        SPORT
+                    </label>
+
+                    <select id="tournamentSportFilter">
+
+                        <option value="">
+                            All sports
+                        </option>
+
+                        <option>
+                            Cricket
+                        </option>
+
+                        <option>
+                            Football
+                        </option>
+
+                        <option>
+                            Kabaddi
+                        </option>
+
+                        <option>
+                            Athletics
+                        </option>
+
+                        <option>
+                            Hockey
+                        </option>
+
+                        <option>
+                            Volleyball
+                        </option>
+
+                        <option>
+                            Badminton
+                        </option>
+
+                        <option>
+                            Wrestling
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="tournament-control">
+
+                    <label>
+                        DISTRICT
+                    </label>
+
+                    <select id="tournamentDistrictFilter">
+
+                        <option value="">
+                            All districts
+                        </option>
+
+                        <option>
+                            Lucknow
+                        </option>
+
+                        <option>
+                            Barabanki
+                        </option>
+
+                        <option>
+                            Kanpur
+                        </option>
+
+                        <option>
+                            Ayodhya
+                        </option>
+
+                        <option>
+                            Unnao
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="tournament-results-bar">
+
+                <strong id="tournamentResultCount">
+                    0 tournaments
+                </strong>
+
+                <span>
+                    Registration data is saved on this device.
+                </span>
+
+            </div>
+
+
+            <div
+                id="tournamentGrid"
+                class="tournament-grid"
+            ></div>
+
+
+            <div
+                id="myTournamentsPanel"
+                class="panel my-tournaments-panel"
+            ></div>
+
+        </div>
+
+
+        <div
+            id="tournamentDetailsModal"
+            class="modal hidden"
+        >
+
+            <div
+                class="modal-card tournament-details-modal"
+            >
+
+                <button
+                    class="close-btn"
+                    type="button"
+                    onclick="closeTournamentDetails()"
+                >
+                    ×
+                </button>
+
+
+                <div class="tournament-detail-header">
+
+                    <div
+                        id="detailTournamentIcon"
+                        class="tournament-detail-icon"
+                    >
+                        🏆
+                    </div>
+
+                    <div>
+
+                        <small
+                            id="detailTournamentSport"
+                        >
+                            SPORT
+                        </small>
+
+                        <h2
+                            id="detailTournamentName"
+                        >
+                            Tournament
+                        </h2>
+
+                        <p
+                            id="detailTournamentLocation"
+                            class="tournament-detail-location"
+                        >
+                            Location
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="detailTournamentStatus"
+                    class="tournament-detail-status-row"
+                ></div>
+
+
+                <div
+                    id="detailTournamentGrid"
+                    class="tournament-detail-grid"
+                ></div>
+
+
+                <p
+                    id="detailTournamentDescription"
+                    class="tournament-detail-description"
+                ></p>
+
+
+                <div
+                    id="tournamentRegistrationBox"
+                    class="tournament-registration-box"
+                ></div>
+
+
+                <div class="tournament-modal-actions">
+
+                    <button
+                        class="secondary-btn"
+                        type="button"
+                        onclick="closeTournamentDetails()"
+                    >
+                        Close
+                    </button>
+
+                    <button
+                        id="tournamentRegisterButton"
+                        class="primary-btn"
+                        type="button"
+                        onclick="registerForCurrentTournament()"
+                    >
+                        Register →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TOURNAMENT CONTROLS
+   ========================================================= */
+
+function setupTournamentControls() {
+
+    const search =
+        document.getElementById(
+            "tournamentSearch"
+        );
+
+    const sport =
+        document.getElementById(
+            "tournamentSportFilter"
+        );
+
+    const district =
+        document.getElementById(
+            "tournamentDistrictFilter"
         );
 
 
-    if (!section) {
+    if (search) {
 
-        console.warn(
-            "Section not found:",
-            sectionId
+        search.addEventListener(
+            "input",
+            renderTournamentPage
+        );
+
+    }
+
+    if (sport) {
+
+        sport.addEventListener(
+            "change",
+            renderTournamentPage
+        );
+
+    }
+
+    if (district) {
+
+        district.addEventListener(
+            "change",
+            renderTournamentPage
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TOURNAMENT RENDER
+   ========================================================= */
+
+function renderTournamentPage() {
+
+    const grid =
+        document.getElementById(
+            "tournamentGrid"
+        );
+
+    if (!grid) {
+        return;
+    }
+
+
+    const search =
+        document.getElementById(
+            "tournamentSearch"
+        )?.value
+            .toLowerCase()
+            .trim() || "";
+
+
+    const sport =
+        document.getElementById(
+            "tournamentSportFilter"
+        )?.value || "";
+
+
+    const district =
+        document.getElementById(
+            "tournamentDistrictFilter"
+        )?.value || "";
+
+
+    const filtered =
+        tournaments.filter(function (tournament) {
+
+            const searchable =
+                `
+                    ${tournament.name}
+                    ${tournament.sport}
+                    ${tournament.district}
+                    ${tournament.village}
+                    ${tournament.venue}
+                    ${tournament.organizer}
+                `.toLowerCase();
+
+
+            const matchesSearch =
+                !search ||
+                searchable.includes(search);
+
+
+            const matchesSport =
+                !sport ||
+                tournament.sport === sport;
+
+
+            const matchesDistrict =
+                !district ||
+                tournament.district === district;
+
+
+            return (
+                matchesSearch &&
+                matchesSport &&
+                matchesDistrict
+            );
+
+        });
+
+
+    renderTournamentStats();
+
+    renderTournamentCards(
+        filtered
+    );
+
+    renderMyTournaments();
+
+}
+
+
+/* =========================================================
+   TOURNAMENT STATISTICS
+   ========================================================= */
+
+function renderTournamentStats() {
+
+    const stats =
+        document.getElementById(
+            "tournamentStats"
+        );
+
+    if (!stats) {
+        return;
+    }
+
+
+    const registrations =
+        getTournamentRegistrations();
+
+
+    const openCount =
+        tournaments.filter(function (tournament) {
+
+            return getTournamentStatus(
+                tournament
+            ).key !== "full";
+
+        }).length;
+
+
+    const sports =
+        new Set(
+            tournaments.map(
+                tournament => tournament.sport
+            )
+        ).size;
+
+
+    stats.innerHTML = `
+
+        <div class="tournament-stat">
+
+            <small>
+                TOURNAMENTS
+            </small>
+
+            <strong>
+                ${tournaments.length}
+            </strong>
+
+        </div>
+
+
+        <div class="tournament-stat">
+
+            <small>
+                OPEN OPPORTUNITIES
+            </small>
+
+            <strong>
+                ${openCount}
+            </strong>
+
+        </div>
+
+
+        <div class="tournament-stat">
+
+            <small>
+                SPORTS
+            </small>
+
+            <strong>
+                ${sports}
+            </strong>
+
+        </div>
+
+
+        <div class="tournament-stat">
+
+            <small>
+                MY REGISTRATIONS
+            </small>
+
+            <strong>
+                ${registrations.length}
+            </strong>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TOURNAMENT CARDS
+   ========================================================= */
+
+function renderTournamentCards(list) {
+
+    const grid =
+        document.getElementById(
+            "tournamentGrid"
+        );
+
+    if (!grid) {
+        return;
+    }
+
+
+    const count =
+        document.getElementById(
+            "tournamentResultCount"
+        );
+
+
+    if (count) {
+
+        count.textContent =
+            `${list.length} ${
+                list.length === 1
+                    ? "tournament"
+                    : "tournaments"
+            }`;
+
+    }
+
+
+    if (!list.length) {
+
+        grid.innerHTML = `
+
+            <div class="tournament-empty">
+
+                <div class="tournament-empty-icon">
+                    🔎
+                </div>
+
+                <h3>
+                    No tournaments found
+                </h3>
+
+                <p>
+                    Try changing your search,
+                    sport or district filter.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    grid.innerHTML =
+        list.map(function (tournament) {
+
+            return createTournamentCard(
+                tournament
+            );
+
+        }).join("");
+
+}
+
+
+function createTournamentCard(tournament) {
+
+    const status =
+        getTournamentStatus(
+            tournament
+        );
+
+
+    const registered =
+        isRegistered(
+            tournament.id
+        );
+
+
+    const percentage =
+        Math.min(
+            100,
+            Math.round(
+                (
+                    tournament.participants /
+                    tournament.capacity
+                ) * 100
+            )
+        );
+
+
+    const startDate =
+        formatDate(
+            tournament.startDate
+        );
+
+
+    const deadline =
+        formatDate(
+            tournament.registrationDeadline
+        );
+
+
+    return `
+
+        <article class="tournament-card">
+
+            <div class="tournament-card-top">
+
+                <div class="tournament-sport-icon">
+                    ${tournament.icon}
+                </div>
+
+                <span
+                    class="tournament-status ${status.className}"
+                >
+                    ${status.label}
+                </span>
+
+            </div>
+
+
+            <h3>
+                ${escapeHTML(tournament.name)}
+            </h3>
+
+
+            <div class="tournament-location">
+                📍 ${escapeHTML(tournament.village)},
+                ${escapeHTML(tournament.district)}
+            </div>
+
+
+            <div class="tournament-info-grid">
+
+                <div class="tournament-info">
+
+                    <small>
+                        DATE
+                    </small>
+
+                    <strong>
+                        ${startDate}
+                    </strong>
+
+                </div>
+
+
+                <div class="tournament-info">
+
+                    <small>
+                        CATEGORY
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(tournament.category)}
+                    </strong>
+
+                </div>
+
+
+                <div class="tournament-info">
+
+                    <small>
+                        REGISTRATION
+                    </small>
+
+                    <strong>
+                        ${deadline}
+                    </strong>
+
+                </div>
+
+
+                <div class="tournament-info">
+
+                    <small>
+                        ENTRY
+                    </small>
+
+                    <strong>
+                        ${escapeHTML(tournament.entryFee)}
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <p class="tournament-description">
+                ${escapeHTML(
+                    tournament.description
+                )}
+            </p>
+
+
+            <div class="tournament-progress">
+
+                <div class="tournament-progress-header">
+
+                    <span>
+                        Participants
+                    </span>
+
+                    <strong>
+                        ${tournament.participants}
+                        /
+                        ${tournament.capacity}
+                    </strong>
+
+                </div>
+
+
+                <div
+                    class="tournament-progress-track"
+                >
+
+                    <div
+                        class="tournament-progress-fill"
+                        style="width:${percentage}%"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+            ${
+                registered
+                    ? `
+                        <div class="tournament-registered">
+                            ✓ You are registered
+                        </div>
+                      `
+                    : ""
+            }
+
+
+            <div class="tournament-card-actions">
+
+                <button
+                    class="secondary-btn"
+                    type="button"
+                    onclick="openTournamentDetails('${tournament.id}')"
+                >
+                    View Details
+                </button>
+
+
+                ${
+                    registered
+                        ? `
+                            <button
+                                class="secondary-btn"
+                                type="button"
+                                onclick="cancelTournamentRegistration('${tournament.id}')"
+                            >
+                                Cancel Registration
+                            </button>
+                          `
+                        : `
+                            <button
+                                class="primary-btn"
+                                type="button"
+                                ${
+                                    status.key === "full"
+                                        ? "disabled"
+                                        : ""
+                                }
+                                onclick="registerForTournament('${tournament.id}')"
+                            >
+                                ${
+                                    status.key === "full"
+                                        ? "Full"
+                                        : "Register →"
+                                }
+                            </button>
+                          `
+                }
+
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TOURNAMENT DETAILS
+   ========================================================= */
+
+function openTournamentDetails(id) {
+
+    const tournament =
+        tournaments.find(function (item) {
+
+            return item.id === id;
+
+        });
+
+
+    if (!tournament) {
+        return;
+    }
+
+
+    currentTournamentId =
+        tournament.id;
+
+
+    setText(
+        "detailTournamentIcon",
+        tournament.icon
+    );
+
+
+    setText(
+        "detailTournamentSport",
+        tournament.sport.toUpperCase()
+    );
+
+
+    setText(
+        "detailTournamentName",
+        tournament.name
+    );
+
+
+    setText(
+        "detailTournamentLocation",
+        `📍 ${tournament.village}, ${tournament.district} · ${tournament.venue}`
+    );
+
+
+    const status =
+        getTournamentStatus(
+            tournament
+        );
+
+
+    const statusContainer =
+        document.getElementById(
+            "detailTournamentStatus"
+        );
+
+
+    if (statusContainer) {
+
+        statusContainer.innerHTML = `
+
+            <span
+                class="tournament-status ${status.className}"
+            >
+                ${status.label}
+            </span>
+
+            <span
+                class="badge"
+            >
+                ${escapeHTML(tournament.category)}
+            </span>
+
+        `;
+
+    }
+
+
+    const detailsGrid =
+        document.getElementById(
+            "detailTournamentGrid"
+        );
+
+
+    if (detailsGrid) {
+
+        detailsGrid.innerHTML = `
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    START DATE
+                </small>
+
+                <strong>
+                    ${formatDate(
+                        tournament.startDate
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    END DATE
+                </small>
+
+                <strong>
+                    ${formatDate(
+                        tournament.endDate
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    REGISTRATION DEADLINE
+                </small>
+
+                <strong>
+                    ${formatDate(
+                        tournament.registrationDeadline
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    PARTICIPANTS
+                </small>
+
+                <strong>
+                    ${tournament.participants}
+                    / ${tournament.capacity}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    ENTRY FEE
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        tournament.entryFee
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    PRIZE / RECOGNITION
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        tournament.prize
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    ORGANIZER
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        tournament.organizer
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="tournament-detail-item">
+
+                <small>
+                    CONTACT
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        tournament.contact
+                    )}
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+
+    setText(
+        "detailTournamentDescription",
+        tournament.description
+    );
+
+
+    updateTournamentRegistrationBox(
+        tournament
+    );
+
+
+    const modal =
+        document.getElementById(
+            "tournamentDetailsModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "hidden"
+        );
+
+    }
+
+}
+
+
+function closeTournamentDetails() {
+
+    const modal =
+        document.getElementById(
+            "tournamentDetailsModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    currentTournamentId =
+        null;
+
+}
+
+
+function updateTournamentRegistrationBox(
+    tournament
+) {
+
+    const box =
+        document.getElementById(
+            "tournamentRegistrationBox"
+        );
+
+
+    const button =
+        document.getElementById(
+            "tournamentRegisterButton"
+        );
+
+
+    if (!box || !button) {
+        return;
+    }
+
+
+    const registered =
+        isRegistered(
+            tournament.id
+        );
+
+
+    const status =
+        getTournamentStatus(
+            tournament
+        );
+
+
+    if (registered) {
+
+        box.innerHTML = `
+
+            <strong>
+                ✓ You are registered
+            </strong>
+
+            <p>
+                Your registration is saved on this device.
+                You can cancel it from the tournament card
+                or this window.
+            </p>
+
+        `;
+
+
+        button.textContent =
+            "Cancel Registration";
+
+        button.classList.remove(
+            "primary-btn"
+        );
+
+        button.classList.add(
+            "secondary-btn"
+        );
+
+
+        button.onclick =
+            function () {
+
+                cancelTournamentRegistration(
+                    tournament.id
+                );
+
+            };
+
+
+        return;
+    }
+
+
+    if (status.key === "full") {
+
+        box.innerHTML = `
+
+            <strong>
+                Registration is currently full
+            </strong>
+
+            <p>
+                This tournament has reached its participant
+                capacity.
+            </p>
+
+        `;
+
+
+        button.textContent =
+            "Registration Full";
+
+        button.disabled =
+            true;
+
+        button.classList.add(
+            "primary-btn"
+        );
+
+
+        return;
+    }
+
+
+    box.innerHTML = `
+
+        <strong>
+            Registration available
+        </strong>
+
+        <p>
+            Registration closes on
+            ${formatDate(
+                tournament.registrationDeadline
+            )}.
+        </p>
+
+    `;
+
+
+    button.disabled =
+        false;
+
+    button.textContent =
+        "Register →";
+
+    button.classList.remove(
+        "secondary-btn"
+    );
+
+    button.classList.add(
+        "primary-btn"
+    );
+
+
+    button.onclick =
+        function () {
+
+            registerForTournament(
+                tournament.id
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   TOURNAMENT REGISTRATION
+   ========================================================= */
+
+function registerForCurrentTournament() {
+
+    if (!currentTournamentId) {
+        return;
+    }
+
+    registerForTournament(
+        currentTournamentId
+    );
+
+}
+
+
+function registerForTournament(id) {
+
+    const tournament =
+        tournaments.find(function (item) {
+
+            return item.id === id;
+
+        });
+
+
+    if (!tournament) {
+        return;
+    }
+
+
+    const user =
+        getStoredUser();
+
+
+    if (!user) {
+
+        showToast(
+            "Please create an account before registering."
+        );
+
+        openRoleSelector();
+
+        return;
+    }
+
+
+    const profile =
+        getStoredProfile();
+
+
+    if (
+        !profile?.name &&
+        !user.name
+    ) {
+
+        showToast(
+            "Please complete your Sports Passport first."
+        );
+
+        showDashboard();
+
+        const profileButton =
+            document.querySelector(
+                '.menu-item[onclick*="profile"]'
+            );
+
+        showDashboardSection(
+            "profile",
+            profileButton
         );
 
         return;
     }
 
 
-    section.scrollIntoView({
-        behavior: "smooth"
+    const status =
+        getTournamentStatus(
+            tournament
+        );
+
+
+    if (status.key === "full") {
+
+        showToast(
+            "This tournament is already full."
+        );
+
+        return;
+    }
+
+
+    if (isRegistered(id)) {
+
+        showToast(
+            "You are already registered for this tournament."
+        );
+
+        return;
+    }
+
+
+    const registrations =
+        getTournamentRegistrations();
+
+
+    registrations.push({
+        tournamentId: id,
+        registeredAt:
+            new Date().toISOString(),
+        name:
+            profile?.name ||
+            user.name ||
+            "KheloGram Athlete",
+        sport:
+            profile?.sport ||
+            tournament.sport,
+        district:
+            profile?.district ||
+            tournament.district
     });
+
+
+    localStorage.setItem(
+        STORAGE_KEYS.TOURNAMENTS,
+        JSON.stringify(registrations)
+    );
+
+
+    showToast(
+        `Registered for ${tournament.name}.`
+    );
+
+
+    renderTournamentPage();
+
+
+    if (
+        currentTournamentId === id
+    ) {
+
+        updateTournamentRegistrationBox(
+            tournament
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CANCEL REGISTRATION
+   ========================================================= */
+
+function cancelTournamentRegistration(id) {
+
+    const tournament =
+        tournaments.find(function (item) {
+
+            return item.id === id;
+
+        });
+
+
+    if (!tournament) {
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `Cancel your registration for "${tournament.name}"?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const registrations =
+        getTournamentRegistrations()
+            .filter(function (registration) {
+
+                return registration.tournamentId !== id;
+
+            });
+
+
+    localStorage.setItem(
+        STORAGE_KEYS.TOURNAMENTS,
+        JSON.stringify(registrations)
+    );
+
+
+    showToast(
+        "Tournament registration cancelled."
+    );
+
+
+    renderTournamentPage();
+
+
+    if (
+        currentTournamentId === id
+    ) {
+
+        updateTournamentRegistrationBox(
+            tournament
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   REGISTRATION STORAGE
+   ========================================================= */
+
+function getTournamentRegistrations() {
+
+    try {
+
+        const data =
+            localStorage.getItem(
+                STORAGE_KEYS.TOURNAMENTS
+            );
+
+        return data
+            ? JSON.parse(data)
+            : [];
+
+    } catch (error) {
+
+        return [];
+
+    }
+
+}
+
+
+function isRegistered(id) {
+
+    return getTournamentRegistrations()
+        .some(function (registration) {
+
+            return registration.tournamentId === id;
+
+        });
+
+}
+
+
+/* =========================================================
+   MY TOURNAMENTS
+   ========================================================= */
+
+function renderMyTournaments() {
+
+    const panel =
+        document.getElementById(
+            "myTournamentsPanel"
+        );
+
+
+    if (!panel) {
+        return;
+    }
+
+
+    const registrations =
+        getTournamentRegistrations();
+
+
+    if (!registrations.length) {
+
+        panel.innerHTML = `
+
+            <small class="section-label">
+                MY COMPETITIONS
+            </small>
+
+            <h3>
+                Your tournament registrations
+            </h3>
+
+            <p class="section-description">
+                You have not registered for a tournament yet.
+                Browse the opportunities above to get started.
+            </p>
+
+        `;
+
+        return;
+    }
+
+
+    const registeredTournaments =
+        registrations.map(
+            function (registration) {
+
+                return tournaments.find(
+                    function (tournament) {
+
+                        return (
+                            tournament.id ===
+                            registration.tournamentId
+                        );
+
+                    }
+                );
+
+            }
+        ).filter(Boolean);
+
+
+    panel.innerHTML = `
+
+        <small class="section-label">
+            MY COMPETITIONS
+        </small>
+
+        <h3>
+            Your tournament registrations
+        </h3>
+
+        <div class="my-tournament-list">
+
+            ${
+                registeredTournaments
+                    .map(function (tournament) {
+
+                        return `
+
+                            <div
+                                class="my-tournament-item"
+                            >
+
+                                <div
+                                    class="my-tournament-item-left"
+                                >
+
+                                    <div
+                                        class="my-tournament-mini-icon"
+                                    >
+                                        ${tournament.icon}
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            ${escapeHTML(
+                                                tournament.name
+                                            )}
+                                        </strong>
+
+                                        <small>
+                                            ${formatDate(
+                                                tournament.startDate
+                                            )}
+                                            ·
+                                            ${escapeHTML(
+                                                tournament.district
+                                            )}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    class="secondary-btn"
+                                    type="button"
+                                    onclick="openTournamentDetails('${tournament.id}')"
+                                >
+                                    View
+                                </button>
+
+                            </div>
+
+                        `;
+
+                    }).join("")
+            }
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TOURNAMENT STATUS
+   ========================================================= */
+
+function getTournamentStatus(tournament) {
+
+    if (
+        tournament.participants >=
+        tournament.capacity
+    ) {
+
+        return {
+            key: "full",
+            label: "FULL",
+            className: "full"
+        };
+
+    }
+
+
+    const today =
+        new Date();
+
+
+    const start =
+        parseDate(
+            tournament.startDate
+        );
+
+
+    const deadline =
+        parseDate(
+            tournament.registrationDeadline
+        );
+
+
+    if (
+        deadline &&
+        today > deadline
+    ) {
+
+        return {
+            key: "soon",
+            label: "REGISTRATION CLOSED",
+            className: "soon"
+        };
+
+    }
+
+
+    if (
+        start &&
+        today >=
+            new Date(
+                start.getTime() -
+                7 * 24 * 60 * 60 * 1000
+            )
+    ) {
+
+        return {
+            key: "soon",
+            label: "STARTING SOON",
+            className: "soon"
+        };
+
+    }
+
+
+    return {
+        key: "open",
+        label: "REGISTRATION OPEN",
+        className: "open"
+    };
+
+}
+
+
+/* =========================================================
+   INSIGHTS
+   ========================================================= */
+
+function updateInsights() {
+
+    const profile =
+        getStoredProfile();
+
+
+    const sport =
+        profile?.sport ||
+        "Not provided";
+
+
+    const skill =
+        profile?.skill ||
+        "Not provided";
+
+
+    const location =
+        profile?.village &&
+        profile?.district
+            ? `${profile.village}, ${profile.district}`
+            : "Not provided";
+
+
+    const experience =
+        profile?.achievements ||
+        "Not provided";
+
+
+    setText(
+        "signalSport",
+        sport
+    );
+
+
+    setText(
+        "signalSkill",
+        skill
+    );
+
+
+    setText(
+        "signalLocation",
+        location
+    );
+
+
+    setText(
+        "signalExperience",
+        experience
+    );
+
+
+    const title =
+        document.getElementById(
+            "insightTitle"
+        );
+
+
+    const description =
+        document.getElementById(
+            "insightDescription"
+        );
+
+
+    if (!profile?.sport) {
+
+        if (title) {
+
+            title.textContent =
+                "Build your sports passport";
+
+        }
+
+        if (description) {
+
+            description.textContent =
+                "Add your sport, skill level and experience to create your initial talent profile.";
+
+        }
+
+        return;
+
+    }
+
+
+    if (title) {
+
+        title.textContent =
+            `${profile.sport} Talent Profile`;
+
+    }
+
+
+    if (description) {
+
+        description.textContent =
+            `Your KheloGram profile identifies ${profile.sport} as your primary sport with a ${profile.skill || "developing"} skill level. Add more competition history and achievements as your sports journey grows.`;
+
+    }
 
 }
 
@@ -2206,12 +3565,6 @@ function showToast(message) {
 
 
     if (!toast) {
-
-        console.log(
-            "Toast:",
-            message
-        );
-
         return;
     }
 
@@ -2225,18 +3578,14 @@ function showToast(message) {
     );
 
 
-    if (toastTimer) {
-
-        clearTimeout(
-            toastTimer
-        );
-
-    }
+    clearTimeout(
+        toastTimer
+    );
 
 
     toastTimer =
         setTimeout(
-            function() {
+            function () {
 
                 toast.classList.remove(
                     "show"
@@ -2250,35 +3599,171 @@ function showToast(message) {
 
 
 /* =========================================================
-   HELPER
+   UTILITY FUNCTIONS
    ========================================================= */
 
-function setText(
-    id,
-    value
-) {
+function getInitials(name) {
+
+    if (!name) {
+        return "KG";
+    }
+
+
+    const parts =
+        name
+            .trim()
+            .split(/\s+/)
+            .filter(Boolean);
+
+
+    if (parts.length === 1) {
+
+        return parts[0]
+            .substring(0, 2)
+            .toUpperCase();
+
+    }
+
+
+    return (
+        parts[0][0] +
+        parts[parts.length - 1][0]
+    ).toUpperCase();
+
+}
+
+
+function setText(id, value) {
 
     const element =
         document.getElementById(id);
 
-
     if (element) {
 
         element.textContent =
-            value;
+            value ?? "";
 
     }
 
 }
 
 
+function setValue(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+
+        element.value =
+            value ?? "";
+
+    }
+
+}
+
+
+function parseDate(value) {
+
+    if (!value) {
+        return null;
+    }
+
+
+    const parts =
+        value.split("-");
+
+
+    if (parts.length !== 3) {
+        return new Date(value);
+    }
+
+
+    return new Date(
+        Number(parts[0]),
+        Number(parts[1]) - 1,
+        Number(parts[2])
+    );
+
+}
+
+
+function formatDate(value) {
+
+    const date =
+        parseDate(value);
+
+
+    if (!date || isNaN(date.getTime())) {
+
+        return value || "Not available";
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-IN",
+        {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+function escapeHTML(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
 /* =========================================================
-   CLOSE MODALS BY BACKDROP
+   ESC KEY - CLOSE MODALS
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+
+        closeRoleSelector();
+        closeAuthModal();
+        closeGroundDetails();
+        closeTournamentDetails();
+
+    }
+);
+
+
+/* =========================================================
+   CLICK OUTSIDE MODALS
    ========================================================= */
 
 document.addEventListener(
     "click",
-    function(event) {
+    function (event) {
 
         const roleModal =
             document.getElementById(
@@ -2290,9 +3775,14 @@ document.addEventListener(
                 "authModal"
             );
 
-        const groundDetailsModal =
+        const groundModal =
             document.getElementById(
                 "groundDetailsModal"
+            );
+
+        const tournamentModal =
+            document.getElementById(
+                "tournamentDetailsModal"
             );
 
 
@@ -2317,35 +3807,21 @@ document.addEventListener(
 
 
         if (
-            groundDetailsModal &&
-            event.target === groundDetailsModal
+            groundModal &&
+            event.target === groundModal
         ) {
 
             closeGroundDetails();
 
         }
 
-    }
-);
-
-
-/* =========================================================
-   ESCAPE KEY
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    function(event) {
 
         if (
-            event.key === "Escape"
+            tournamentModal &&
+            event.target === tournamentModal
         ) {
 
-            closeRoleSelector();
-
-            closeAuthModal();
-
-            closeGroundDetails();
+            closeTournamentDetails();
 
         }
 
@@ -2354,166 +3830,5 @@ document.addEventListener(
 
 
 /* =========================================================
-   INITIALIZE
+   END OF KHELOGRAM STAGE 5
    ========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        console.log(
-            "KheloGram Stage 4.1 initialized."
-        );
-
-
-        /* =================================================
-           AUTH FORM
-           ================================================= */
-
-        const authForm =
-            document.getElementById(
-                "authForm"
-            );
-
-
-        if (authForm) {
-
-            authForm.addEventListener(
-                "submit",
-                handleAuthSubmit
-            );
-
-        }
-
-
-        /* =================================================
-           PROFILE FORM
-           ================================================= */
-
-        const profileForm =
-            document.getElementById(
-                "profileForm"
-            );
-
-
-        if (profileForm) {
-
-            profileForm.addEventListener(
-                "submit",
-                saveProfile
-            );
-
-        }
-
-
-        /* =================================================
-           RESTORE USER
-           ================================================= */
-
-        const user =
-            getUser();
-
-
-        if (user) {
-
-            selectedRole =
-                user.role;
-
-            showDashboard();
-
-        }
-
-
-        /* =================================================
-           INITIAL COACH RENDER
-           ================================================= */
-
-        renderCoaches(
-            coachData
-        );
-
-
-        /* =================================================
-           INITIAL GROUND RENDER
-           ================================================= */
-
-        renderGrounds(
-            groundData
-        );
-
-
-        console.log(
-            "KheloGram Stage 4.1 ready."
-        );
-
-    }
-);
-
-
-/* =========================================================
-   MAKE FUNCTIONS AVAILABLE TO HTML
-   ================================================= */
-
-window.openRoleSelector =
-    openRoleSelector;
-
-window.closeRoleSelector =
-    closeRoleSelector;
-
-window.selectRole =
-    selectRole;
-
-window.openAuthModal =
-    openAuthModal;
-
-window.closeAuthModal =
-    closeAuthModal;
-
-window.switchAuth =
-    switchAuth;
-
-window.registerUser =
-    registerUser;
-
-window.loginUser =
-    loginUser;
-
-window.logout =
-    logout;
-
-window.showDashboard =
-    showDashboard;
-
-window.showDashboardSection =
-    showDashboardSection;
-
-window.scrollToSection =
-    scrollToSection;
-
-window.filterCoaches =
-    filterCoaches;
-
-window.connectCoach =
-    connectCoach;
-
-window.filterGrounds =
-    filterGrounds;
-
-window.viewGround =
-    viewGround;
-
-window.closeGroundDetails =
-    closeGroundDetails;
-
-
-/* =========================================================
-   FINAL MESSAGE
-   ========================================================= */
-
-console.log(
-    "KheloGram loaded successfully."
-);
-
-console.log(
-    "Stage 4.1 JavaScript ready."
-);
