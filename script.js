@@ -1,11 +1,12 @@
 /* =========================================================
-   KHELOGRAM - STAGE 3.3
-   Clean JavaScript
+   KHELOGRAM
+   STAGE 4.1 - COMPLETE JAVASCRIPT
+   Ground Discovery Foundation
    ========================================================= */
 
 
 /* =========================================================
-   GLOBAL
+   GLOBAL DATA
    ========================================================= */
 
 let selectedRole = "";
@@ -64,27 +65,109 @@ const coachData = [
 
 
 /* =========================================================
+   STAGE 4.1
+   DEMO SPORTS GROUND DATA
+   ========================================================= */
+
+const groundData = [
+    {
+        name: "Gram Khel Maidan",
+        village: "Chinhat",
+        district: "Lucknow",
+        sport: "Multi-Sport",
+        type: "Village Ground",
+        status: "Available"
+    },
+    {
+        name: "Rajkiya Khel Maidan",
+        village: "Bakshi Ka Talab",
+        district: "Lucknow",
+        sport: "Cricket",
+        type: "Government Ground",
+        status: "Available"
+    },
+    {
+        name: "Yuva Sports Ground",
+        village: "Kursi",
+        district: "Barabanki",
+        sport: "Football",
+        type: "Village Ground",
+        status: "Available"
+    },
+    {
+        name: "Gram Sports Complex",
+        village: "Rudauli",
+        district: "Ayodhya",
+        sport: "Multi-Sport",
+        type: "Sports Complex",
+        status: "Available"
+    },
+    {
+        name: "Rural Athletics Ground",
+        village: "Kakori",
+        district: "Lucknow",
+        sport: "Athletics",
+        type: "Village Ground",
+        status: "Maintenance"
+    },
+    {
+        name: "Community Cricket Ground",
+        village: "Sadar",
+        district: "Kanpur",
+        sport: "Cricket",
+        type: "Community Ground",
+        status: "Available"
+    },
+    {
+        name: "Youth Football Ground",
+        village: "Haidergarh",
+        district: "Barabanki",
+        sport: "Football",
+        type: "Village Ground",
+        status: "Available"
+    },
+    {
+        name: "Kabaddi Training Ground",
+        village: "Milkipur",
+        district: "Ayodhya",
+        sport: "Kabaddi",
+        type: "Training Ground",
+        status: "Available"
+    }
+];
+
+
+/* =========================================================
    LOCAL STORAGE
    ========================================================= */
 
 function getUser() {
 
-    const savedUser = localStorage.getItem("khelogramUser");
+    const savedUser =
+        localStorage.getItem("khelogramUser");
 
     if (!savedUser) {
         return null;
     }
 
     try {
+
         return JSON.parse(savedUser);
+
     } catch (error) {
-        console.error("Could not read saved user.", error);
+
+        console.error(
+            "Error reading KheloGram user:",
+            error
+        );
+
         return null;
     }
 }
 
 
 function saveUser(user) {
+
     localStorage.setItem(
         "khelogramUser",
         JSON.stringify(user)
@@ -98,38 +181,65 @@ function saveUser(user) {
 
 function openRoleSelector() {
 
-    const modal = document.getElementById("roleModal");
+    const roleModal =
+        document.getElementById("roleModal");
 
-    if (!modal) {
-        console.error("roleModal was not found.");
+    if (!roleModal) {
+
+        console.error(
+            "roleModal not found in index.html"
+        );
+
         return;
     }
 
-    modal.classList.remove("hidden");
+    roleModal.classList.remove("hidden");
+
+    roleModal.style.display = "flex";
+    roleModal.style.visibility = "visible";
+    roleModal.style.opacity = "1";
+    roleModal.style.zIndex = "9999";
+
+    document.body.classList.add("modal-open");
+
+    console.log("Role selector opened.");
 }
 
 
 function closeRoleSelector() {
 
-    const modal = document.getElementById("roleModal");
+    const roleModal =
+        document.getElementById("roleModal");
 
-    if (!modal) {
+    if (!roleModal) {
         return;
     }
 
-    modal.classList.add("hidden");
+    roleModal.classList.add("hidden");
+
+    roleModal.style.display = "none";
+
+    document.body.classList.remove("modal-open");
+
+    console.log("Role selector closed.");
 }
 
 
 /* =========================================================
-   ROLE SELECTION
+   SELECT ROLE
    ========================================================= */
 
 function selectRole(role) {
 
-    selectedRole = role
-        .toLowerCase()
-        .replace(/\s+/g, "-");
+    selectedRole =
+        role
+            .toLowerCase()
+            .replace(/\s+/g, "-");
+
+    console.log(
+        "Selected role:",
+        roleNames[selectedRole] || role
+    );
 
     closeRoleSelector();
 
@@ -143,28 +253,53 @@ function selectRole(role) {
 
 function openAuthModal() {
 
-    const modal = document.getElementById("authModal");
+    const authModal =
+        document.getElementById("authModal");
 
-    if (!modal) {
-        console.error("authModal was not found.");
+    if (!authModal) {
+
+        console.error(
+            "authModal not found in index.html"
+        );
+
         return;
     }
 
-    modal.classList.remove("hidden");
+    authModal.classList.remove("hidden");
+
+    authModal.style.display = "flex";
+    authModal.style.visibility = "visible";
+    authModal.style.opacity = "1";
+    authModal.style.zIndex = "9999";
+
+    document.body.classList.add("modal-open");
 
     switchAuth("register");
+
+    console.log(
+        "Authentication modal opened."
+    );
 }
 
 
 function closeAuthModal() {
 
-    const modal = document.getElementById("authModal");
+    const authModal =
+        document.getElementById("authModal");
 
-    if (!modal) {
+    if (!authModal) {
         return;
     }
 
-    modal.classList.add("hidden");
+    authModal.classList.add("hidden");
+
+    authModal.style.display = "none";
+
+    document.body.classList.remove("modal-open");
+
+    console.log(
+        "Authentication modal closed."
+    );
 }
 
 
@@ -174,45 +309,93 @@ function closeAuthModal() {
 
 function switchAuth(type) {
 
-    const nameField = document.getElementById("nameField");
-    const authTitle = document.getElementById("authTitle");
-    const authSubtitle = document.getElementById("authSubtitle");
-    const authButtonText = document.getElementById("authButtonText");
-    const registerTab = document.getElementById("registerTab");
-    const loginTab = document.getElementById("loginTab");
-    const authName = document.getElementById("authName");
+    const nameField =
+        document.getElementById("nameField");
+
+    const authTitle =
+        document.getElementById("authTitle");
+
+    const authSubtitle =
+        document.getElementById("authSubtitle");
+
+    const authButtonText =
+        document.getElementById("authButtonText");
+
+    const registerTab =
+        document.getElementById("registerTab");
+
+    const loginTab =
+        document.getElementById("loginTab");
+
+    const authName =
+        document.getElementById("authName");
+
 
     if (type === "login") {
 
-        nameField.style.display = "none";
+        if (nameField) {
+            nameField.style.display = "none";
+        }
 
-        authTitle.textContent = "Welcome back";
+        if (authTitle) {
+            authTitle.textContent =
+                "Welcome back";
+        }
 
-        authSubtitle.textContent =
-            "Login to your KheloGram account.";
+        if (authSubtitle) {
+            authSubtitle.textContent =
+                "Login to your KheloGram account.";
+        }
 
-        authButtonText.textContent = "Login";
+        if (authButtonText) {
+            authButtonText.textContent =
+                "Login";
+        }
 
-        registerTab.classList.remove("active");
-        loginTab.classList.add("active");
+        if (registerTab) {
+            registerTab.classList.remove("active");
+        }
 
-        authName.required = false;
+        if (loginTab) {
+            loginTab.classList.add("active");
+        }
+
+        if (authName) {
+            authName.required = false;
+        }
 
     } else {
 
-        nameField.style.display = "block";
+        if (nameField) {
+            nameField.style.display = "block";
+        }
 
-        authTitle.textContent = "Create your account";
+        if (authTitle) {
+            authTitle.textContent =
+                "Create your account";
+        }
 
-        authSubtitle.textContent =
-            "Join the KheloGram ecosystem.";
+        if (authSubtitle) {
+            authSubtitle.textContent =
+                "Join the KheloGram ecosystem.";
+        }
 
-        authButtonText.textContent = "Create Account";
+        if (authButtonText) {
+            authButtonText.textContent =
+                "Create Account";
+        }
 
-        registerTab.classList.add("active");
-        loginTab.classList.remove("active");
+        if (registerTab) {
+            registerTab.classList.add("active");
+        }
 
-        authName.required = true;
+        if (loginTab) {
+            loginTab.classList.remove("active");
+        }
+
+        if (authName) {
+            authName.required = true;
+        }
     }
 }
 
@@ -225,13 +408,24 @@ function handleAuthSubmit(event) {
 
     event.preventDefault();
 
-    const title =
-        document.getElementById("authTitle").textContent;
+    const authTitle =
+        document.getElementById("authTitle");
 
-    if (title === "Welcome back") {
+    const isLogin =
+        authTitle &&
+        authTitle.textContent
+            .toLowerCase()
+            .includes("welcome back");
+
+
+    if (isLogin) {
+
         loginUser();
+
     } else {
+
         registerUser();
+
     }
 }
 
@@ -242,59 +436,120 @@ function handleAuthSubmit(event) {
 
 function registerUser() {
 
+    const nameElement =
+        document.getElementById("authName");
+
+    const emailElement =
+        document.getElementById("authEmail");
+
+    const passwordElement =
+        document.getElementById("authPassword");
+
+
     const name =
-        document.getElementById("authName").value.trim();
+        nameElement
+            ? nameElement.value.trim()
+            : "";
 
     const email =
-        document.getElementById("authEmail").value.trim();
+        emailElement
+            ? emailElement.value.trim()
+            : "";
 
     const password =
-        document.getElementById("authPassword").value;
+        passwordElement
+            ? passwordElement.value.trim()
+            : "";
+
 
     if (!name) {
-        alert("Please enter your full name.");
+
+        alert(
+            "Please enter your full name."
+        );
+
         return;
     }
+
 
     if (!email) {
-        alert("Please enter your email.");
+
+        alert(
+            "Please enter your email."
+        );
+
         return;
     }
+
 
     if (password.length < 6) {
-        alert("Password must contain at least 6 characters.");
+
+        alert(
+            "Password must contain at least 6 characters."
+        );
+
         return;
     }
+
 
     if (!selectedRole) {
-        alert("Please select your role first.");
+
+        alert(
+            "Please select your role first."
+        );
+
         return;
     }
 
+
     const user = {
+
         name: name,
+
         email: email,
+
         password: password,
+
         role: selectedRole,
+
         profile: {
+
             age: "",
+
             village: "",
+
             district: "",
+
             sport: "",
+
             skill: "",
+
             achievements: "",
+
             coach: ""
+
         }
+
     };
 
+
     saveUser(user);
+
+    console.log(
+        "User registered:",
+        user
+    );
+
 
     closeAuthModal();
 
     showDashboard();
 
+
     showToast(
-        "Welcome to KheloGram, " + name + "!"
+        "Welcome to KheloGram, " +
+        name +
+        "!"
     );
 }
 
@@ -305,13 +560,26 @@ function registerUser() {
 
 function loginUser() {
 
+    const emailElement =
+        document.getElementById("authEmail");
+
+    const passwordElement =
+        document.getElementById("authPassword");
+
+
     const email =
-        document.getElementById("authEmail").value.trim();
+        emailElement
+            ? emailElement.value.trim()
+            : "";
 
     const password =
-        document.getElementById("authPassword").value;
+        passwordElement
+            ? passwordElement.value.trim()
+            : "";
+
 
     const user = getUser();
+
 
     if (!user) {
 
@@ -322,25 +590,30 @@ function loginUser() {
         return;
     }
 
+
     if (
         email === user.email &&
         password === user.password
     ) {
 
-        selectedRole = user.role;
+        selectedRole =
+            user.role;
 
         closeAuthModal();
 
         showDashboard();
 
         showToast(
-            "Welcome back, " + user.name + "!"
+            "Welcome back, " +
+            user.name +
+            "!"
         );
 
     } else {
 
-        alert("Incorrect email or password.");
-
+        alert(
+            "Incorrect email or password."
+        );
     }
 }
 
@@ -354,52 +627,172 @@ function showDashboard() {
     const user = getUser();
 
     if (!user) {
+
+        console.log(
+            "No saved user."
+        );
+
         return;
     }
 
+
     const landingPage =
-        document.getElementById("landingPage");
+        document.getElementById(
+            "landingPage"
+        );
 
     const dashboardPage =
-        document.getElementById("dashboardPage");
+        document.getElementById(
+            "dashboardPage"
+        );
 
-    landingPage.classList.add("hidden");
 
-    dashboardPage.classList.remove("hidden");
+    if (landingPage) {
+
+        landingPage.classList.add(
+            "hidden"
+        );
+    }
+
+
+    if (dashboardPage) {
+
+        dashboardPage.classList.remove(
+            "hidden"
+        );
+    }
+
 
     updateDashboardUser(user);
 
     loadProfile(user);
 
-    showDashboardSection("overview");
+    showDashboardSection(
+        "overview"
+    );
+
+
+    console.log(
+        "Dashboard opened for:",
+        user.name,
+        roleNames[user.role] || user.role
+    );
 }
 
 
 /* =========================================================
-   DASHBOARD USER
+   DASHBOARD USER INFORMATION
    ========================================================= */
 
 function updateDashboardUser(user) {
 
-    const name = user.name || "User";
+    const name =
+        user.name || "User";
 
     const role =
         roleNames[user.role] ||
         user.role ||
         "Athlete";
 
-    setText("dashboardName", name);
-    setText("userDisplayName", name);
-    setText("userRole", role);
 
-    const initials = getInitials(name);
+    const dashboardName =
+        document.getElementById(
+            "dashboardName"
+        );
 
-    setText("userInitials", initials);
-    setText("passportInitials", initials);
-    setText("profileAvatar", initials);
+    const userDisplayName =
+        document.getElementById(
+            "userDisplayName"
+        );
 
-    setText("passportName", name);
-    setText("profileCardName", name);
+    const userRole =
+        document.getElementById(
+            "userRole"
+        );
+
+
+    if (dashboardName) {
+        dashboardName.textContent =
+            name;
+    }
+
+    if (userDisplayName) {
+        userDisplayName.textContent =
+            name;
+    }
+
+    if (userRole) {
+        userRole.textContent =
+            role;
+    }
+
+
+    const initials =
+        getInitials(name);
+
+
+    const userInitials =
+        document.getElementById(
+            "userInitials"
+        );
+
+    const passportInitials =
+        document.getElementById(
+            "passportInitials"
+        );
+
+    const profileAvatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+
+    if (userInitials) {
+        userInitials.textContent =
+            initials;
+    }
+
+    if (passportInitials) {
+        passportInitials.textContent =
+            initials;
+    }
+
+    if (profileAvatar) {
+        profileAvatar.textContent =
+            initials;
+    }
+
+
+    const passportName =
+        document.getElementById(
+            "passportName"
+        );
+
+    const profileCardName =
+        document.getElementById(
+            "profileCardName"
+        );
+
+
+    if (passportName) {
+        passportName.textContent =
+            name;
+    }
+
+    if (profileCardName) {
+        profileCardName.textContent =
+            name;
+    }
+
+
+    const coachMenu =
+        document.getElementById(
+            "coachMenu"
+        );
+
+    if (coachMenu) {
+        coachMenu.style.display = "flex";
+    }
 }
 
 
@@ -413,15 +806,17 @@ function getInitials(name) {
         return "KG";
     }
 
-    const words = name.trim().split(/\s+/);
+    const words =
+        name.trim().split(/\s+/);
+
 
     if (words.length === 1) {
 
         return words[0]
             .substring(0, 2)
             .toUpperCase();
-
     }
+
 
     return (
         words[0][0] +
@@ -434,53 +829,112 @@ function getInitials(name) {
    DASHBOARD SECTIONS
    ========================================================= */
 
-function showDashboardSection(sectionName, clickedButton) {
+function showDashboardSection(
+    sectionName,
+    clickedButton
+) {
 
     const sections =
-        document.querySelectorAll(".dashboard-section");
+        document.querySelectorAll(
+            ".dashboard-section"
+        );
 
-    sections.forEach(function(section) {
-        section.classList.add("hidden");
-    });
 
-    const target =
+    sections.forEach(
+        function(section) {
+
+            section.classList.add(
+                "hidden"
+            );
+        }
+    );
+
+
+    const targetSection =
         document.getElementById(
             "section-" + sectionName
         );
 
-    if (target) {
-        target.classList.remove("hidden");
+
+    if (targetSection) {
+
+        targetSection.classList.remove(
+            "hidden"
+        );
     }
 
-    const menuItems =
-        document.querySelectorAll(".menu-item");
 
-    menuItems.forEach(function(item) {
-        item.classList.remove("active");
-    });
+    const menuItems =
+        document.querySelectorAll(
+            ".menu-item"
+        );
+
+
+    menuItems.forEach(
+        function(item) {
+
+            item.classList.remove(
+                "active"
+            );
+        }
+    );
+
 
     if (clickedButton) {
 
-        clickedButton.classList.add("active");
-
-    } else {
-
-        menuItems.forEach(function(item) {
-
-            const text =
-                item.textContent
-                    .trim()
-                    .toLowerCase();
-
-            if (text.includes(sectionName)) {
-                item.classList.add("active");
-            }
-
-        });
+        clickedButton.classList.add(
+            "active"
+        );
     }
 
-    if (sectionName === "coaches") {
+
+    if (!clickedButton) {
+
+        menuItems.forEach(
+            function(item) {
+
+                const text =
+                    item.textContent
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    text.includes(
+                        sectionName
+                    )
+                ) {
+
+                    item.classList.add(
+                        "active"
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    if (
+        sectionName ===
+        "coaches"
+    ) {
+
         filterCoaches();
+    }
+
+
+    /* =====================================================
+       STAGE 4.1
+       LOAD GROUNDS WHEN GROUNDS SECTION OPENS
+       ===================================================== */
+
+    if (
+        sectionName ===
+        "grounds"
+    ) {
+
+        loadGrounds();
     }
 }
 
@@ -494,6 +948,7 @@ function loadProfile(user) {
     if (!user.profile) {
 
         user.profile = {
+
             age: "",
             village: "",
             district: "",
@@ -501,34 +956,70 @@ function loadProfile(user) {
             skill: "",
             achievements: "",
             coach: ""
+
         };
 
         saveUser(user);
     }
 
-    const profile = user.profile;
 
-    setInputValue("profileName", user.name);
-    setInputValue("profileAge", profile.age);
-    setInputValue("profileVillage", profile.village);
-    setInputValue("profileDistrict", profile.district);
-    setInputValue("profileSport", profile.sport);
-    setInputValue("profileSkill", profile.skill);
+    const profile =
+        user.profile;
+
+
+    setInputValue(
+        "profileName",
+        user.name
+    );
+
+    setInputValue(
+        "profileAge",
+        profile.age
+    );
+
+    setInputValue(
+        "profileVillage",
+        profile.village
+    );
+
+    setInputValue(
+        "profileDistrict",
+        profile.district
+    );
+
+    setInputValue(
+        "profileSport",
+        profile.sport
+    );
+
+    setInputValue(
+        "profileSkill",
+        profile.skill
+    );
+
     setInputValue(
         "profileAchievements",
         profile.achievements
     );
 
-    updateProfileDisplay(user);
+
+    updateProfileDisplay(
+        user
+    );
 }
 
 
-function setInputValue(id, value) {
+function setInputValue(
+    id,
+    value
+) {
 
-    const element = document.getElementById(id);
+    const element =
+        document.getElementById(id);
 
     if (element) {
-        element.value = value || "";
+        element.value =
+            value || "";
     }
 }
 
@@ -541,46 +1032,93 @@ function saveProfile(event) {
 
     event.preventDefault();
 
+
     const user = getUser();
 
     if (!user) {
         return;
     }
 
+
+    const profileName =
+        document.getElementById(
+            "profileName"
+        );
+
+    const profileAge =
+        document.getElementById(
+            "profileAge"
+        );
+
+    const profileVillage =
+        document.getElementById(
+            "profileVillage"
+        );
+
+    const profileDistrict =
+        document.getElementById(
+            "profileDistrict"
+        );
+
+    const profileSport =
+        document.getElementById(
+            "profileSport"
+        );
+
+    const profileSkill =
+        document.getElementById(
+            "profileSkill"
+        );
+
+    const profileAchievements =
+        document.getElementById(
+            "profileAchievements"
+        );
+
+
     user.name =
-        document.getElementById("profileName")
-            .value
-            .trim();
+        profileName
+            ? profileName.value.trim()
+            : user.name;
+
 
     user.profile = {
 
         age:
-            document.getElementById("profileAge").value,
+            profileAge
+                ? profileAge.value
+                : "",
 
         village:
-            document.getElementById("profileVillage")
-                .value
-                .trim(),
+            profileVillage
+                ? profileVillage.value.trim()
+                : "",
 
         district:
-            document.getElementById("profileDistrict")
-                .value
-                .trim(),
+            profileDistrict
+                ? profileDistrict.value.trim()
+                : "",
 
         sport:
-            document.getElementById("profileSport").value,
+            profileSport
+                ? profileSport.value
+                : "",
 
         skill:
-            document.getElementById("profileSkill").value,
+            profileSkill
+                ? profileSkill.value
+                : "",
 
         achievements:
-            document.getElementById("profileAchievements")
-                .value
-                .trim(),
+            profileAchievements
+                ? profileAchievements.value.trim()
+                : "",
 
         coach:
             user.profile.coach || ""
+
     };
+
 
     saveUser(user);
 
@@ -597,12 +1135,14 @@ function saveProfile(event) {
 
 
 /* =========================================================
-   PROFILE DISPLAY
+   UPDATE PROFILE DISPLAY
    ========================================================= */
 
 function updateProfileDisplay(user) {
 
-    const profile = user.profile || {};
+    const profile =
+        user.profile || {};
+
 
     const location =
         buildLocation(
@@ -610,68 +1150,153 @@ function updateProfileDisplay(user) {
             profile.district
         );
 
-    setText(
-        "passportSport",
-        profile.sport || "Sport not selected"
-    );
 
-    setText(
-        "profileCardSport",
-        profile.sport || "Sport not selected"
-    );
+    const passportSport =
+        document.getElementById(
+            "passportSport"
+        );
 
-    setText(
-        "passportLocation",
-        location || "Add your village and district"
-    );
+    const profileCardSport =
+        document.getElementById(
+            "profileCardSport"
+        );
 
-    const fields = [
-        user.name,
-        profile.age,
-        profile.village,
-        profile.district,
-        profile.sport,
-        profile.skill,
-        profile.achievements
-    ];
+    const passportLocation =
+        document.getElementById(
+            "passportLocation"
+        );
+
+
+    if (passportSport) {
+
+        passportSport.textContent =
+            profile.sport ||
+            "Sport not selected";
+    }
+
+
+    if (profileCardSport) {
+
+        profileCardSport.textContent =
+            profile.sport ||
+            "Sport not selected";
+    }
+
+
+    if (passportLocation) {
+
+        passportLocation.textContent =
+            location ||
+            "Add your village and district";
+    }
+
 
     let completed = 0;
 
-    fields.forEach(function(value) {
 
-        if (
-            value &&
-            String(value).trim() !== ""
-        ) {
-            completed++;
+    const fields = [
+
+        user.name,
+
+        profile.age,
+
+        profile.village,
+
+        profile.district,
+
+        profile.sport,
+
+        profile.skill,
+
+        profile.achievements
+
+    ];
+
+
+    fields.forEach(
+        function(value) {
+
+            if (
+                value &&
+                String(value).trim() !== ""
+            ) {
+
+                completed++;
+            }
+
         }
+    );
 
-    });
 
     const completion =
         Math.round(
-            completed / fields.length * 100
+            (completed /
+                fields.length) *
+            100
         );
 
-    setText(
-        "profileCompletion",
-        completion + "%"
-    );
 
-    setText(
-        "primarySport",
-        profile.sport || "Not set"
-    );
+    const profileCompletion =
+        document.getElementById(
+            "profileCompletion"
+        );
 
-    setText(
-        "talentStatus",
-        completion >= 70 ? "Ready" : "Building"
-    );
 
-    setText(
-        "coachStatus",
-        profile.coach || "Not connected"
-    );
+    if (profileCompletion) {
+
+        profileCompletion.textContent =
+            completion + "%";
+    }
+
+
+    const primarySport =
+        document.getElementById(
+            "primarySport"
+        );
+
+
+    if (primarySport) {
+
+        primarySport.textContent =
+            profile.sport ||
+            "Not set";
+    }
+
+
+    const talentStatus =
+        document.getElementById(
+            "talentStatus"
+        );
+
+
+    if (talentStatus) {
+
+        if (completion >= 70) {
+
+            talentStatus.textContent =
+                "Ready";
+
+        } else {
+
+            talentStatus.textContent =
+                "Building";
+        }
+    }
+
+
+    const coachStatus =
+        document.getElementById(
+            "coachStatus"
+        );
+
+
+    if (coachStatus) {
+
+        coachStatus.textContent =
+            profile.coach ||
+            "Not connected";
+    }
+
 
     updateInsights(user);
 }
@@ -681,26 +1306,40 @@ function updateProfileDisplay(user) {
    LOCATION
    ========================================================= */
 
-function buildLocation(village, district) {
+function buildLocation(
+    village,
+    district
+) {
 
-    if (village && district) {
-        return village + ", " + district;
+    if (
+        village &&
+        district
+    ) {
+
+        return (
+            village +
+            ", " +
+            district
+        );
     }
+
 
     if (village) {
         return village;
     }
 
+
     if (district) {
         return district;
     }
+
 
     return "";
 }
 
 
 /* =========================================================
-   AI INSIGHTS
+   AI INSIGHTS - PROTOTYPE
    ========================================================= */
 
 function updateInsights(user) {
@@ -709,9 +1348,33 @@ function updateInsights(user) {
         return;
     }
 
-    const profile = user.profile || {};
 
-    if (profile.sport && profile.skill) {
+    const profile =
+        user.profile || {};
+
+
+    const aiSummary =
+        document.getElementById(
+            "aiSummary"
+        );
+
+
+    const insightTitle =
+        document.getElementById(
+            "insightTitle"
+        );
+
+
+    const insightDescription =
+        document.getElementById(
+            "insightDescription"
+        );
+
+
+    if (
+        profile.sport &&
+        profile.skill
+    ) {
 
         const message =
             "Your profile shows " +
@@ -720,57 +1383,79 @@ function updateInsights(user) {
             profile.sport +
             ". Keep building your performance record to strengthen your KheloGram talent profile.";
 
-        setText("aiSummary", message);
 
-        setText(
-            "insightTitle",
-            profile.sport + " Talent Profile"
-        );
+        if (aiSummary) {
+            aiSummary.textContent =
+                message;
+        }
 
-        setText(
-            "insightDescription",
-            message
-        );
+
+        if (insightTitle) {
+
+            insightTitle.textContent =
+                profile.sport +
+                " Talent Profile";
+        }
+
+
+        if (insightDescription) {
+
+            insightDescription.textContent =
+                message;
+        }
 
     } else {
 
-        setText(
-            "aiSummary",
-            "Complete your sports profile to generate a personalized talent profile."
-        );
+        if (aiSummary) {
 
-        setText(
-            "insightTitle",
-            "Build your sports passport"
-        );
+            aiSummary.textContent =
+                "Complete your sports profile to generate a personalized talent profile.";
+        }
 
-        setText(
-            "insightDescription",
-            "Add your sport, skill level and experience to create your initial talent profile."
-        );
+
+        if (insightTitle) {
+
+            insightTitle.textContent =
+                "Build your sports passport";
+        }
+
+
+        if (insightDescription) {
+
+            insightDescription.textContent =
+                "Add your sport, skill level and experience to create your initial talent profile.";
+        }
     }
+
 
     setText(
         "signalSport",
-        profile.sport || "Not provided"
+        profile.sport ||
+        "Not provided"
     );
+
 
     setText(
         "signalSkill",
-        profile.skill || "Not provided"
+        profile.skill ||
+        "Not provided"
     );
+
 
     setText(
         "signalLocation",
         buildLocation(
             profile.village,
             profile.district
-        ) || "Not provided"
+        ) ||
+        "Not provided"
     );
+
 
     setText(
         "signalExperience",
-        profile.achievements || "Not provided"
+        profile.achievements ||
+        "Not provided"
     );
 }
 
@@ -782,35 +1467,66 @@ function updateInsights(user) {
 function filterCoaches() {
 
     const searchInput =
-        document.getElementById("coachSearch");
+        document.getElementById(
+            "coachSearch"
+        );
 
     const sportFilter =
-        document.getElementById("coachSportFilter");
+        document.getElementById(
+            "coachSportFilter"
+        );
+
 
     const search =
         searchInput
-            ? searchInput.value.trim().toLowerCase()
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
             : "";
+
 
     const sport =
         sportFilter
             ? sportFilter.value
             : "";
 
+
     const filtered =
-        coachData.filter(function(coach) {
+        coachData.filter(
+            function(coach) {
 
-            const matchesSearch =
-                coach.name.toLowerCase().includes(search) ||
-                coach.sport.toLowerCase().includes(search) ||
-                coach.location.toLowerCase().includes(search);
+                const matchesSearch =
 
-            const matchesSport =
-                !sport ||
-                coach.sport === sport;
+                    coach.name
+                        .toLowerCase()
+                        .includes(search)
 
-            return matchesSearch && matchesSport;
-        });
+                    ||
+
+                    coach.sport
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    coach.location
+                        .toLowerCase()
+                        .includes(search);
+
+
+                const matchesSport =
+
+                    !sport ||
+                    coach.sport === sport;
+
+
+                return (
+                    matchesSearch &&
+                    matchesSport
+                );
+            }
+        );
+
 
     renderCoaches(filtered);
 }
@@ -819,11 +1535,15 @@ function filterCoaches() {
 function renderCoaches(coaches) {
 
     const grid =
-        document.getElementById("coachGrid");
+        document.getElementById(
+            "coachGrid"
+        );
+
 
     if (!grid) {
         return;
     }
+
 
     if (coaches.length === 0) {
 
@@ -838,42 +1558,43 @@ function renderCoaches(coaches) {
         return;
     }
 
+
     grid.innerHTML =
-        coaches.map(function(coach) {
+        coaches.map(
+            function(coach) {
 
-            const initials =
-                getInitials(coach.name);
+                return `
+                    <div class="coach-card">
 
-            return `
-                <div class="coach-card">
+                        <div class="coach-avatar">
+                            ${getInitials(coach.name)}
+                        </div>
 
-                    <div class="coach-avatar">
-                        ${initials}
+                        <h3>${coach.name}</h3>
+
+                        <p>
+                            ${coach.sport}
+                        </p>
+
+                        <small>
+                            📍 ${coach.location}
+                        </small>
+
+                        <small>
+                            ⭐ ${coach.experience}
+                        </small>
+
+                        <button
+                            class="secondary-btn"
+                            onclick="connectCoach('${coach.name}')"
+                        >
+                            Connect
+                        </button>
+
                     </div>
-
-                    <h3>${coach.name}</h3>
-
-                    <p>${coach.sport}</p>
-
-                    <small>
-                        📍 ${coach.location}
-                    </small>
-
-                    <small>
-                        ⭐ ${coach.experience}
-                    </small>
-
-                    <button
-                        class="secondary-btn"
-                        type="button"
-                        onclick="connectCoach('${coach.name}')">
-                        Connect
-                    </button>
-
-                </div>
-            `;
-
-        }).join("");
+                `;
+            }
+        ).join("");
 }
 
 
@@ -885,18 +1606,288 @@ function connectCoach(name) {
         return;
     }
 
+
     if (!user.profile) {
         user.profile = {};
     }
 
-    user.profile.coach = name;
+
+    user.profile.coach =
+        name;
+
 
     saveUser(user);
 
-    setText("coachStatus", name);
+
+    const coachStatus =
+        document.getElementById(
+            "coachStatus"
+        );
+
+
+    if (coachStatus) {
+
+        coachStatus.textContent =
+            name;
+    }
+
 
     showToast(
-        "Coach connection request sent to " + name
+        "Coach connection request sent to " +
+        name
+    );
+}
+
+
+/* =========================================================
+   STAGE 4.1
+   GROUNDS
+   ========================================================= */
+
+
+/*
+   Load all demo grounds.
+*/
+
+function loadGrounds() {
+
+    const groundGrid =
+        document.getElementById(
+            "groundGrid"
+        );
+
+
+    if (!groundGrid) {
+
+        console.log(
+            "groundGrid not found. Stage 4.1 HTML may not be added yet."
+        );
+
+        return;
+    }
+
+
+    renderGrounds(
+        groundData
+    );
+}
+
+
+/*
+   Render ground cards.
+*/
+
+function renderGrounds(grounds) {
+
+    const groundGrid =
+        document.getElementById(
+            "groundGrid"
+        );
+
+
+    if (!groundGrid) {
+        return;
+    }
+
+
+    if (grounds.length === 0) {
+
+        groundGrid.innerHTML = `
+            <div class="empty-panel">
+                <div>🔎</div>
+                <h3>No sports grounds found</h3>
+                <p>
+                    Try another sport, village or district.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    groundGrid.innerHTML =
+        grounds.map(
+            function(ground) {
+
+                const statusClass =
+                    ground.status
+                        .toLowerCase()
+                        .replace(/\s+/g, "-");
+
+
+                return `
+                    <div class="ground-card">
+
+                        <div class="ground-icon">
+                            🏟️
+                        </div>
+
+                        <div class="ground-card-content">
+
+                            <span class="ground-type">
+                                ${ground.type}
+                            </span>
+
+                            <h3>
+                                ${ground.name}
+                            </h3>
+
+                            <p>
+                                📍 ${ground.village},
+                                ${ground.district}
+                            </p>
+
+                            <p>
+                                🏃 ${ground.sport}
+                            </p>
+
+                            <span class="ground-status ${statusClass}">
+                                ${ground.status}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="secondary-btn"
+                                onclick="viewGround('${ground.name}')"
+                            >
+                                View Ground
+                            </button>
+
+                        </div>
+
+                    </div>
+                `;
+            }
+        ).join("");
+}
+
+
+/*
+   Search grounds.
+*/
+
+function filterGrounds() {
+
+    const searchInput =
+        document.getElementById(
+            "groundSearch"
+        );
+
+    const sportFilter =
+        document.getElementById(
+            "groundSportFilter"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    const sport =
+        sportFilter
+            ? sportFilter.value
+            : "";
+
+
+    const filtered =
+        groundData.filter(
+            function(ground) {
+
+                const matchesSearch =
+
+                    ground.name
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    ground.village
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    ground.district
+                        .toLowerCase()
+                        .includes(search)
+
+                    ||
+
+                    ground.sport
+                        .toLowerCase()
+                        .includes(search);
+
+
+                const matchesSport =
+
+                    !sport ||
+                    ground.sport === sport;
+
+
+                return (
+                    matchesSearch &&
+                    matchesSport
+                );
+            }
+        );
+
+
+    renderGrounds(
+        filtered
+    );
+}
+
+
+/*
+   View a ground.
+*/
+
+function viewGround(groundName) {
+
+    const ground =
+        groundData.find(
+            function(item) {
+
+                return item.name ===
+                    groundName;
+            }
+        );
+
+
+    if (!ground) {
+
+        showToast(
+            "Ground information not found."
+        );
+
+        return;
+    }
+
+
+    alert(
+        "GROUND DETAILS\n\n" +
+        "Name: " +
+        ground.name +
+        "\n\n" +
+        "Village: " +
+        ground.village +
+        "\n" +
+        "District: " +
+        ground.district +
+        "\n\n" +
+        "Sport: " +
+        ground.sport +
+        "\n" +
+        "Type: " +
+        ground.type +
+        "\n" +
+        "Status: " +
+        ground.status
     );
 }
 
@@ -907,21 +1898,48 @@ function connectCoach(name) {
 
 function logout() {
 
-    localStorage.removeItem("khelogramUser");
+    localStorage.removeItem(
+        "khelogramUser"
+    );
 
     selectedRole = "";
 
-    const dashboard =
-        document.getElementById("dashboardPage");
 
-    const landing =
-        document.getElementById("landingPage");
+    const dashboardPage =
+        document.getElementById(
+            "dashboardPage"
+        );
 
-    dashboard.classList.add("hidden");
+    const landingPage =
+        document.getElementById(
+            "landingPage"
+        );
 
-    landing.classList.remove("hidden");
 
-    showToast("You have been logged out.");
+    if (dashboardPage) {
+
+        dashboardPage.classList.add(
+            "hidden"
+        );
+    }
+
+
+    if (landingPage) {
+
+        landingPage.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    showToast(
+        "You have been logged out."
+    );
+
+
+    console.log(
+        "KheloGram user logged out."
+    );
 }
 
 
@@ -929,14 +1947,26 @@ function logout() {
    SCROLL
    ========================================================= */
 
-function scrollToSection(sectionId) {
+function scrollToSection(
+    sectionId
+) {
 
     const section =
-        document.getElementById(sectionId);
+        document.getElementById(
+            sectionId
+        );
+
 
     if (!section) {
+
+        console.warn(
+            "Section not found:",
+            sectionId
+        );
+
         return;
     }
+
 
     section.scrollIntoView({
         behavior: "smooth"
@@ -948,28 +1978,44 @@ function scrollToSection(sectionId) {
    TOAST
    ========================================================= */
 
-let toastTimer = null;
-
 function showToast(message) {
 
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
+
 
     if (!toast) {
+
+        console.log(
+            "Toast:",
+            message
+        );
+
         return;
     }
 
-    toast.textContent = message;
 
-    toast.classList.add("show");
+    toast.textContent =
+        message;
 
-    clearTimeout(toastTimer);
 
-    toastTimer = setTimeout(function() {
+    toast.classList.add(
+        "show"
+    );
 
-        toast.classList.remove("show");
 
-    }, 3000);
+    setTimeout(
+        function() {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },
+        3000
+    );
 }
 
 
@@ -977,127 +2023,271 @@ function showToast(message) {
    HELPER
    ========================================================= */
 
-function setText(id, value) {
+function setText(
+    id,
+    value
+) {
 
     const element =
         document.getElementById(id);
 
+
     if (element) {
-        element.textContent = value;
+
+        element.textContent =
+            value;
     }
 }
 
 
 /* =========================================================
-   MODAL OUTSIDE CLICK
+   CLOSE MODALS BY CLICKING OUTSIDE
    ========================================================= */
 
-document.addEventListener("click", function(event) {
+document.addEventListener(
+    "click",
+    function(event) {
 
-    const roleModal =
-        document.getElementById("roleModal");
+        const roleModal =
+            document.getElementById(
+                "roleModal"
+            );
 
-    const authModal =
-        document.getElementById("authModal");
+        const authModal =
+            document.getElementById(
+                "authModal"
+            );
 
-    if (
-        roleModal &&
-        event.target === roleModal
-    ) {
-        closeRoleSelector();
+
+        if (
+            roleModal &&
+            event.target === roleModal
+        ) {
+
+            closeRoleSelector();
+        }
+
+
+        if (
+            authModal &&
+            event.target === authModal
+        ) {
+
+            closeAuthModal();
+        }
+
     }
-
-    if (
-        authModal &&
-        event.target === authModal
-    ) {
-        closeAuthModal();
-    }
-});
+);
 
 
 /* =========================================================
    ESCAPE KEY
    ========================================================= */
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener(
+    "keydown",
+    function(event) {
 
-    if (event.key === "Escape") {
+        if (event.key === "Escape") {
 
-        closeRoleSelector();
+            closeRoleSelector();
 
-        closeAuthModal();
+            closeAuthModal();
+        }
+
     }
-});
+);
 
 
 /* =========================================================
    INITIALIZE
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
-    console.log("KheloGram Stage 3.3 initialized.");
-
-    const authForm =
-        document.getElementById("authForm");
-
-    if (authForm) {
-
-        authForm.addEventListener(
-            "submit",
-            handleAuthSubmit
+        console.log(
+            "KheloGram Stage 4.1 initialized."
         );
-    }
 
 
-    const profileForm =
-        document.getElementById("profileForm");
+        /*
+           Authentication form
+        */
 
-    if (profileForm) {
+        const authForm =
+            document.getElementById(
+                "authForm"
+            );
 
-        profileForm.addEventListener(
-            "submit",
-            saveProfile
+
+        if (authForm) {
+
+            authForm.addEventListener(
+                "submit",
+                handleAuthSubmit
+            );
+        }
+
+
+        /*
+           Profile form
+        */
+
+        const profileForm =
+            document.getElementById(
+                "profileForm"
+            );
+
+
+        if (profileForm) {
+
+            profileForm.addEventListener(
+                "submit",
+                saveProfile
+            );
+        }
+
+
+        /*
+           Restore saved user.
+        */
+
+        const user =
+            getUser();
+
+
+        if (user) {
+
+            selectedRole =
+                user.role;
+
+
+            console.log(
+                "Saved KheloGram user found:",
+                user.name
+            );
+
+
+            showDashboard();
+        }
+
+
+        /*
+           Stage 4.1 ground filters.
+        */
+
+        const groundSearch =
+            document.getElementById(
+                "groundSearch"
+            );
+
+
+        const groundSportFilter =
+            document.getElementById(
+                "groundSportFilter"
+            );
+
+
+        if (groundSearch) {
+
+            groundSearch.addEventListener(
+                "input",
+                filterGrounds
+            );
+        }
+
+
+        if (groundSportFilter) {
+
+            groundSportFilter.addEventListener(
+                "change",
+                filterGrounds
+            );
+        }
+
+
+        console.log(
+            "KheloGram Stage 4.1 ready."
         );
+
     }
-
-
-    const user = getUser();
-
-    if (user) {
-
-        selectedRole = user.role;
-
-        showDashboard();
-    }
-
-    console.log("KheloGram ready.");
-});
+);
 
 
 /* =========================================================
-   GLOBAL FUNCTIONS FOR HTML
+   MAKE FUNCTIONS AVAILABLE TO HTML
    ========================================================= */
 
-window.openRoleSelector = openRoleSelector;
-window.closeRoleSelector = closeRoleSelector;
-window.selectRole = selectRole;
+window.openRoleSelector =
+    openRoleSelector;
 
-window.openAuthModal = openAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.switchAuth = switchAuth;
+window.closeRoleSelector =
+    closeRoleSelector;
 
-window.registerUser = registerUser;
-window.loginUser = loginUser;
+window.selectRole =
+    selectRole;
 
-window.logout = logout;
-window.showDashboard = showDashboard;
-window.showDashboardSection = showDashboardSection;
+window.openAuthModal =
+    openAuthModal;
 
-window.scrollToSection = scrollToSection;
+window.closeAuthModal =
+    closeAuthModal;
 
-window.filterCoaches = filterCoaches;
-window.connectCoach = connectCoach;
+window.switchAuth =
+    switchAuth;
 
-console.log("KheloGram JavaScript loaded successfully.");
+window.registerUser =
+    registerUser;
+
+window.loginUser =
+    loginUser;
+
+window.logout =
+    logout;
+
+window.showDashboard =
+    showDashboard;
+
+window.showDashboardSection =
+    showDashboardSection;
+
+window.scrollToSection =
+    scrollToSection;
+
+window.filterCoaches =
+    filterCoaches;
+
+window.connectCoach =
+    connectCoach;
+
+
+/* =========================================================
+   STAGE 4.1 FUNCTIONS
+   ========================================================= */
+
+window.loadGrounds =
+    loadGrounds;
+
+window.renderGrounds =
+    renderGrounds;
+
+window.filterGrounds =
+    filterGrounds;
+
+window.viewGround =
+    viewGround;
+
+
+/* =========================================================
+   FINAL MESSAGE
+   ========================================================= */
+
+console.log(
+    "KheloGram loaded successfully."
+);
+
+console.log(
+    "Stage 4.1 JavaScript ready."
+);
