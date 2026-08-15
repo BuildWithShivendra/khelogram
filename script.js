@@ -3140,10 +3140,10 @@ function setupPostForm() {
                 /*
                  * Clear media preview if it exists.
                  */
-                const preview =
-                    document.getElementById(
-                        "mediaPreview"
-                    );
+            const preview =
+    document.getElementById(
+        "communityMediaPreview"
+    );
 
                 if (preview) {
                     preview.innerHTML = "";
