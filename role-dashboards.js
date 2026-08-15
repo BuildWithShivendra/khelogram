@@ -191,76 +191,170 @@
        CUSTOM DASHBOARD
        ===================================================== */
 
-    function showCustomDashboard(role) {
+function showCustomDashboard(role) {
 
-        document
-            .getElementById("landingPage")
-            ?.classList.add("hidden");
+    /* =====================================================
+       CUSTOM ROLE DASHBOARD MODE
+       ===================================================== */
 
-        document
-            .getElementById("dashboardPage")
-            ?.classList.remove("hidden");
+    document
+        .getElementById("landingPage")
+        ?.classList.add("hidden");
 
-        const sidebar =
-            document.getElementById("sidebar");
+    const dashboardPage =
+        document.getElementById("dashboardPage");
 
-        if (sidebar) {
-            sidebar.style.display = "none";
-        }
+    if (dashboardPage) {
+        dashboardPage.classList.remove("hidden");
 
-        const dashboardContent =
-            document.querySelector(".dashboard-content");
+        /*
+         * IMPORTANT:
+         * Tell CSS that this is a full-width custom dashboard.
+         */
+        dashboardPage.classList.add("custom-role-dashboard-active");
+    }
+
+
+    /* =====================================================
+       HIDE OLD SIDEBAR
+       ===================================================== */
+
+    const sidebar =
+        document.getElementById("sidebar");
+
+    if (sidebar) {
+        sidebar.style.display = "none";
+    }
+
+
+    const sidebarOverlay =
+        document.getElementById("sidebarOverlay");
+
+    if (sidebarOverlay) {
+        sidebarOverlay.style.display = "none";
+    }
+
+
+    /* =====================================================
+       MAIN CONTENT
+       ===================================================== */
+
+    const dashboardContent =
+        document.querySelector(".dashboard-content");
+
+    if (dashboardContent) {
+
+        dashboardContent.style.display = "block";
+
+        dashboardContent.style.width = "100%";
+
+        dashboardContent.style.maxWidth = "none";
+
+        dashboardContent.style.margin = "0";
+
+        dashboardContent.style.marginLeft = "0";
+
+        dashboardContent.style.padding = "0";
+    }
+
+
+    /* =====================================================
+       HIDE OLD ATHLETE DASHBOARD HEADER
+       ===================================================== */
+
+    const oldDashboardTop =
+        document.querySelector(".dashboard-top");
+
+    if (oldDashboardTop) {
+        oldDashboardTop.style.display = "none";
+    }
+
+
+    const mobileDashboardHeader =
+        document.querySelector(".mobile-dashboard-header");
+
+    if (mobileDashboardHeader) {
+        mobileDashboardHeader.style.display = "none";
+    }
+
+
+    /* =====================================================
+       HIDE OLD DASHBOARD SECTIONS
+       ===================================================== */
+
+    document
+        .querySelectorAll(".dashboard-section")
+        .forEach(function (section) {
+
+            section.classList.add("hidden");
+
+        });
+
+
+    /* =====================================================
+       CREATE / GET CUSTOM DASHBOARD
+       ===================================================== */
+
+    let custom =
+        document.getElementById("roleSpecificDashboard");
+
+
+    if (!custom) {
+
+        custom =
+            document.createElement("div");
+
+        custom.id =
+            "roleSpecificDashboard";
+
+        custom.className =
+            "role-specific-dashboard";
 
         if (dashboardContent) {
-            dashboardContent.style.display = "block";
-            dashboardContent.style.marginLeft = "0";
+            dashboardContent.prepend(custom);
         }
-
-        document
-            .querySelectorAll(".dashboard-section")
-            .forEach(function (section) {
-                section.classList.add("hidden");
-            });
-
-        let custom =
-            document.getElementById("roleSpecificDashboard");
-
-        if (!custom) {
-
-            custom = document.createElement("div");
-
-            custom.id =
-                "roleSpecificDashboard";
-
-            custom.className =
-                "role-specific-dashboard";
-
-            if (dashboardContent) {
-                dashboardContent.prepend(custom);
-            }
-        }
-
-        const data =
-            ROLE_DATA[role] ||
-            ROLE_DATA.Athlete;
-
-        custom.innerHTML = `
-            ${dashboardHeader(
-                data.title,
-                data.subtitle,
-                role
-            )}
-
-            <div id="roleDashboardBody">
-                ${getRoleDashboard(role)}
-            </div>
-        `;
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
     }
+
+
+    /* =====================================================
+       ROLE DATA
+       ===================================================== */
+
+    const data =
+        ROLE_DATA[role] ||
+        ROLE_DATA.Athlete;
+
+
+    /* =====================================================
+       RENDER
+       ===================================================== */
+
+    custom.innerHTML = `
+
+        ${dashboardHeader(
+            data.title,
+            data.subtitle,
+            role
+        )}
+
+        <div id="roleDashboardBody">
+
+            ${getRoleDashboard(role)}
+
+        </div>
+
+    `;
+
+
+    /* =====================================================
+       RESET SCROLL
+       ===================================================== */
+
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+}
 
     /* =====================================================
        DASHBOARD HEADER
