@@ -131,6 +131,12 @@
        ===================================================== */
 
     function showOriginalAthleteDashboard() {
+       const dashboardPage =
+    document.getElementById("dashboardPage");
+
+if (dashboardPage) {
+    dashboardPage.classList.remove("custom-role-dashboard-active");
+}
 
         document
             .getElementById("landingPage")
