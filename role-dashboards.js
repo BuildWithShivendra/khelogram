@@ -2456,3 +2456,669 @@
     injectRoleStyles();
 
 })();
+/* =========================================================
+   KHELOGRAM - ROLE / PROFILE PERSISTENCE FIX
+   Keeps selected role + profile synchronized across:
+   - Get Started
+   - Register
+   - Login
+   - Refresh
+   - Change Role
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    const KG_USER_KEY = "khelogramUser";
+    const KG_PROFILE_KEY = "khelogramProfile";
+
+    /* -----------------------------------------------------
+       Read JSON safely
+       ----------------------------------------------------- */
+
+    function kgRead(key, fallback = null) {
+        try {
+            const value = localStorage.getItem(key);
+
+            if (!value) {
+                return fallback;
+            }
+
+            return JSON.parse(value);
+        } catch (error) {
+            console.warn("KheloGram storage read error:", key);
+            return fallback;
+        }
+    }
+
+    /* -----------------------------------------------------
+       Save JSON safely
+       ----------------------------------------------------- */
+
+    function kgWrite(key, value) {
+        try {
+            localStorage.setItem(
+                key,
+                JSON.stringify(value)
+            );
+        } catch (error) {
+            console.warn("KheloGram storage write error:", key);
+        }
+    }
+
+    /* -----------------------------------------------------
+       Normalize role names
+       ----------------------------------------------------- */
+
+    function kgNormalizeRole(role) {
+
+        if (!role) {
+            return "Athlete";
+        }
+
+        const value = String(role).trim().toLowerCase();
+
+        if (value === "athlete") {
+            return "Athlete";
+        }
+
+        if (value === "coach") {
+            return "Coach";
+        }
+
+        if (
+            value === "organizer" ||
+            value === "tournament organizer" ||
+            value === "project organizer"
+        ) {
+            return "Organizer";
+        }
+
+        if (
+            value === "panchayat" ||
+            value === "gram panchayat"
+        ) {
+            return "Panchayat";
+        }
+
+        return "Athlete";
+    }
+
+    /* -----------------------------------------------------
+       Get currently selected role
+       ----------------------------------------------------- */
+
+    function kgGetSelectedRole() {
+
+        try {
+            if (
+                typeof selectedRole !== "undefined" &&
+                selectedRole
+            ) {
+                return kgNormalizeRole(selectedRole);
+            }
+        } catch (error) {
+            // Ignore
+        }
+
+        const roleText =
+            document.getElementById("selectedRoleText");
+
+        if (roleText && roleText.textContent.trim()) {
+            return kgNormalizeRole(
+                roleText.textContent.trim()
+            );
+        }
+
+        const user = kgRead(
+            KG_USER_KEY,
+            null
+        );
+
+        if (user && user.role) {
+            return kgNormalizeRole(user.role);
+        }
+
+        const profile = kgRead(
+            KG_PROFILE_KEY,
+            null
+        );
+
+        if (profile && profile.role) {
+            return kgNormalizeRole(profile.role);
+        }
+
+        return "Athlete";
+    }
+
+    /* -----------------------------------------------------
+       Save role everywhere
+       ----------------------------------------------------- */
+
+    function kgSaveRole(role) {
+
+        role = kgNormalizeRole(role);
+
+        let user =
+            kgRead(
+                KG_USER_KEY,
+                {}
+            );
+
+        if (!user || typeof user !== "object") {
+            user = {};
+        }
+
+        user.role = role;
+
+        kgWrite(
+            KG_USER_KEY,
+            user
+        );
+
+
+        let profile =
+            kgRead(
+                KG_PROFILE_KEY,
+                {}
+            );
+
+        if (!profile || typeof profile !== "object") {
+            profile = {};
+        }
+
+        profile.role = role;
+
+        /*
+         * Keep profile name/email synchronized
+         * with the logged-in user.
+         */
+
+        if (
+            user.name &&
+            !profile.name
+        ) {
+            profile.name = user.name;
+        }
+
+        if (
+            user.email &&
+            !profile.email
+        ) {
+            profile.email = user.email;
+        }
+
+        kgWrite(
+            KG_PROFILE_KEY,
+            profile
+        );
+
+        /*
+         * Also update visible selected role text.
+         */
+
+        const roleText =
+            document.getElementById(
+                "selectedRoleText"
+            );
+
+        if (roleText) {
+            roleText.textContent = role;
+        }
+
+        return role;
+    }
+
+    /* -----------------------------------------------------
+       Synchronize current user/profile
+       ----------------------------------------------------- */
+
+    function kgSyncUserProfile() {
+
+        let user =
+            kgRead(
+                KG_USER_KEY,
+                null
+            );
+
+        let profile =
+            kgRead(
+                KG_PROFILE_KEY,
+                null
+            );
+
+
+        /*
+         * If user exists, it is the main source
+         * of truth for the logged-in session.
+         */
+
+        if (
+            user &&
+            typeof user === "object"
+        ) {
+
+            const role =
+                kgNormalizeRole(
+                    user.role ||
+                    profile?.role ||
+                    kgGetSelectedRole()
+                );
+
+            user.role = role;
+
+            kgWrite(
+                KG_USER_KEY,
+                user
+            );
+
+
+            if (
+                !profile ||
+                typeof profile !== "object"
+            ) {
+                profile = {};
+            }
+
+            profile.role = role;
+
+            if (user.name) {
+                profile.name = user.name;
+            }
+
+            if (user.email) {
+                profile.email = user.email;
+            }
+
+            kgWrite(
+                KG_PROFILE_KEY,
+                profile
+            );
+
+            return user;
+        }
+
+
+        /*
+         * If only profile exists, rebuild the user
+         * session from the saved profile.
+         */
+
+        if (
+            profile &&
+            typeof profile === "object"
+        ) {
+
+            profile.role =
+                kgNormalizeRole(
+                    profile.role ||
+                    kgGetSelectedRole()
+                );
+
+            kgWrite(
+                KG_PROFILE_KEY,
+                profile
+            );
+
+            return profile;
+        }
+
+        return null;
+    }
+
+    /* -----------------------------------------------------
+       Keep role correct after Register/Login
+       ----------------------------------------------------- */
+
+    function kgFixAfterAuthentication() {
+
+        setTimeout(function () {
+
+            const selected =
+                kgGetSelectedRole();
+
+            const user =
+                kgRead(
+                    KG_USER_KEY,
+                    null
+                );
+
+            /*
+             * If the user has just registered/logged in,
+             * selectedRole should become the saved role.
+             */
+
+            if (
+                user &&
+                typeof user === "object"
+            ) {
+
+                /*
+                 * Do NOT allow an old Panchayat role
+                 * to overwrite the newly selected role.
+                 */
+
+                if (
+                    selected &&
+                    selected !== "Athlete"
+                ) {
+                    user.role = selected;
+                } else if (!user.role) {
+                    user.role = selected;
+                }
+
+                kgWrite(
+                    KG_USER_KEY,
+                    user
+                );
+
+                let profile =
+                    kgRead(
+                        KG_PROFILE_KEY,
+                        {}
+                    );
+
+                if (
+                    !profile ||
+                    typeof profile !== "object"
+                ) {
+                    profile = {};
+                }
+
+                profile.role =
+                    kgNormalizeRole(
+                        user.role
+                    );
+
+                if (user.name) {
+                    profile.name = user.name;
+                }
+
+                if (user.email) {
+                    profile.email = user.email;
+                }
+
+                kgWrite(
+                    KG_PROFILE_KEY,
+                    profile
+                );
+            }
+
+            kgSyncUserProfile();
+
+        }, 100);
+    }
+
+    /* -----------------------------------------------------
+       Watch Register / Login form
+       ----------------------------------------------------- */
+
+    document.addEventListener(
+        "submit",
+        function (event) {
+
+            const form =
+                event.target;
+
+            if (
+                !form ||
+                form.id !== "authForm"
+            ) {
+                return;
+            }
+
+            /*
+             * Let the original KheloGram authentication
+             * code run first.
+             */
+
+            setTimeout(
+                kgFixAfterAuthentication,
+                150
+            );
+
+        },
+        true
+    );
+
+    /* -----------------------------------------------------
+       Watch role selection
+       ----------------------------------------------------- */
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            const button =
+                event.target.closest(
+                    "button"
+                );
+
+            if (!button) {
+                return;
+            }
+
+            /*
+             * Role selector buttons usually contain
+             * the role name in their text.
+             */
+
+            const text =
+                button.textContent
+                    .trim()
+                    .toLowerCase();
+
+            let role = null;
+
+            if (
+                text.includes("athlete")
+            ) {
+                role = "Athlete";
+            }
+
+            if (
+                text.includes("coach")
+            ) {
+                role = "Coach";
+            }
+
+            if (
+                text.includes("organizer")
+            ) {
+                role = "Organizer";
+            }
+
+            if (
+                text.includes("panchayat")
+            ) {
+                role = "Panchayat";
+            }
+
+            if (!role) {
+                return;
+            }
+
+            /*
+             * Wait for the original role selector
+             * code to update selectedRole.
+             */
+
+            setTimeout(
+                function () {
+
+                    kgSaveRole(role);
+
+                },
+                50
+            );
+
+        },
+        true
+    );
+
+    /* -----------------------------------------------------
+       Fix Change Role
+       ----------------------------------------------------- */
+
+    const originalChangeRole =
+        window.changeKheloGramRole;
+
+    window.changeKheloGramRole =
+        function () {
+
+            /*
+             * Keep the existing dashboard behaviour.
+             */
+
+            if (
+                typeof originalChangeRole ===
+                "function"
+            ) {
+                originalChangeRole();
+            }
+
+            /*
+             * Do not immediately destroy the
+             * saved account role.
+             *
+             * The next role selection will update it.
+             */
+
+        };
+
+    /* -----------------------------------------------------
+       Make dashboard always use saved role
+       ----------------------------------------------------- */
+
+    const originalShowRoleDashboard =
+        window.showRoleBasedDashboard;
+
+    window.showRoleBasedDashboard =
+        function () {
+
+            kgSyncUserProfile();
+
+            const user =
+                kgRead(
+                    KG_USER_KEY,
+                    null
+                );
+
+            const role =
+                kgNormalizeRole(
+                    user?.role ||
+                    kgGetSelectedRole()
+                );
+
+            kgSaveRole(role);
+
+            /*
+             * Call the existing dashboard renderer.
+             */
+
+            if (
+                typeof originalShowRoleDashboard ===
+                "function"
+            ) {
+                originalShowRoleDashboard();
+            }
+
+        };
+
+    /* -----------------------------------------------------
+       Restore correct role on page refresh
+       ----------------------------------------------------- */
+
+    function kgRestoreOnRefresh() {
+
+        const user =
+            kgRead(
+                KG_USER_KEY,
+                null
+            );
+
+        const profile =
+            kgRead(
+                KG_PROFILE_KEY,
+                null
+            );
+
+
+        if (
+            user &&
+            typeof user === "object"
+        ) {
+
+            const role =
+                kgNormalizeRole(
+                    user.role ||
+                    profile?.role ||
+                    "Athlete"
+                );
+
+            user.role = role;
+
+            kgWrite(
+                KG_USER_KEY,
+                user
+            );
+
+
+            let savedProfile =
+                profile;
+
+            if (
+                !savedProfile ||
+                typeof savedProfile !== "object"
+            ) {
+                savedProfile = {};
+            }
+
+            savedProfile.role = role;
+
+            if (user.name) {
+                savedProfile.name =
+                    user.name;
+            }
+
+            if (user.email) {
+                savedProfile.email =
+                    user.email;
+            }
+
+            kgWrite(
+                KG_PROFILE_KEY,
+                savedProfile
+            );
+        }
+
+    }
+
+    /* -----------------------------------------------------
+       Start persistence system
+       ----------------------------------------------------- */
+
+    kgRestoreOnRefresh();
+
+    /*
+     * Run again after the existing application
+     * initialization has finished.
+     */
+
+    window.addEventListener(
+        "load",
+        function () {
+
+            setTimeout(
+                function () {
+
+                    kgSyncUserProfile();
+
+                },
+                300
+            );
+
+        }
+    );
+
+})();
