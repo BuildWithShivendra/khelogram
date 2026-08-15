@@ -3457,9 +3457,11 @@ function renderCommunity() {
                         </h3>
 
 
-                        <p>
-                            ${escapeHTML(post.content)}
-                        </p>
+<p>
+    ${escapeHTML(post.content)}
+</p>
+
+${renderPostMedia(post)}
 
 
                         <div
@@ -3501,7 +3503,50 @@ function renderCommunity() {
         ).join("");
 
 }
+function renderPostMedia(post) {
 
+    if (!post || !post.media || !post.media.data) {
+        return "";
+    }
+
+    if (post.media.type === "image") {
+
+        return `
+            <div class="post-media">
+                <img
+                    src="${post.media.data}"
+                    alt="${escapeHTML(post.media.name || "Community photo")}"
+                    loading="lazy"
+                >
+            </div>
+        `;
+
+    }
+
+
+    if (post.media.type === "video") {
+
+        return `
+            <div class="post-media">
+                <video
+                    controls
+                    playsinline
+                    preload="metadata"
+                >
+                    <source
+                        src="${post.media.data}"
+                        type="${escapeHTML(post.media.mime || "video/mp4")}"
+                    >
+                    Your browser does not support video playback.
+                </video>
+            </div>
+        `;
+
+    }
+
+
+    return "";
+}
 
 function likePost(id) {
 
