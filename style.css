@@ -5559,3 +5559,143 @@ img {
     }
 
 }
+
+
+/* =========================================================
+   KHELOGRAM SIDEBAR — ALWAYS ACCESSIBLE
+   ========================================================= */
+
+.dashboard-page .sidebar {
+
+    height: 100vh;
+
+    min-height: 100vh;
+
+    position: sticky;
+
+    top: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+}
+
+
+/* Navigation becomes the scrollable area */
+
+.dashboard-page .sidebar-menu {
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    padding-right: 4px;
+
+}
+
+
+/* Keep logout section visible */
+
+.dashboard-page .sidebar-bottom {
+
+    flex-shrink: 0;
+
+    padding-top: 12px;
+
+    background: var(--navy);
+
+}
+
+
+/* Custom scrollbar */
+
+.dashboard-page .sidebar-menu::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+.dashboard-page .sidebar-menu::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+.dashboard-page .sidebar-menu::-webkit-scrollbar-thumb {
+
+    background: rgba(255,255,255,0.18);
+
+    border-radius: 20px;
+
+}
+
+.dashboard-page .sidebar-menu::-webkit-scrollbar-thumb:hover {
+
+    background: rgba(255,255,255,0.32);
+
+}
+
+
+/* Firefox */
+
+.dashboard-page .sidebar-menu {
+
+    scrollbar-width: thin;
+
+    scrollbar-color:
+        rgba(255,255,255,0.22)
+        transparent;
+
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .dashboard-page .sidebar {
+
+        position: fixed;
+
+        left: 0;
+
+        top: 0;
+
+        bottom: 0;
+
+        height: 100vh;
+
+        min-height: 100vh;
+
+        z-index: 1000;
+
+        overflow: hidden;
+
+    }
+
+
+    .dashboard-page .sidebar-menu {
+
+        overflow-y: auto;
+
+        flex: 1;
+
+    }
+
+
+    .dashboard-page .sidebar-bottom {
+
+        flex-shrink: 0;
+
+    }
+
+}
