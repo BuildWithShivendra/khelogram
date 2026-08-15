@@ -4991,3 +4991,571 @@ img {
         align-items: flex-start;
     }
 }
+/* =========================================================
+   KHELOGRAM CUSTOM ROLE DASHBOARD
+   FINAL FULL-WIDTH FIX
+   Coach / Panchayat / Organizer
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   RESET THE OLD SIDEBAR DASHBOARD GRID
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+    min-height: 100vh !important;
+
+    margin: 0 !important;
+
+    padding: 0 !important;
+
+    position: relative !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   REMOVE OLD SIDEBAR SPACE
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+.sidebar {
+
+    display: none !important;
+
+    width: 0 !important;
+
+    min-width: 0 !important;
+
+    max-width: 0 !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   MAIN DASHBOARD CONTENT
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+.dashboard-content {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    min-width: 0 !important;
+
+    margin: 0 !important;
+
+    margin-left: 0 !important;
+
+    padding: 45px 6vw 70px !important;
+
+    position: relative !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   HIDE OLD ATHLETE HEADER
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+.dashboard-top {
+
+    display: none !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   HIDE MOBILE HEADER
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+.mobile-dashboard-header {
+
+    display: none !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   CUSTOM DASHBOARD ROOT
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+#roleSpecificDashboard {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 1500px !important;
+
+    min-width: 0 !important;
+
+    margin: 0 auto !important;
+
+    padding: 0 !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   ROLE DASHBOARD BODY
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+#roleDashboardBody {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-header {
+
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto !important;
+
+    align-items: center !important;
+
+    gap: 40px !important;
+
+    margin-bottom: 15px !important;
+
+}
+
+
+/* LEFT SIDE */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-header > div:first-child {
+
+    min-width: 0 !important;
+
+}
+
+
+/* TITLE */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-header h1 {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 900px !important;
+
+    margin: 0 !important;
+
+    font-size: clamp(40px, 5vw, 68px) !important;
+
+    line-height: 1.05 !important;
+
+    color: #172033 !important;
+
+}
+
+
+/* SUBTITLE */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-header p {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 700px !important;
+
+    margin-top: 15px !important;
+
+}
+
+
+/* ---------------------------------------------------------
+   USER CARD
+   --------------------------------------------------------- */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-user {
+
+    width: 240px !important;
+
+    min-width: 240px !important;
+
+    max-width: 240px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 12px !important;
+
+}
+
+
+/* =========================================================
+   CHANGE ROLE
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-change-role {
+
+    display: inline-flex !important;
+
+    width: auto !important;
+
+    margin: 0 0 28px !important;
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-hero {
+
+    width: 100% !important;
+
+    max-width: none !important;
+
+    min-width: 0 !important;
+
+    min-height: 220px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    justify-content: space-between !important;
+
+    gap: 30px !important;
+
+    margin: 0 0 20px !important;
+
+    padding: 35px 40px !important;
+
+    border-radius: 24px !important;
+
+}
+
+
+/* HERO TITLE */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-hero h2 {
+
+    max-width: 800px !important;
+
+    margin: 0 !important;
+
+    font-size: clamp(30px, 3vw, 44px) !important;
+
+    line-height: 1.1 !important;
+
+}
+
+
+/* HERO TEXT */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-hero p {
+
+    max-width: 700px !important;
+
+}
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-stats {
+
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 18px !important;
+
+    margin-bottom: 20px !important;
+
+}
+
+
+/* STAT CARD */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-stat {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+}
+
+
+/* =========================================================
+   TWO COLUMN SECTION
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-grid-2 {
+
+    width: 100% !important;
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(0, 1.35fr)
+        minmax(320px, .65fr) !important;
+
+    gap: 20px !important;
+
+    margin-bottom: 20px !important;
+
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-card {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+}
+
+
+/* =========================================================
+   ATHLETE LIST
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-athlete-list {
+
+    width: 100% !important;
+
+}
+
+
+.dashboard-page.custom-role-dashboard-active
+.rb-athlete {
+
+    width: 100% !important;
+
+    min-width: 0 !important;
+
+}
+
+
+/* =========================================================
+   COMMUNITY
+   ========================================================= */
+
+.dashboard-page.custom-role-dashboard-active
+.rb-community {
+
+    width: 100% !important;
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .dashboard-page.custom-role-dashboard-active
+    .dashboard-content {
+
+        padding:
+            30px 24px 50px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-header {
+
+        grid-template-columns: 1fr !important;
+
+        gap: 20px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-user {
+
+        width: 100% !important;
+
+        max-width: 320px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-stats {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr)) !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-grid-2 {
+
+        grid-template-columns: 1fr !important;
+
+    }
+
+}
+
+
+/* =========================================================
+   PHONE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .dashboard-page.custom-role-dashboard-active
+    .dashboard-content {
+
+        padding:
+            22px 15px 40px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-header h1 {
+
+        font-size: 36px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-header p {
+
+        font-size: 14px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-hero {
+
+        display: block !important;
+
+        min-height: auto !important;
+
+        padding: 25px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-hero-icon {
+
+        margin-top: 20px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-stats {
+
+        grid-template-columns: 1fr 1fr !important;
+
+        gap: 10px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-stat {
+
+        padding: 17px !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-grid-2 {
+
+        grid-template-columns: 1fr !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-card {
+
+        padding: 18px !important;
+
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-stats {
+
+        grid-template-columns: 1fr !important;
+
+    }
+
+
+    .dashboard-page.custom-role-dashboard-active
+    .rb-header h1 {
+
+        font-size: 31px !important;
+
+    }
+
+}
