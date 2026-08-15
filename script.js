@@ -4661,3 +4661,294 @@ console.log(
 console.log(
     "Responsive UI + Community + Achievements + AI Talent + Sports Intelligence are active."
 );
+
+
+/* =========================================================
+   KHELOGRAM COMMUNITY
+   INSTANT PHOTO / VIDEO PREVIEW
+   ========================================================= */
+
+function handleCommunityMediaSelect(input, type) {
+
+    const preview =
+        document.getElementById(
+            "communityMediaPreview"
+        );
+
+    const previewContent =
+        document.getElementById(
+            "communityMediaPreviewContent"
+        );
+
+    if (!preview || !previewContent) {
+        return;
+    }
+
+
+    /* -----------------------------------------------------
+       No file selected
+       ----------------------------------------------------- */
+
+    if (
+        !input.files ||
+        input.files.length === 0
+    ) {
+
+        clearCommunityMedia();
+
+        return;
+
+    }
+
+
+    const file =
+        input.files[0];
+
+
+    /* -----------------------------------------------------
+       Check file type
+       ----------------------------------------------------- */
+
+    const isImage =
+        file.type.startsWith("image/");
+
+    const isVideo =
+        file.type.startsWith("video/");
+
+
+    if (
+        (type === "photo" && !isImage) ||
+        (type === "video" && !isVideo)
+    ) {
+
+        showToast(
+            "Please select a valid " +
+            (type === "photo"
+                ? "image."
+                : "video."),
+            "error"
+        );
+
+        input.value = "";
+
+        clearCommunityMedia();
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       File size limit
+       ----------------------------------------------------- */
+
+    const maxSize =
+        4 * 1024 * 1024;
+
+
+    if (file.size > maxSize) {
+
+        showToast(
+            "Please choose a file smaller than 4 MB.",
+            "error"
+        );
+
+        input.value = "";
+
+        clearCommunityMedia();
+
+        return;
+
+    }
+
+
+    /* -----------------------------------------------------
+       Create temporary preview URL
+       ----------------------------------------------------- */
+
+    const objectURL =
+        URL.createObjectURL(file);
+
+
+    /* -----------------------------------------------------
+       IMAGE PREVIEW
+       ----------------------------------------------------- */
+
+    if (isImage) {
+
+        previewContent.innerHTML = `
+
+            <div class="community-preview-file">
+
+                <img
+                    src="${objectURL}"
+                    alt="Selected community photo"
+                >
+
+                <div class="community-preview-name">
+
+                    <i class="fa-solid fa-image"></i>
+
+                    ${escapeHTML(file.name)}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* -----------------------------------------------------
+       VIDEO PREVIEW
+       ----------------------------------------------------- */
+
+    if (isVideo) {
+
+        previewContent.innerHTML = `
+
+            <div class="community-preview-file">
+
+                <video
+                    src="${objectURL}"
+                    controls
+                    playsinline
+                    preload="metadata"
+                ></video>
+
+                <div class="community-preview-name">
+
+                    <i class="fa-solid fa-video"></i>
+
+                    ${escapeHTML(file.name)}
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* -----------------------------------------------------
+       Show preview box
+       ----------------------------------------------------- */
+
+    preview.classList.remove(
+        "hidden"
+    );
+
+
+    /*
+     * Store the temporary URL so we can clean
+     * it up when the user removes the media.
+     */
+
+    preview.dataset.objectUrl =
+        objectURL;
+
+
+    /* -----------------------------------------------------
+       Show confirmation
+       ----------------------------------------------------- */
+
+    showToast(
+        type === "photo"
+            ? "Photo selected."
+            : "Video selected."
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR SELECTED COMMUNITY MEDIA
+   ========================================================= */
+
+function clearCommunityMedia() {
+
+    const preview =
+        document.getElementById(
+            "communityMediaPreview"
+        );
+
+    const previewContent =
+        document.getElementById(
+            "communityMediaPreviewContent"
+        );
+
+    const photoInput =
+        document.getElementById(
+            "communityPhotoInput"
+        );
+
+    const videoInput =
+        document.getElementById(
+            "communityVideoInput"
+        );
+
+
+    /* -----------------------------------------------------
+       Release temporary browser URL
+       ----------------------------------------------------- */
+
+    if (
+        preview &&
+        preview.dataset.objectUrl
+    ) {
+
+        URL.revokeObjectURL(
+            preview.dataset.objectUrl
+        );
+
+        delete preview.dataset.objectUrl;
+
+    }
+
+
+    /* -----------------------------------------------------
+       Clear preview
+       ----------------------------------------------------- */
+
+    if (previewContent) {
+
+        previewContent.innerHTML =
+            "";
+
+    }
+
+
+    if (preview) {
+
+        preview.classList.add(
+            "hidden"
+        );
+
+    }
+
+
+    /* -----------------------------------------------------
+       Clear file inputs
+       ----------------------------------------------------- */
+
+    if (photoInput) {
+
+        photoInput.value = "";
+
+    }
+
+
+    if (videoInput) {
+
+        videoInput.value = "";
+
+    }
+
+}
+
+
+
+
+
