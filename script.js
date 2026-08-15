@@ -1351,9 +1351,20 @@ function loadStoredUser() {
 
 function updateUserInterface(user) {
 
+    if (!user) {
+        return;
+    }
+
+
     const name =
         user.name ||
+        "KheloGram User";
+
+
+    const role =
+        user.role ||
         "Athlete";
+
 
     const initials =
         getInitials(name);
@@ -1364,15 +1375,18 @@ function updateUserInterface(user) {
             "dashboardName"
         );
 
+
     const userDisplayName =
         document.getElementById(
             "userDisplayName"
         );
 
+
     const userRole =
         document.getElementById(
             "userRole"
         );
+
 
     const userInitials =
         document.getElementById(
@@ -1381,28 +1395,64 @@ function updateUserInterface(user) {
 
 
     if (dashboardName) {
+
         dashboardName.textContent =
             name;
+
     }
+
 
     if (userDisplayName) {
+
         userDisplayName.textContent =
             name;
+
     }
+
 
     if (userRole) {
+
         userRole.textContent =
-            user.role ||
-            "Athlete";
+            role;
+
     }
 
+
     if (userInitials) {
+
         userInitials.textContent =
             initials;
+
+    }
+
+
+    /*
+     * Also update the stored profile role.
+     */
+
+    const profile =
+        getStorage(
+            STORAGE_KEYS.PROFILE,
+            null
+        );
+
+    if (profile) {
+
+        profile.name =
+            profile.name ||
+            name;
+
+        profile.role =
+            role;
+
+        setStorage(
+            STORAGE_KEYS.PROFILE,
+            profile
+        );
+
     }
 
 }
-
 
 /* =========================================================
    SHOW DASHBOARD
