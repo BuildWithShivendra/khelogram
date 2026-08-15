@@ -926,13 +926,10 @@ function switchAuth(mode) {
 /* =========================================================
    AUTH FORM
    ========================================================= */
-
 function setupAuthForm() {
 
     const form =
-        document.getElementById(
-            "authForm"
-        );
+        document.getElementById("authForm");
 
     if (!form) {
         return;
@@ -954,14 +951,14 @@ function setupAuthForm() {
                 document
                     .getElementById("authEmail")
                     .value
-                    .trim();
+                    .trim()
+                    .toLowerCase();
 
             const password =
                 document
                     .getElementById("authPassword")
                     .value
                     .trim();
-
 
             if (!email || !password) {
 
@@ -971,9 +968,7 @@ function setupAuthForm() {
                 );
 
                 return;
-
             }
-
 
             if (
                 authMode === "register" &&
@@ -986,16 +981,12 @@ function setupAuthForm() {
                 );
 
                 return;
-
             }
 
 
-            const existingUser =
-                getStorage(
-                    STORAGE_KEYS.USER,
-                    null
-                );
-
+            /* =================================================
+               REGISTER
+               ================================================= */
 
             if (authMode === "register") {
 
@@ -1015,11 +1006,35 @@ function setupAuthForm() {
 
                 };
 
+
+                /*
+                 * Store the account separately.
+                 * USER = currently logged-in session.
+                 * ACCOUNT = saved account for future login.
+                 */
+
+                setStorage(
+                    "khelogramAccount",
+                    {
+                        name: user.name,
+                        email: user.email,
+                        password: password,
+                        role: selectedRole,
+                        createdAt: user.createdAt
+                    }
+                );
+
+
                 setStorage(
                     STORAGE_KEYS.USER,
                     user
                 );
 
+
+                /*
+                 * Create profile only once.
+                 * This means profile information survives logout.
+                 */
 
                 if (
                     !getStorage(
@@ -1031,14 +1046,40 @@ function setupAuthForm() {
                     setStorage(
                         STORAGE_KEYS.PROFILE,
                         {
+
                             name: name,
+
                             age: "",
+
                             village: "",
+
                             district: "",
+
                             sport: "",
+
                             skill: "",
-                            achievements: ""
+
+                            achievements: "",
+
+                            role: selectedRole
+
                         }
+                    );
+
+                } else {
+
+                    const profile =
+                        getStorage(
+                            STORAGE_KEYS.PROFILE,
+                            {}
+                        );
+
+                    profile.role =
+                        selectedRole;
+
+                    setStorage(
+                        STORAGE_KEYS.PROFILE,
+                        profile
                     );
 
                 }
@@ -1048,9 +1089,70 @@ function setupAuthForm() {
                     "Account created successfully!"
                 );
 
-            } else {
+            }
 
-                if (!existingUser) {
+
+            /* =================================================
+               LOGIN
+               ================================================= */
+
+            else {
+
+                let account =
+                    getStorage(
+                        "khelogramAccount",
+                        null
+                    );
+
+                const oldUser =
+                    getStorage(
+                        STORAGE_KEYS.USER,
+                        null
+                    );
+
+
+                /*
+                 * Backward compatibility:
+                 *
+                 * If an account was created before this
+                 * new system, create an account record from
+                 * the old stored user.
+                 */
+
+                if (!account && oldUser) {
+
+                    account = {
+
+                        name:
+                            oldUser.name ||
+                            "KheloGram User",
+
+                        email:
+                            oldUser.email ||
+                            email,
+
+                        password:
+                            password,
+
+                        role:
+                            oldUser.role ||
+                            "Athlete",
+
+                        createdAt:
+                            oldUser.createdAt ||
+                            new Date().toISOString()
+
+                    };
+
+                    setStorage(
+                        "khelogramAccount",
+                        account
+                    );
+
+                }
+
+
+                if (!account) {
 
                     showToast(
                         "No account found. Please register first.",
@@ -1058,8 +1160,116 @@ function setupAuthForm() {
                     );
 
                     return;
+                }
+
+
+                if (
+                    account.email !== email
+                ) {
+
+                    showToast(
+                        "Email does not match the registered account.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * For old prototype accounts where password
+                 * did not exist, accept the first login and
+                 * save the entered password.
+                 */
+
+                if (
+                    account.password &&
+                    account.password !== password
+                ) {
+
+                    showToast(
+                        "Incorrect password.",
+                        "error"
+                    );
+
+                    return;
+                }
+
+
+                if (!account.password) {
+
+                    account.password =
+                        password;
 
                 }
+
+
+                /*
+                 * IMPORTANT FIX:
+                 *
+                 * The role selected immediately before login
+                 * becomes the active role.
+                 *
+                 * Athlete -> Athlete dashboard
+                 * Coach -> Coach dashboard
+                 * Organizer -> Organizer dashboard
+                 * Panchayat -> Panchayat dashboard
+                 */
+
+                account.role =
+                    selectedRole;
+
+
+                setStorage(
+                    "khelogramAccount",
+                    account
+                );
+
+
+                const user = {
+
+                    name:
+                        account.name,
+
+                    email:
+                        account.email,
+
+                    role:
+                        selectedRole,
+
+                    createdAt:
+                        account.createdAt
+
+                };
+
+
+                setStorage(
+                    STORAGE_KEYS.USER,
+                    user
+                );
+
+
+                /*
+                 * Keep profile role synchronized.
+                 */
+
+                const profile =
+                    getStorage(
+                        STORAGE_KEYS.PROFILE,
+                        {}
+                    );
+
+                profile.name =
+                    profile.name ||
+                    account.name;
+
+                profile.role =
+                    selectedRole;
+
+                setStorage(
+                    STORAGE_KEYS.PROFILE,
+                    profile
+                );
 
 
                 showToast(
@@ -1069,14 +1279,34 @@ function setupAuthForm() {
             }
 
 
+            /*
+             * Update the header immediately before
+             * opening the dashboard.
+             */
+
+            const currentUser =
+                getStorage(
+                    STORAGE_KEYS.USER,
+                    null
+                );
+
+            if (currentUser) {
+
+                updateUserInterface(
+                    currentUser
+                );
+
+            }
+
+
             closeAuthModal();
 
             showDashboard();
 
-        });
+        }
+    );
 
 }
-
 
 /* =========================================================
    LOAD STORED USER
