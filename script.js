@@ -2989,14 +2989,11 @@ function formatDate(dateString) {
 function setupPostForm() {
 
     const form =
-        document.getElementById(
-            "postForm"
-        );
+        document.getElementById("postForm");
 
     if (!form) {
         return;
     }
-
 
     form.addEventListener(
         "submit",
@@ -3004,33 +3001,41 @@ function setupPostForm() {
 
             event.preventDefault();
 
+            const titleElement =
+                document.getElementById("postTitle");
+
+            const sportElement =
+                document.getElementById("postSport");
+
+            const contentElement =
+                document.getElementById("postContent");
+
+            /*
+             * Supports either ID in case your HTML uses
+             * postMedia or postMediaInput.
+             */
+            const mediaInput =
+                document.getElementById("postMedia") ||
+                document.getElementById("postMediaInput");
 
             const title =
-                document
-                    .getElementById(
-                        "postTitle"
-                    )
-                    .value
-                    .trim();
-
+                titleElement
+                    ? titleElement.value.trim()
+                    : "";
 
             const sport =
-                document
-                    .getElementById(
-                        "postSport"
-                    )
-                    .value;
-
+                sportElement
+                    ? sportElement.value
+                    : "";
 
             const content =
-                document
-                    .getElementById(
-                        "postContent"
-                    )
-                    .value
-                    .trim();
+                contentElement
+                    ? contentElement.value.trim()
+                    : "";
 
-
+            /*
+             * A post must contain text.
+             */
             if (!title || !content) {
 
                 showToast(
@@ -3039,9 +3044,7 @@ function setupPostForm() {
                 );
 
                 return;
-
             }
-
 
             const user =
                 getStorage(
@@ -3049,13 +3052,11 @@ function setupPostForm() {
                     {}
                 );
 
-
             const profile =
                 getStorage(
                     STORAGE_KEYS.PROFILE,
                     {}
                 );
-
 
             const posts =
                 getStorage(
@@ -3063,65 +3064,200 @@ function setupPostForm() {
                     defaultPosts
                 );
 
+            /*
+             * Get selected media file.
+             */
+            const file =
+                mediaInput &&
+                mediaInput.files &&
+                mediaInput.files.length
+                    ? mediaInput.files[0]
+                    : null;
 
-            const post = {
 
-                id:
-                    "P" +
-                    Date.now(),
+            /*
+             * Function that actually creates
+             * and saves the post.
+             */
+            function savePost(mediaData) {
 
-                name:
-                    profile.name ||
-                    user.name ||
-                    "KheloGram User",
+                const post = {
 
-                role:
-                    user.role ||
-                    "Athlete",
+                    id:
+                        "P" +
+                        Date.now(),
 
-                sport:
-                    sport ||
-                    profile.sport ||
-                    "Sports",
+                    name:
+                        profile.name ||
+                        user.name ||
+                        "KheloGram User",
 
-                title:
-                    title,
+                    role:
+                        user.role ||
+                        "Athlete",
 
-                content:
-                    content,
+                    sport:
+                        sport ||
+                        profile.sport ||
+                        "Sports",
 
-                createdAt:
-                    new Date().toISOString(),
+                    title:
+                        title,
 
-                likes:
-                    0
+                    content:
+                        content,
+
+                    createdAt:
+                        new Date().toISOString(),
+
+                    likes:
+                        0,
+
+                    /*
+                     * NEW MEDIA DATA
+                     */
+                    media:
+                        mediaData || null
+
+                };
+
+
+                posts.unshift(post);
+
+
+                setStorage(
+                    STORAGE_KEYS.POSTS,
+                    posts
+                );
+
+
+                /*
+                 * Reset the form.
+                 */
+                form.reset();
+
+
+                /*
+                 * Clear media preview if it exists.
+                 */
+                const preview =
+                    document.getElementById(
+                        "mediaPreview"
+                    );
+
+                if (preview) {
+                    preview.innerHTML = "";
+                    preview.classList.remove("show");
+                }
+
+
+                closePostModal();
+
+
+                renderCommunity();
+
+
+                updateDashboardData();
+
+
+                showToast(
+                    "Your post was published successfully!"
+                );
+
+            }
+
+
+            /*
+             * No media selected.
+             */
+            if (!file) {
+
+                savePost(null);
+
+                return;
+            }
+
+
+            /*
+             * Maximum file size:
+             * 4 MB for this localStorage prototype.
+             */
+            const maxSize =
+                4 * 1024 * 1024;
+
+            if (file.size > maxSize) {
+
+                showToast(
+                    "Please choose an image or video smaller than 4 MB.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /*
+             * Only allow images and videos.
+             */
+            if (
+                !file.type.startsWith("image/") &&
+                !file.type.startsWith("video/")
+            ) {
+
+                showToast(
+                    "Please select an image or video.",
+                    "error"
+                );
+
+                return;
+            }
+
+
+            /*
+             * Convert the file to Base64 so the
+             * prototype can store it in localStorage.
+             */
+            const reader =
+                new FileReader();
+
+
+            reader.onload = function() {
+
+                savePost({
+
+                    type:
+                        file.type.startsWith("video/")
+                            ? "video"
+                            : "image",
+
+                    name:
+                        file.name,
+
+                    mime:
+                        file.type,
+
+                    data:
+                        reader.result
+
+                });
 
             };
 
 
-            posts.unshift(post);
+            reader.onerror = function() {
+
+                showToast(
+                    "Could not read the selected file.",
+                    "error"
+                );
+
+            };
 
 
-            setStorage(
-                STORAGE_KEYS.POSTS,
-                posts
-            );
+            reader.readAsDataURL(file);
 
-
-            form.reset();
-
-            closePostModal();
-
-            renderCommunity();
-
-            updateDashboardData();
-
-
-            showToast(
-                "Your post was published successfully!"
-            );
-
-        });
+        }
+    );
 
 }
 
