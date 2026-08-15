@@ -6557,3 +6557,110 @@ img {
     }
 
 }
+
+
+/* =========================================================
+   COMMUNITY INSTANT MEDIA PREVIEW
+   ========================================================= */
+
+.community-preview-file {
+
+    width: 100%;
+
+    background: #111827;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+}
+
+
+/* IMAGE */
+
+.community-preview-file img {
+
+    display: block;
+
+    width: 100%;
+
+    max-height: 420px;
+
+    object-fit: contain;
+
+    background: #111827;
+
+}
+
+
+/* VIDEO */
+
+.community-preview-file video {
+
+    display: block;
+
+    width: 100%;
+
+    max-height: 420px;
+
+    background: #000000;
+
+}
+
+
+/* FILE NAME */
+
+.community-preview-name {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 13px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #e5e7eb;
+
+    color: #596273;
+
+    font-size: 12px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.community-preview-name i {
+
+    flex-shrink: 0;
+
+    font-size: 14px;
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .community-preview-file img {
+
+        max-height: 320px;
+
+    }
+
+
+    .community-preview-file video {
+
+        max-height: 320px;
+
+    }
+
+}
