@@ -1573,16 +1573,69 @@ function logout() {
     }
 
 
+    /*
+     * Remove ONLY the active session.
+     *
+     * We intentionally keep:
+     * - khelogramAccount
+     * - khelogramProfile
+     *
+     * so the user's information is available
+     * when they login again.
+     */
+
+    localStorage.removeItem(
+        STORAGE_KEYS.USER
+    );
+
+
+    /*
+     * Close dashboard.
+     */
+
     document
         .getElementById("dashboardPage")
         ?.classList.add("hidden");
+
+
+    /*
+     * Return to landing page.
+     */
 
     document
         .getElementById("landingPage")
         ?.classList.remove("hidden");
 
 
+    /*
+     * Reset role selector to Athlete as the
+     * default choice for a completely fresh
+     * login selection.
+     */
+
+    selectedRole = "Athlete";
+
+
+    const roleText =
+        document.getElementById(
+            "selectedRoleText"
+        );
+
+    if (roleText) {
+
+        roleText.textContent =
+            "Athlete";
+
+    }
+
+
     closeSidebar();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 
 
     showToast(
@@ -1590,7 +1643,6 @@ function logout() {
     );
 
 }
-
 
 /* =========================================================
    PROFILE
