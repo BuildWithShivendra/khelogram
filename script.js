@@ -24,7 +24,10 @@
    GLOBAL VARIABLES
    ========================================================= */
 
-let selectedRole = "Athlete";
+let selectedRole =
+    localStorage.getItem(
+        "khelogramSelectedRole"
+    ) || "Athlete";
 let authMode = "register";
 let currentTournamentId = null;
 let toastTimer = null;
@@ -766,14 +769,31 @@ function selectRole(role) {
 
     selectedRole = role;
 
+
     const roleText =
         document.getElementById(
             "selectedRoleText"
         );
 
     if (roleText) {
-        roleText.textContent = role;
+
+        roleText.textContent =
+            role;
+
     }
+
+
+    /*
+     * Store the role selection temporarily.
+     * This helps preserve the selection even if
+     * the auth modal is reopened.
+     */
+
+    localStorage.setItem(
+        "khelogramSelectedRole",
+        role
+    );
+
 
     closeRoleSelector();
 
