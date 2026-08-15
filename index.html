@@ -1667,163 +1667,382 @@
              COMMUNITY
              ================================================= -->
 
-        <div
-            id="section-community"
-            class="dashboard-section hidden"
-        >
+ <!-- =================================================
+     COMMUNITY
+     ================================================= -->
 
-            <div class="section-label">
-                KHELOGRAM COMMUNITY
+<div
+    id="section-community"
+    class="dashboard-section hidden"
+>
+
+    <div class="section-label">
+        KHELOGRAM COMMUNITY
+    </div>
+
+
+    <!-- COMMUNITY HEADER -->
+
+    <div class="page-title-row">
+
+        <div>
+
+            <h2>
+                Sports Community
+            </h2>
+
+            <p class="section-description">
+                Share achievements, training moments,
+                tournament updates and rural sports stories.
+            </p>
+
+        </div>
+
+
+        <button
+            class="primary-btn"
+            onclick="openPostModal()"
+        >
+            <i class="fa-solid fa-plus"></i>
+            Create Post
+        </button>
+
+    </div>
+
+
+
+    <!-- =================================================
+         NEW COMMUNITY POST BOX
+         ================================================= -->
+
+    <div class="community-create-box">
+
+        <div class="community-create-header">
+
+            <div
+                class="community-create-avatar"
+                id="communityCreateAvatar"
+            >
+                KG
             </div>
 
+            <div>
 
-            <div class="page-title-row">
+                <strong id="communityCreateName">
+                    Share with the community
+                </strong>
 
-                <div>
+                <span>
+                    Post an update, photo or video
+                </span>
 
-                    <h2>
-                        Sports Community
-                    </h2>
+            </div>
 
-                    <p class="section-description">
-                        Share achievements, tournament updates
-                        and rural sports stories.
-                    </p>
+        </div>
 
-                </div>
 
+        <!-- POST TEXT -->
+
+        <textarea
+            id="communityPostText"
+            class="community-post-text"
+            placeholder="What's happening in your sports journey?"
+            rows="4"
+        ></textarea>
+
+
+        <!-- MEDIA PREVIEW -->
+
+        <div
+            id="communityMediaPreview"
+            class="community-media-preview hidden"
+        >
+
+            <div class="community-media-preview-header">
+
+                <strong>
+                    Selected media
+                </strong>
 
                 <button
-                    class="primary-btn"
-                    onclick="openPostModal()"
+                    type="button"
+                    class="community-remove-media"
+                    onclick="clearCommunityMedia()"
+                    aria-label="Remove selected media"
                 >
-                    <i class="fa-solid fa-plus"></i>
-                    Create Post
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
 
             </div>
 
 
-            <div class="community-layout">
+            <div id="communityMediaPreviewContent"></div>
 
-                <div>
-
-                    <div class="community-filters">
-
-                        <input
-                            id="communitySearch"
-                            type="text"
-                            placeholder="Search posts..."
-                            oninput="renderCommunity()"
-                        >
-
-                        <select
-                            id="communitySportFilter"
-                            onchange="renderCommunity()"
-                        >
-
-                            <option value="">
-                                All sports
-                            </option>
-
-                            <option>Cricket</option>
-                            <option>Football</option>
-                            <option>Kabaddi</option>
-                            <option>Athletics</option>
-                            <option>Hockey</option>
-                            <option>Volleyball</option>
-                            <option>Wrestling</option>
-                            <option>Badminton</option>
-
-                        </select>
-
-                    </div>
+        </div>
 
 
-                    <div
-                        id="communityFeed"
-                        class="community-feed"
-                    ></div>
+        <!-- POST OPTIONS -->
+
+        <div class="community-create-actions">
+
+            <div class="community-media-actions">
+
+                <!-- PHOTO -->
+
+                <label
+                    class="community-media-btn"
+                    for="communityPhotoInput"
+                >
+
+                    <i class="fa-solid fa-image"></i>
+
+                    <span>
+                        Photo
+                    </span>
+
+                </label>
+
+                <input
+                    id="communityPhotoInput"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onchange="handleCommunityMediaSelect(this, 'photo')"
+                >
+
+
+                <!-- VIDEO -->
+
+                <label
+                    class="community-media-btn"
+                    for="communityVideoInput"
+                >
+
+                    <i class="fa-solid fa-video"></i>
+
+                    <span>
+                        Video
+                    </span>
+
+                </label>
+
+                <input
+                    id="communityVideoInput"
+                    type="file"
+                    accept="video/*"
+                    hidden
+                    onchange="handleCommunityMediaSelect(this, 'video')"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="primary-btn community-post-btn"
+                onclick="createCommunityPost()"
+            >
+
+                <i class="fa-solid fa-paper-plane"></i>
+
+                Post
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =================================================
+         COMMUNITY CONTENT
+         ================================================= -->
+
+    <div class="community-layout">
+
+        <div>
+
+
+            <!-- SEARCH + FILTER -->
+
+            <div class="community-filters">
+
+                <input
+                    id="communitySearch"
+                    type="text"
+                    placeholder="Search posts..."
+                    oninput="renderCommunity()"
+                >
+
+
+                <select
+                    id="communitySportFilter"
+                    onchange="renderCommunity()"
+                >
+
+                    <option value="">
+                        All sports
+                    </option>
+
+                    <option>
+                        Cricket
+                    </option>
+
+                    <option>
+                        Football
+                    </option>
+
+                    <option>
+                        Kabaddi
+                    </option>
+
+                    <option>
+                        Athletics
+                    </option>
+
+                    <option>
+                        Hockey
+                    </option>
+
+                    <option>
+                        Volleyball
+                    </option>
+
+                    <option>
+                        Wrestling
+                    </option>
+
+                    <option>
+                        Badminton
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- COMMUNITY FEED -->
+
+            <div
+                id="communityFeed"
+                class="community-feed"
+            ></div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             COMMUNITY SIDEBAR
+             ================================================= -->
+
+        <aside class="community-sidebar">
+
+
+            <!-- SNAPSHOT -->
+
+            <div class="panel">
+
+                <small>
+                    COMMUNITY SNAPSHOT
+                </small>
+
+                <h3>
+                    Grassroots activity
+                </h3>
+
+
+                <div class="community-stat">
+
+                    <span>
+                        Posts
+                    </span>
+
+                    <strong id="communityPostCount">
+                        0
+                    </strong>
 
                 </div>
 
 
-                <aside class="community-sidebar">
+                <div class="community-stat">
 
-                    <div class="panel">
+                    <span>
+                        Likes
+                    </span>
 
-                        <small>
-                            COMMUNITY SNAPSHOT
-                        </small>
+                    <strong id="communityLikeCount">
+                        0
+                    </strong>
 
-                        <h3>
-                            Grassroots activity
-                        </h3>
-
-
-                        <div class="community-stat">
-
-                            <span>
-                                Posts
-                            </span>
-
-                            <strong id="communityPostCount">
-                                0
-                            </strong>
-
-                        </div>
+                </div>
 
 
-                        <div class="community-stat">
+                <div class="community-stat">
 
-                            <span>
-                                Likes
-                            </span>
+                    <span>
+                        Sports
+                    </span>
 
-                            <strong id="communityLikeCount">
-                                0
-                            </strong>
+                    <strong>
+                        8+
+                    </strong>
 
-                        </div>
-
-
-                        <div class="community-stat">
-
-                            <span>
-                                Sports
-                            </span>
-
-                            <strong>
-                                8+
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="panel community-tip">
-
-                        <div class="tip-icon">
-                            ✦
-                        </div>
-
-                        <h3>
-                            Community Tip
-                        </h3>
-
-                        <p>
-                            Share progress, celebrate local
-                            athletes and help make rural talent visible.
-                        </p>
-
-                    </div>
-
-                </aside>
+                </div>
 
             </div>
 
-        </div>
+
+
+            <!-- COMMUNITY TIP -->
+
+            <div class="panel community-tip">
+
+                <div class="tip-icon">
+                    ✦
+                </div>
+
+                <h3>
+                    Community Tip
+                </h3>
+
+                <p>
+                    Share training moments, celebrate
+                    local athletes and help make rural
+                    sports talent visible.
+                </p>
+
+            </div>
+
+
+
+            <!-- MEDIA TIP -->
+
+            <div class="panel community-media-info">
+
+                <div class="tip-icon">
+                    📸
+                </div>
+
+                <h3>
+                    Share your journey
+                </h3>
+
+                <p>
+                    Upload a training photo, match moment
+                    or sports video and inspire your community.
+                </p>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
 
 
         <!-- =================================================
